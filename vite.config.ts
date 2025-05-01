@@ -2,6 +2,8 @@ import tailwindcss from '@tailwindcss/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
+const proxyTarget = process.env.VITE_RPC_PROXY_TARGET || 'http://localhost:3000';
+
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	ssr: {
@@ -9,7 +11,7 @@ export default defineConfig({
 	},
 	server: {
     proxy: {
-      '/rpc': 'http://localhost:3000'
+      '/rpc': proxyTarget
     }
   }
 });
