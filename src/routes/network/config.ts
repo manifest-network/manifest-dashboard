@@ -1,24 +1,24 @@
 export const configs: ChartConfig[] = [
   {
-    id: 'system.network.received',
+    id: 'system_network_received',
     title: 'Total IPv4 Bandwidth Received',
     yAxisTitle: '',
     category: 'network'
   },
   {
-    id: 'system.network.sent',
+    id: 'system_network_sent',
     title: 'Total IPv4 Bandwidth Sent',
     yAxisTitle: '',
     category: 'network'
   },
   {
-    id: 'system.tcp.received',
+    id: 'system_tcp_received',
     title: 'Total IPv4 TCP Packets Received',
     yAxisTitle: 'Number of packets',
     category: 'network'
   },
   {
-    id: 'system.tcp.sent',
+    id: 'system_tcp_sent',
     title: 'Total IPv4 TCP Packets Sent',
     yAxisTitle: 'Number of packets',
     category: 'network'

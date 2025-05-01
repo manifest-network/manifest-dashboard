@@ -1,10 +1,6 @@
 type ChartCategory = 'disk' | 'network' | 'minio' | 'kube' | 'gpu' | 'blockchain';
-type TimeScale = '1 second' | '1 minute' | '1 hour' | '1 day' | '1 week' | '1 month' | '1 year';
-type TimeSpan = '1 minute' | '1 hour' | '1 day' | '1 week' | '1 month' | '1 year'
-type TimeInterval = {
-  span: TimeSpan,
-  scale: TimeScale
-}
+type TimeScale = '10 seconds' | '1 minute' | '1 hour' | '1 day' | '1 week' | '1 month' | '3 months' | '1 year';
+type TimeSpan = '1 minute' | '1 hour' | '1 day' | '1 week' | '1 month' | '3 months' | '1 year'
 
 interface ChartConfig {
   id: string;

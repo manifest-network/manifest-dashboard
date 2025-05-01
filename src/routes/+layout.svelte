@@ -37,6 +37,7 @@
 
   const intervalOptions: { label: string; value: TimeScale }[] = [
     {label: '1 Year', value: '1 year'},
+    {label: '3 Months', value: '3 months'},
     {label: '1 Month', value: '1 month'},
     {label: '1 Week', value: '1 week'},
     {label: '1 Day', value: '1 day'},
@@ -70,8 +71,8 @@
   <div class="flex flex-col h-screen overflow-hidden">
     <AppBar>
       {#snippet trail()}
-        <Segment value={selectedInterval} name="interval" onValueChange={(e) => onIntervalChange(e.value as TimeSpan)} indicatorBg="bg-primary-500"
-                 indicatorText="text-surface-900">
+        <Segment value={selectedInterval} name="interval" onValueChange={(e) => onIntervalChange(e.value as TimeSpan)} indicatorBg="bg-primary-300-700"
+                 indicatorText="text-surface-900-100">
           {#each intervalOptions as option (option.value)}
             <Segment.Item value={option.value}>{option.label}</Segment.Item>
           {/each}
@@ -92,7 +93,7 @@
           {#each menuItems as tile}
             <Navigation.Tile href={selectedInterval ? `${tile.href}?interval=${selectedInterval}` : tile.href}
                              title={tile.title} selected={page.url.pathname === tile.href}
-                             classes={page.url.pathname === tile.href ? 'bg-primary-500 text-surface-900' : ''}>
+                             classes={page.url.pathname === tile.href ? 'bg-primary-300-700 text-surface-900-100' : ''}>
               <tile.icon/>
             </Navigation.Tile>
           {/each}

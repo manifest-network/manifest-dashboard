@@ -2,7 +2,7 @@ import {ScaleTypes} from "@carbon/charts-svelte";
 import {getColorFromCSS} from "$lib/utils/colors";
 
 export function getChartOptions(config: ChartConfig, latest?: ChartDataPoint) {
-  let themeColor = getColorFromCSS('--color-secondary-500')
+  let themeColor = getColorFromCSS('--color-secondary-600-400')
 
   return {
     title:`${config.title}: ${latest?.value}`,

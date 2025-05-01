@@ -5,7 +5,7 @@
   import {data as mapData} from './data';
   import {getColorFromCSS} from "$lib/utils/colors";
 
-  let themeColor = getColorFromCSS('--color-surface-900')
+  let themeColor = getColorFromCSS('--color-primary-900-100')
 
   const options: ChoroplethChartOptions = {
     geoData: worldTopoJson,
@@ -25,7 +25,7 @@
           themeColor
         ]
       }
-    }
+    },
   }
 </script>
 

@@ -1,6 +1,6 @@
 import {error} from "@sveltejs/kit";
 import type { PageServerLoad } from "../../routes/$types";
-import {ALLOWED_INTERVALS, IntervalMap, isValidDateString, isValidTimeInterval} from "$lib/utils/time";
+import {ALLOWED_INTERVALS, IntervalMap, isValidTimeInterval} from "$lib/utils/time";
 
 /**
  * Extracts, validates, and prepares URL search parameters for the API call.
@@ -35,6 +35,9 @@ function extractAndPrepareApiParams(url: URL): URLSearchParams | null {
     case '1 month':
       now.setMonth(now.getMonth() - 1);
       break;
+    case '3 months':
+      now.setMonth(now.getMonth() - 3);
+      break;
     case '1 year':
       now.setFullYear(now.getFullYear() - 1);
       break;
@@ -62,7 +65,7 @@ export function createLoad(configs: ChartConfig[]) {
     const data = await Promise.all(
       configs.map(async (config) => {
         const currentParams = new URLSearchParams(baseApiParams);
-        currentParams.set('chart_name', config.id);
+        currentParams.set('metric_name', config.id);
 
         let apiUrl = `/rpc/get_aggregated_metrics?${currentParams.toString()}`;
 
@@ -75,7 +78,7 @@ export function createLoad(configs: ChartConfig[]) {
 
           const raw: MetricRecord[] = await res.json();
           return raw.map((r) => ({
-            group: r.chart,
+            group: config.id,
             key: new Date(r.timestamp).toLocaleString(),
             value: r.value,
             date: new Date(r.timestamp)
