@@ -5,7 +5,7 @@ export function getChartOptions(config: ChartConfig, latest?: ChartDataPoint) {
   let themeColor = getColorFromCSS('--color-secondary-600-400')
 
   return {
-    title:`${config.title}: ${latest?.value}`,
+    title:`${config.title}: ${latest?.value ?? "N/A"}`,
     axes: {
       bottom: {
         title: 'Timestamp',
