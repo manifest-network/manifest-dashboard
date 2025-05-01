@@ -1,6 +1,20 @@
 import {error} from "@sveltejs/kit";
-import type { PageServerLoad } from "../../routes/$types";
+import type {PageServerLoad} from "../../routes/$types";
 import {ALLOWED_INTERVALS, IntervalMap, isValidTimeInterval} from "$lib/utils/time";
+
+function getIntervalStartDate(interval: string): Date {
+  const now = new Date();
+  switch (interval) {
+    case '1 minute':  now.setMinutes(now.getMinutes() - 1); break;
+    case '1 hour':    now.setHours(now.getHours() - 1); break;
+    case '1 day':     now.setDate(now.getDate() - 1); break;
+    case '1 week':    now.setDate(now.getDate() - 7); break;
+    case '1 month':   now.setMonth(now.getMonth() - 1); break;
+    case '3 months':  now.setMonth(now.getMonth() - 3); break;
+    case '1 year':    now.setFullYear(now.getFullYear() - 1); break;
+  }
+  return now;
+}
 
 /**
  * Extracts, validates, and prepares URL search parameters for the API call.
@@ -8,51 +22,25 @@ import {ALLOWED_INTERVALS, IntervalMap, isValidTimeInterval} from "$lib/utils/ti
  * Returns a URLSearchParams object ready for the API request.
  */
 function extractAndPrepareApiParams(url: URL): URLSearchParams | null {
-  const intervalParam = url.searchParams.get("interval");
-  if (!intervalParam) {
+  const interval = url.searchParams.get("interval");
+  if (!interval) {
     return null
   }
-  if (!isValidTimeInterval(intervalParam)) {
+  if (!isValidTimeInterval(interval)) {
     throw error(400, `Invalid interval parameter. Allowed values are: ${ALLOWED_INTERVALS.join(', ')}`);
   }
-  const interval = intervalParam;
-  const scale = IntervalMap[interval];
-  const now = new Date();
 
-  switch (interval) {
-    case '1 minute':
-      now.setMinutes(now.getMinutes() - 1);
-      break;
-    case '1 hour':
-      now.setHours(now.getHours() - 1);
-      break;
-    case '1 day':
-      now.setDate(now.getDate() - 1);
-      break;
-    case '1 week':
-      now.setDate(now.getDate() - 7);
-      break;
-    case '1 month':
-      now.setMonth(now.getMonth() - 1);
-      break;
-    case '3 months':
-      now.setMonth(now.getMonth() - 3);
-      break;
-    case '1 year':
-      now.setFullYear(now.getFullYear() - 1);
-      break;
-  }
+  const scale = IntervalMap[interval];
+  const time_from = getIntervalStartDate(interval).toISOString();
+  const time_to = new Date().toISOString();
 
   // Prepare validated parameters for API call
-  const apiParams = new URLSearchParams({
+  return new URLSearchParams({
     order: 'timestamp.desc',
     interval_str: scale,
+    time_from,
+    time_to,
   });
-
-  apiParams.set('time_from', now.toISOString());
-  apiParams.set('time_to', new Date().toISOString());
-
-  return apiParams;
 }
 
 export function createLoad(configs: ChartConfig[]) {
