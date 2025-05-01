@@ -1,38 +1,51 @@
-# sv
+# manifest-dashboard
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A modern dashboard featuring:
 
-## Creating a project
+- TypeScript
+- Skeleton UI components
+- Theming (light/dark)
+- Charting with Carbon Charts
+- Carbon pictograms
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Getting Started
 
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Clone this repository and install dependencies:
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+git clone https://github.com/liftedinit/manifest-dashboard.git
+cd manifest-dashboard
+bun install
 ```
 
-## Building
+## Development
 
-To create a production version of your app:
+Start the development server:
 
 ```bash
-npm run build
+bun dev
 ```
 
-You can preview the production build with `npm run preview`.
+## Environment Variables
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+Create a `.env` file in the root directory and add your environment variables. For example:
+
+```env
+VITE_RPC_PROXY_TARGET=http://your-api-server:3000
+```
+
+Restart the dev server after changing `.env`.
+
+## Building for Production
+
+Build the project for production:
+
+```bash
+bun run build
+```
+
+Preview the production build:
+
+```bash
+bun run preview
+```
