@@ -1,6 +1,5 @@
 export const load = async ({ fetch }) => {
-  const tokenSupplyUrl = `/rpc/get_latest_token_supply`;
-  const tokenCountUrl = `/rpc/get_latest_token_count`;
+  const geoUrl = `/rpc/get_latest_geo_coordinates`;
 
   const fetchData = async (url: string, resourceName: string) => {
     try {
@@ -19,16 +18,12 @@ export const load = async ({ fetch }) => {
   };
 
   try {
-    const [tokenSupplyData, tokenCountData] = await Promise.all([
-      fetchData(tokenSupplyUrl, "token supply"),
-      fetchData(tokenCountUrl, "token count")
+    const [geoData] = await Promise.all([
+      fetchData(geoUrl, "geo coordinates"),
     ]);
 
-    const tokenSupplyBig = BigInt(tokenSupplyData)
-
     return {
-      tokenSupply: tokenSupplyBig,
-      tokenCount: tokenCountData as number
+      geo: geoData as GeoRecord[],
     };
   } catch (error) {
     console.error('Failed to fetch all required page data:', error);

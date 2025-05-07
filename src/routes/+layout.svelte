@@ -9,10 +9,13 @@
   import CloudObjectStorage from "carbon-pictograms-svelte/lib/CloudObjectStorage.svelte";
   import GpuComputing from "carbon-pictograms-svelte/lib/GpuComputing.svelte";
   import Blockchain from "carbon-pictograms-svelte/lib/Blockchain.svelte";
+  import Banking from "carbon-pictograms-svelte/lib/Banking.svelte"
+  import Earth from "carbon-pictograms-svelte/lib/Earth.svelte"
   import {page} from '$app/state';
   import {goto} from '$app/navigation'
   import LightSwitch from "$lib/components/LightSwitch.svelte";
   import {mode} from '$lib/stores/theme';
+  import {HomeFront} from "carbon-pictograms-svelte";
 
   let isDark = $derived($mode === 'dark');
   let ready = $state(false);
@@ -25,14 +28,17 @@
   let {children} = $props();
 
   const menuItems = [
-    {href: '/blockchain', title: 'Blockchain', icon: Blockchain},
-    {href: '/system', title: 'System', icon: Desktop},
-    {href: '/disk', title: 'Disk', icon: HardDrive},
-    {href: '/network', title: 'Network', icon: Network},
-    {href: '/web', title: 'Web', icon: Websites},
-    {href: '/object_storage', title: 'Object Storage', icon: CloudObjectStorage},
-    {href: '/kubernetes', title: 'Kubernetes', icon: Kubernetes},
-    {href: '/gpu', title: 'GPU', icon: GpuComputing}
+    // {href: '/blockchain', title: 'Blockchain', icon: Blockchain},
+    // {href: '/system', title: 'System', icon: Desktop},
+    // {href: '/disk', title: 'Disk', icon: HardDrive},
+    // {href: '/network', title: 'Network', icon: Network},
+    // {href: '/web', title: 'Web', icon: Websites},
+    // {href: '/object_storage', title: 'Object Storage', icon: CloudObjectStorage},
+    // {href: '/kubernetes', title: 'Kubernetes', icon: Kubernetes},
+    // {href: '/gpu', title: 'GPU', icon: GpuComputing}
+    // {href: '/tokenomic', title: 'Tokenomic', icon: Banking},
+    {href: '/', title: 'Home', icon: HomeFront},
+    {href: '/world', title: 'World Map', icon: Earth},
   ];
 
   const intervalOptions: { label: string; value: TimeScale }[] = [
@@ -70,14 +76,14 @@
 {#if ready && selectedInterval}
   <div class="flex flex-col h-screen overflow-hidden">
     <AppBar>
-      {#snippet trail()}
-        <Segment value={selectedInterval} name="interval" onValueChange={(e) => onIntervalChange(e.value as TimeSpan)} indicatorBg="bg-primary-300-700"
-                 indicatorText="text-surface-900-100">
-          {#each intervalOptions as option (option.value)}
-            <Segment.Item value={option.value}>{option.label}</Segment.Item>
-          {/each}
-        </Segment>
-      {/snippet}
+      <!--{#snippet trail()}-->
+      <!--  <Segment value={selectedInterval} name="interval" onValueChange={(e) => onIntervalChange(e.value as TimeSpan)} indicatorBg="bg-primary-300-700"-->
+      <!--           indicatorText="text-surface-900-100">-->
+      <!--    {#each intervalOptions as option (option.value)}-->
+      <!--      <Segment.Item value={option.value}>{option.label}</Segment.Item>-->
+      <!--    {/each}-->
+      <!--  </Segment>-->
+      <!--{/snippet}-->
       {#snippet lead()}
         <div class="relative">
           <a href="/" class="inline-block">
@@ -85,28 +91,29 @@
           </a>
         </div>
       {/snippet}
+
     </AppBar>
 
-    <div class="card border-surface-100-900 grid w-full grid-cols-[auto_1fr] border-[1px] flex-1 overflow-hidden">
-      <Navigation.Rail>
-        {#snippet tiles()}
-          {#each menuItems as tile}
-            <Navigation.Tile href={selectedInterval ? `${tile.href}?interval=${selectedInterval}` : tile.href}
-                             title={tile.title} selected={page.url.pathname === tile.href}
-                             classes={page.url.pathname === tile.href ? 'bg-primary-300-700 text-surface-900-100' : ''}>
-              <tile.icon/>
-            </Navigation.Tile>
-          {/each}
-        {/snippet}
+<!--    <div class="card border-surface-100-900 grid w-full grid-cols-[auto_1fr] border-[1px] flex-1 overflow-hidden">-->
+<!--      <Navigation.Rail>-->
+<!--        {#snippet tiles()}-->
+<!--          {#each menuItems as tile}-->
+<!--            <Navigation.Tile href={selectedInterval ? `${tile.href}?interval=${selectedInterval}` : tile.href}-->
+<!--                             title={tile.title} selected={page.url.pathname === tile.href}-->
+<!--                             classes={page.url.pathname === tile.href ? 'bg-primary-300-700 text-surface-900-100' : ''}>-->
+<!--              <tile.icon/>-->
+<!--            </Navigation.Tile>-->
+<!--          {/each}-->
+<!--        {/snippet}-->
 
-        {#snippet footer()}
-          <LightSwitch/>
-        {/snippet}
-      </Navigation.Rail>
+<!--        {#snippet footer()}-->
+<!--          <LightSwitch/>-->
+<!--        {/snippet}-->
+<!--      </Navigation.Rail>-->
 
       <div class="overflow-y-auto">
         {@render children?.()}
       </div>
-    </div>
+<!--    </div>-->
   </div>
 {/if}

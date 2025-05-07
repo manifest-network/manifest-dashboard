@@ -13,5 +13,6 @@ export const configs: ChartConfig[] = [
     id: 'web_requests',
     title: 'Total Websites Requests',
     yAxisTitle: 'Number of requests',
+    view: 'cumsum'
   },
 ];
