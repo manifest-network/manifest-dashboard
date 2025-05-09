@@ -1,4 +1,4 @@
-import { createLoad } from "$lib/utils/load";
+import { loadAggregateMetric } from "$lib/utils/loadAggregateMetric";
 import {configs} from "./config";
 
-export const load = createLoad(configs);
+export const load = loadAggregateMetric(configs);

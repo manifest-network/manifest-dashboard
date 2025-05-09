@@ -2,7 +2,7 @@
   import {getColorFromCSS} from "$lib/utils/colors";
   import * as d3 from 'd3';
   import * as topojson from 'topojson-client';
-  import {worldTopoJson} from "./options";
+  import {worldTopoJson} from "$lib/utils/worldTopology";
   import type {PageProps} from "../../../.svelte-kit/types/src/routes/world/$types";
 
   const width = 960;

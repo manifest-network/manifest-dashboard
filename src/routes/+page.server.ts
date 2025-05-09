@@ -1,37 +1,5 @@
-export const load = async ({ fetch }) => {
-  const tokenSupplyUrl = `/rpc/get_latest_token_supply`;
-  const tokenCountUrl = `/rpc/get_latest_token_count`;
+import {loadLatestMetric} from "$lib/utils/loadLatestMetric";
+import {type MetricKey, MetricsSchema} from "$lib/schemas";
 
-  const fetchData = async (url: string, resourceName: string) => {
-    try {
-      const res = await fetch(url);
-      if (!res.ok) {
-        const errorMsg = `API request for ${resourceName} (${url}) failed with status ${res.status}`;
-        console.error(errorMsg);
-        throw new Error(errorMsg);
-      }
-      return await res.json();
-    } catch (err) {
-      const detailedErrorMsg = `Error fetching ${resourceName} from ${url}: ${err}`;
-      console.error(detailedErrorMsg, err);
-      throw new Error(detailedErrorMsg);
-    }
-  };
-
-  try {
-    const [tokenSupplyData, tokenCountData] = await Promise.all([
-      fetchData(tokenSupplyUrl, "token supply"),
-      fetchData(tokenCountUrl, "token count")
-    ]);
-
-    const tokenSupplyBig = BigInt(tokenSupplyData)
-
-    return {
-      tokenSupply: tokenSupplyBig,
-      tokenCount: tokenCountData as number
-    };
-  } catch (error) {
-    console.error('Failed to fetch all required page data:', error);
-    throw new Error(`Failed to load page data. ${error}`);
-  }
-};
+const metricKeys = Object.keys(MetricsSchema.shape) as MetricKey[];
+export const load = loadLatestMetric(metricKeys)

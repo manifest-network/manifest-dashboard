@@ -43,7 +43,7 @@ function extractAndPrepareApiParams(url: URL): URLSearchParams | null {
   });
 }
 
-export function createLoad(configs: ChartConfig[]) {
+export function loadAggregateMetric(configs: ChartConfig[]) {
   const loadFn: PageServerLoad = async ({ fetch, url }) => {
     const baseApiParams = extractAndPrepareApiParams(url);
     if (!baseApiParams) {

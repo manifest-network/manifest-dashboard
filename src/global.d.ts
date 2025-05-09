@@ -33,3 +33,7 @@ interface GeoRecord {
   country_name: string;
   city: string
 }
+
+interface Metric {
+
+}
