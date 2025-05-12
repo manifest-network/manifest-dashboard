@@ -81,25 +81,22 @@
   // Initialize the globe
   $effect(() => {
     if (globeContainer && !world && w > 0 && h > 0) {
-      const {fillHex, borderHex, labelHex} = computeGlobeColors();
       import('globe.gl').then(module => {
         const Globe = module.default;
-        const globeInstance = new Globe(globeContainer)
-        .width(w)
-        .height(h)
-        .backgroundColor('rgba(0,0,0,0)')
-        .showGlobe(false)
-        .showAtmosphere(false)
-        .polygonsData(countriesTopo.features)
-        .polygonSideColor(() => 'rgba(0,0,0,0)')
-        .pointsMerge(true)
-        .labelSize(1)
-        .labelDotRadius(0.12)
-        .labelDotOrientation(() => 'bottom')
-        .labelResolution(1)
-        .pointOfView({ lat: 30, lng: -103, altitude: 1.5 }, 0);
-
-        world = globeInstance;
+        world = new Globe(globeContainer)
+          .width(w)
+          .height(h)
+          .backgroundColor('rgba(0,0,0,0)')
+          .showGlobe(false)
+          .showAtmosphere(false)
+          .polygonsData(countriesTopo.features)
+          .polygonSideColor(() => 'rgba(0,0,0,0)')
+          .pointsMerge(true)
+          .labelSize(1)
+          .labelDotRadius(0.12)
+          .labelDotOrientation(() => 'bottom')
+          .labelResolution(1)
+          .pointOfView({lat: 30, lng: -103, altitude: 1.5}, 0);
       });
     }
   });
