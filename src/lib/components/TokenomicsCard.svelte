@@ -1,12 +1,22 @@
 <script lang="ts">
   import {Infinity} from "carbon-icons-svelte";
   import {formatCurrency, formatNumber} from "$lib/utils/format";
+  import {formatLargeNumber} from "$lib/utils/format.js";
 
-  export let tokenSupply: bigint;
-  export let totalMinted: number;
-  export let totalBurned: number;
-  export let pwrMfx: number;
-  export let marketCap: number;
+  const {
+    tokenSupply,
+    totalMinted,
+    totalBurned,
+    pwrMfx,
+    marketCap
+  } = $props<{
+    tokenSupply: string,
+    totalMinted: string,
+    totalBurned: string,
+    pwrMfx: string,
+    marketCap: string
+  }>();
+
 </script>
 
 <div class="card preset-filled-surface-100-900 p-8">
@@ -34,11 +44,11 @@
       <p class="text-sm font-semibold mb-3">Maximum Supply</p>
     </div>
     <div>
-      <p class="text-4xl font-bold text-secondary-400-600">{formatNumber(totalMinted)}</p>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatLargeNumber(totalMinted)}</p>
       <p class="text-sm font-semibold mb-3">Total Minted</p>
     </div>
     <div>
-      <p class="text-4xl font-bold text-secondary-400-600">{formatNumber(totalBurned)}</p>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatLargeNumber(totalBurned)}</p>
       <p class="text-sm font-semibold mb-3">Total Burned</p>
     </div>
     <div>

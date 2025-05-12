@@ -1,5 +1,4 @@
-import {error} from "@sveltejs/kit";
-import type {PageServerLoad} from "../../routes/$types";
+import {error, type RequestEvent} from "@sveltejs/kit";
 import {ALLOWED_INTERVALS, IntervalMap, isValidTimeInterval} from "$lib/utils/time";
 
 function getIntervalStartDate(interval: string): Date {
@@ -43,42 +42,41 @@ function extractAndPrepareApiParams(url: URL): URLSearchParams | null {
   });
 }
 
-export function loadAggregateMetric(configs: ChartConfig[]) {
-  const loadFn: PageServerLoad = async ({ fetch, url }) => {
+export function loadAggregateMetric(ids: string[]) {
+  const loadFn = async ({ fetch, url }: RequestEvent) => {
     const baseApiParams = extractAndPrepareApiParams(url);
     if (!baseApiParams) {
-      return { configs, data: [] };
+      return { ids, data: [] };
     }
 
     const data = await Promise.all(
-      configs.map(async (config) => {
+      ids.map(async (id) => {
         const currentParams = new URLSearchParams(baseApiParams);
-        currentParams.set('metric_name', config.id);
+        currentParams.set('metric_name', id);
 
         let apiUrl = `/rpc/get_aggregated_metrics?${currentParams.toString()}`;
-
         try {
           const res = await fetch(apiUrl);
           if (!res.ok) {
-            console.error(`Failed to fetch data for ${config.id}: ${res.status}`);
+            console.error(`Failed to fetch data for ${id}: ${res.status}`);
             throw new Error(`API request failed with status ${res.status}`);
           }
 
           const raw: MetricRecord[] = await res.json();
           return raw.map((r) => ({
-            group: config.id,
+            group: id,
             key: new Date(r.timestamp).toLocaleString(),
             value: r.value,
             date: new Date(r.timestamp)
           })) as ChartDataPoint[];
         } catch (e) {
-          console.error(`Error fetching data for ${config.id}:`, e);
-          throw error(500, `Error fetching data for ${config.id}`);
+          console.error(`Error fetching data for ${id}:`, e);
+          throw error(500, `Error fetching data for ${id}`);
         }
       })
     );
 
-    return { configs, data };
+    return { ids, data };
   };
 
   return loadFn;

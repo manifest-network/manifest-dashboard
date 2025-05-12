@@ -1,15 +1,17 @@
 <script lang="ts">
   import {formatNumber} from "$lib/utils/format";
 
-  export let totalUniqueUser: number;
-  export let totalDao: number;
-  export let totalTxCount: number;
-  export let tokenCount: number;
+  const {totalUniqueUser, totalDao, totalTxCount, tokenCount} = $props<{
+    totalUniqueUser: number,
+    totalDao: number,
+    totalTxCount: number,
+    tokenCount: number
+  }>();
 </script>
 
 <div class="card preset-filled-surface-100-900 p-8">
   <div class="flex justify-between items-center mb-3">
-    <h2 class="text-2xl font-bold">Mainnet Blockchain</h2>
+    <h2 class="text-2xl font-bold">Testnet Blockchain</h2>
     <a href="/" class="text-sm text-primary-500 hover:underline">View Details</a>
   </div>
   <div class="grid md:grid-cols-2 gap-8">

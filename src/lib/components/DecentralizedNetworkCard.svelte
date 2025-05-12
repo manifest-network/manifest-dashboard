@@ -1,16 +1,19 @@
 <script lang="ts">
   import {formatBinaryUnit, formatNumber} from "$lib/utils/format.js";
 
-  export let totalNodeCount: number;
-  export let totalCpuCores: number;
-  export let totalSystemMemory: number; // MiB
-  export let totalDiskSpace: number; // GiB
+  const {totalNodeCount, totalCpuCores, totalSystemMemory, totalDiskSpace} = $props<{
+    totalNodeCount: number,
+    totalCpuCores: number,
+    totalSystemMemory: number,
+    totalDiskSpace: number
+  }>();
 </script>
 
 <div class="card preset-filled-surface-100-900 p-8">
   <div class="flex justify-between items-center mb-3">
     <h2 class="text-2xl font-bold">Decentralized Network</h2>
-    <a href="/world" class="text-sm text-primary-500 hover:underline">View Details</a>
+    <a href="/decentralized-network-details?interval=1 day" class="text-sm text-primary-500 hover:underline">View
+      Details</a>
   </div>
   <div class="grid md:grid-cols-2 gap-8">
     <div>

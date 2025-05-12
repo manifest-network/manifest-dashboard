@@ -24,16 +24,16 @@
 
       <TokenomicsCard
               tokenSupply={metrics.manifest_tokenomics_total_supply}
-              totalMinted={metrics.total_mfx_minted_mainnet}
-              totalBurned={metrics.total_mfx_burned_mainnet}
+              totalMinted={metrics.total_mfx_minted_testnet}
+              totalBurned={metrics.total_mfx_burned_testnet}
               pwrMfx={pwrMfx}
               marketCap={estimatedMarketCap}
       />
 
       <MainnetCard
-              totalUniqueUser={metrics.total_unique_user_mainnet}
-              totalDao={metrics.total_unique_group_mainnet}
-              totalTxCount={metrics.total_tx_count_mainnet}
+              totalUniqueUser={metrics.total_unique_user_testnet}
+              totalDao={metrics.total_unique_group_testnet}
+              totalTxCount={metrics.total_tx_count_testnet}
               tokenCount={metrics.manifest_tokenomics_token_count}
       />
     </div>

@@ -1,8 +1,8 @@
-import type {PageServerLoad} from "../../../.svelte-kit/types/src/routes/$types";
 import {type MetricKey, type PartialMetrics, PartialMetricsSchema} from "$lib/schemas";
+import type {RequestEvent} from "@sveltejs/kit";
 
-export function loadLatestMetric(metrics: MetricKey[]): PageServerLoad {
-  return async ({fetch}) => {
+export function loadLatestMetric(metrics: MetricKey[]) {
+  return async ({fetch}: RequestEvent) => {
     const params = new URLSearchParams({
       metric_names: `{${metrics.map(m => `"${m}"`).join(", ")}}`
     });

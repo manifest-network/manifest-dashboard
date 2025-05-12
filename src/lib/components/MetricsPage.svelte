@@ -1,10 +1,10 @@
 <script lang="ts">
   import '@carbon/charts-svelte/styles.css';
-  import { readable } from 'svelte/store';
-  import { invalidateAll } from '$app/navigation';
+  import {readable} from 'svelte/store';
+  import {invalidateAll} from '$app/navigation';
   import ChartCard from "$lib/components/ChartCard.svelte";
 
-  let { title, data, configs } = $props<{
+  let {title, data, configs} = $props<{
     title: string,
     data: Promise<ChartDataPoint[]>,
     configs: ChartConfig[]
@@ -23,7 +23,6 @@
 </script>
 
 <main class="p-4">
-  <h2 class="text-xl font-bold mb-4">{title} Metrics</h2>
   {#await Promise.resolve(data) }
     <p>Loading {title.toLowerCase()} metrics data...</p>
   {:then datasets}
@@ -31,7 +30,7 @@
       {#each configs as config, i}
         <div class="card preset-filled-surface-100-900 overflow-hidden p-4">
           {#if datasets[i]?.length}
-            <ChartCard config={config} data={datasets[i]} />
+            <ChartCard config={config} data={datasets[i]}/>
           {:else}
             <p>No data available for {config.title}</p>
           {/if}
