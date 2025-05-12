@@ -9,25 +9,29 @@ export function getChartOptions(config: ChartConfig, latest?: ChartDataPoint) {
       : `${config.title}: ${latest?.value ?? "N/A"}`;
 
   return {
+    animations: false,
     title,
     axes: {
       bottom: {
-        title: 'Timestamp',
+        // title: 'Timestamp',
         mapsTo: 'date',
         scaleType: ScaleTypes.TIME,
         ticks: {
+          number: 3,
           rotation: TickRotations.AUTO,
         }
       },
       left: {
         mapsTo: 'value',
-        title: config.yAxisTitle,
+        // title: config.yAxisTitle,
         scaleType: ScaleTypes.LINEAR,
+        visible: false
       }
     },
     curve: 'curveMonotoneX',
     includeZero: false,
-    height: '400px',
+    height: '100%',
+    width: '100%',
     color: {
       gradient: {
         enabled: true

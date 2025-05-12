@@ -8,7 +8,7 @@ export function loadLatestMetric(metrics: MetricKey[]) {
     });
     const apiUrl = `/rpc/get_latest_values_from?${params.toString()}`;
 
-    let data: PartialMetrics = {};
+    let data: PartialMetrics = PartialMetricsSchema.parse({});
     try {
       const raw = await fetch(apiUrl);
       if (!raw.ok) throw new Error(`API request failed with status ${raw.status}`);

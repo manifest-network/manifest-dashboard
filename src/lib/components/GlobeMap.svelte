@@ -1,8 +1,7 @@
 <script lang="ts">
   import {computedColor, getColorFromCSS} from "$lib/utils/colors";
-  import type {PageProps} from "../../../.svelte-kit/types/src/routes/globe/$types";
   import * as topojson from 'topojson-client';
-  import type {FeatureCollection} from 'geojson';
+  import type {FeatureCollection, Feature} from 'geojson';
   import {worldTopoJson} from "$lib/utils/worldTopology";
   import {mode} from '$lib/stores/theme';
   import {PerspectiveCamera} from "three";
@@ -11,7 +10,7 @@
     return {
       bgHex: computedColor(getColorFromCSS('--color-surface-100-900')),
       labelHex: computedColor(getColorFromCSS('--color-secondary-500')),
-      fillHex: computedColor(getColorFromCSS('--color-primary-900-100')),
+      fillHex: computedColor(getColorFromCSS('--color-surface-600-400')),
       borderHex: computedColor(getColorFromCSS('--color-primary-100-900')),
     };
   }
@@ -35,7 +34,7 @@
     }, 150); // adjust delay as needed for your UX
 }
 
-  const { data }: PageProps = $props();
+  const { data } = $props();
 
   let globeContainer = $state<HTMLDivElement|null>(null);
   let world         = $state<import('globe.gl').GlobeInstance|null>(null);
@@ -43,11 +42,19 @@
   let h = $state<number>(0);
   let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
   let geo = $state<GeoRecord[]>(data.geo);
-  let cityCount = $state<Record<string, number>>();
+  let cityCount = $state<Record<string, number>>({});
+  let countriesWithData = $state<Set<string>>(new Set());
 
   // If the `feature` function's `object` parameter is a `GeometryCollection`,
   // then the return type is `FeatureCollection` as per https://github.com/topojson/topojson-client?tab=readme-ov-file#feature
   const countriesTopo = topojson.feature(worldTopoJson, worldTopoJson.objects.countries) as FeatureCollection;
+
+  // Cache country name
+  $effect(() => {
+    if (geo && geo.length > 0) {
+      countriesWithData = new Set(geo.map(item => item.country_name));
+    }
+  });
 
   // Update the city count when the geo data changes
   $effect(() => {
@@ -62,18 +69,19 @@
   })
 
   // Helper function to retrieve the city count from a GeoRecord
-  const getCityCount = (d) => {
+  const getCityCount = (d: GeoRecord) => {
     const key = `${d.city},${d.country_name}`;
     return cityCount[key] || 1;
   };
 
   // Helper function to create a tooltip for the points
-  const getTooltip = d => {
+  const getTooltip = (obj: object) => {
+    const d = obj as GeoRecord;
     const key = `${d.city},${d.country_name}`;
     const count = cityCount[key] || 1;
     return `
       <div style="text-align: center">
-        <div><b>${d.city}</b>, ${count}</div>
+        <div><b>${d.city}</b>: ${count}</div>
       </div>
     `;
     }
@@ -83,7 +91,7 @@
     if (globeContainer && !world && w > 0 && h > 0) {
       import('globe.gl').then(module => {
         const Globe = module.default;
-        world = new Globe(globeContainer)
+        world = new Globe(globeContainer!) // We check that globeContainer is not null above
           .width(w)
           .height(h)
           .backgroundColor('rgba(0,0,0,0)')
@@ -97,6 +105,7 @@
           .labelDotOrientation(() => 'bottom')
           .labelResolution(1)
           .pointOfView({lat: 30, lng: -103, altitude: 1.5}, 0);
+        world.controls().enableZoom = false;
       });
     }
   });
@@ -107,7 +116,12 @@
       const _ = $mode; // Trigger reactivity on theme change
       const { fillHex, borderHex, labelHex } = computeGlobeColors();
       world
-        .polygonCapColor(() => fillHex)
+        .polygonCapColor(d => {
+          if (!d) return fillHex;
+          const countryName = (d as Feature)?.properties?.NAME_LONG;
+          return countriesWithData.has(countryName) ? computedColor(getColorFromCSS('--color-primary-900-100')) : fillHex;
+        })
+        // .polygonCapColor(() => fillHex)
         .polygonStrokeColor(() => borderHex)
         .pointColor(() => labelHex)
         .labelColor(() => labelHex);
@@ -125,14 +139,14 @@
         world.pointsData(geo)
           .pointLat(d => (d as GeoRecord).latitude)
           .pointLng(d => (d as GeoRecord).longitude)
-          .pointRadius(d => 0.08 + 0.05 * Math.log2(getCityCount(d)))
-          .pointAltitude(d => 0.2 + 0.15 * Math.log2(getCityCount(d)))
+          .pointRadius(d => 0.08 + 0.05 * Math.log2(getCityCount(d as GeoRecord)))
+          .pointAltitude(d => 0.2 + 0.15 * Math.log2(getCityCount(d as GeoRecord)))
           .pointLabel(d => (d as GeoRecord).city)
           .labelsData(geo)
           .labelLat(d => (d as GeoRecord).latitude)
           .labelLng(d => (d as GeoRecord).longitude)
           .labelText(d => (d as GeoRecord).city)
-          .labelAltitude(d => 0.2 + 0.15 * Math.log2(getCityCount(d)))
+          .labelAltitude(d => 0.2 + 0.15 * Math.log2(getCityCount(d as GeoRecord)))
           .labelLabel(getTooltip);
     }
   })
@@ -148,6 +162,6 @@
 <style>
   .globe-container {
     width: 100%;
-    height: 50vh;
+    height: 85vh;
   }
 </style>

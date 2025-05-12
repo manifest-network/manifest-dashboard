@@ -1,21 +1,38 @@
 <script lang="ts">
+  import '@carbon/charts-svelte/styles.css';
   import type {PageProps} from "./$types";
-  import MetricsPage from "$lib/components/MetricsPage.svelte";
   import {configs} from "./config";
-  // import WorldMap from "$lib/components/WorldMap.svelte";
+  import {readable} from 'svelte/store';
+  import {invalidateAll} from '$app/navigation';
   import GlobeMap from "$lib/components/GlobeMap.svelte";
+  import ChartCard from "$lib/components/ChartCard.svelte";
 
   let {data}: PageProps = $props();
+
+  const tick = readable(Date.now(), (set) => {
+    const id = setInterval(() => set(Date.now()), 10000);
+    return () => clearInterval(id);
+  });
+
+  $effect(() => {
+    if ($tick) {
+      invalidateAll();
+    }
+  });
 </script>
 
 
 <main>
-<!--  <div class="relative w-full h-full">-->
-<!--    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] z-0 pointer-events-none">-->
+  <div class="grid grid-cols-1 md:grid-cols-2 overflow-hidden p-4">
+    <div class="gap-8">
       <GlobeMap data={data.worldMap} />
-<!--    </div>-->
-<!--  </div>-->
-<!--  <div class="relative z-10 mt-72">-->
-    <MetricsPage title="Decentralized Network Details" data={data.aggregateMetric.data} {configs}/>
-<!--  </div>-->
+    </div>
+    <div class="grid grid-cols-2">
+      {#each configs as config, i}
+        <div class="card w-full p-8 mb-4">
+          <ChartCard config={config} data={data.aggregateMetric.data[i]}/>
+        </div>
+      {/each}
+    </div>
+  </div>
 </main>
