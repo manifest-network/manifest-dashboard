@@ -7,8 +7,23 @@
   import WebServicesCard from "$lib/components/WebServicesCard.svelte";
   import KubeCard from "$lib/components/KubeCard.svelte";
   import ObjectStorageCard from "$lib/components/ObjectStorageCard.svelte";
+  import {readable} from "svelte/store";
+  import {invalidateAll} from "$app/navigation";
 
   const {data}: PageProps = $props();
+
+  const tick = readable(Date.now(), (set) => {
+    const id = setInterval(() => set(Date.now()), 10000);
+    return () => clearInterval(id);
+  });
+
+  $effect(() => {
+    if ($tick) {
+      invalidateAll();
+    }
+  });
+
+
   const metrics = $derived(data.data.latestMetric.data)
   const geoData = $derived(data.data.worldMap)
   const pwrMfx = $derived(data.pwrMfx);

@@ -16,7 +16,7 @@
   let selectedInterval: TimeSpan | null = $state(null)
 
   // Get the display prop from the parent component
-  const {display}: boolean = $props();
+  const {display} = $props<boolean>();
 
   $effect(() => {
     // Only apply the interval change if we are on a detail page
