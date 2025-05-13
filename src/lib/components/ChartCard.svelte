@@ -13,10 +13,9 @@
   let h = $state<number>(0);
 
   const {config, data}: { config: ChartConfig, data: ChartDataPoint[] } = $props();
-  const title =
-    typeof config.title === 'function'
+  const title = $derived(typeof config.title === 'function'
       ? config.title(data?.[0])
-      : `${config.title}: ${data?.[0]?.value ?? "N/A"}`;
+      : `${config.title}: ${data?.[0]?.value ?? "N/A"}`);
 
   let isDark = $derived($mode === 'dark');
 
