@@ -10,13 +10,13 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'total_mfx_burned_testnet',
-    title: (latest) => `Total MFX Burned: ${latest ? formatLargeNumber(latest.value) : "N/A"}`,
+    title: (latest) => `Total MFX Burned: ${latest ? formatLargeNumber(BigNumber(latest.value).dividedBy(1e6).toFixed(4), 4) : "N/A"}`,
     yAxisTitle: 'MFX Burned',
     category: 'tokenomic'
   },
   {
     id: 'total_mfx_minted_testnet',
-    title: (latest) => `Total MFX Minted: ${latest ? formatLargeNumber(latest.value) : "N/A"}`,
+    title: (latest) => `Total MFX Minted: ${latest ? formatLargeNumber(BigNumber(latest.value).dividedBy(1e6).toFixed(4), 4) : "N/A"}`,
     yAxisTitle: 'MFX Minted',
     category: 'tokenomic'
   },

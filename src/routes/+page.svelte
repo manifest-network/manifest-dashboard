@@ -28,6 +28,8 @@
   const metrics: Metrics = $derived(data.data.latestMetric.data)
   const geoData: GeoRecordArray = $derived(data.data.worldMap)
   const totalSupply: BigNumber = $derived(BigNumber(data.data.latestTotalSupply.data).dividedBy(1e6))
+  const totalBurned: BigNumber = $derived(BigNumber(metrics.total_mfx_burned_testnet).dividedBy(1e6))
+  const totalMinted: BigNumber = $derived(BigNumber(metrics.total_mfx_minted_testnet).dividedBy(1e6))
   const pwrMfx: string = $derived(data.pwrMfx);
   const estimatedMarketCap: BigNumber = $derived(BigNumber(totalSupply).multipliedBy(pwrMfx));
   const uniqueCountries: number = $derived(
@@ -49,8 +51,8 @@
 
       <TokenomicsCard
               tokenSupply={totalSupply ?? "N/A"}
-              totalMinted={metrics.total_mfx_minted_testnet ?? "N/A"}
-              totalBurned={metrics.total_mfx_burned_testnet ?? "N/A"}
+              totalMinted={totalMinted ?? "N/A"}
+              totalBurned={totalBurned ?? "N/A"}
               pwrMfx={pwrMfx}
               marketCap={estimatedMarketCap ? estimatedMarketCap.toFixed() : "N/A"}
       />
