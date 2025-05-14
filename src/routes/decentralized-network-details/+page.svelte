@@ -4,8 +4,9 @@
   import {configs} from "./config";
   import {readable} from 'svelte/store';
   import {invalidateAll} from '$app/navigation';
-  import GlobeMap from "$lib/components/GlobeMap.svelte";
+  import GlobeMap2 from "$lib/components/GlobeMap2.svelte";
   import ChartCard from "$lib/components/ChartCard.svelte";
+  import GlobeMap from "$lib/components/GlobeMap.svelte";
 
   let {data}: PageProps = $props();
 
@@ -25,7 +26,7 @@
 <main>
   <div class="grid grid-cols-1 md:grid-cols-2 overflow-hidden p-4">
     <div class="gap-8">
-      <GlobeMap data={data.worldMap} />
+      <GlobeMap2 data={data.worldMap} />
     </div>
     <div class="grid grid-cols-2">
       {#each configs as config, i}
