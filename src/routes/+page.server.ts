@@ -13,8 +13,8 @@ export const load: PageServerLoad = async (event) => {
   ]);
 
   return {
-    latestMetric,
-    latestTotalSupply,
-    worldMap
+    latestMetric: latestMetric.data,
+    latestTotalSupply: latestTotalSupply.data,
+    worldMap: worldMap.data,
   };
 };

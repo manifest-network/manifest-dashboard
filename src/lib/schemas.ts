@@ -36,14 +36,12 @@ export const MetricsSchema = z.object({
 })
 export const PartialMetricsSchema = MetricsSchema.partial();
 export type Metrics = z.infer<typeof MetricsSchema>;
-export type PartialMetrics = z.infer<typeof PartialMetricsSchema>;
 export type MetricKey = keyof z.infer<typeof MetricsSchema>;
 export const MetricRecordSchema = z.object({
   timestamp: z.string(),
   value: bigNumberLike,
 });
 export const MetricRecordArraySchema = z.array(MetricRecordSchema);
-export type MetricRecordArray = z.infer<typeof MetricRecordArraySchema>;
 
 export const ChartDataPointSchema = z.object({
   group: z.string(),
@@ -56,15 +54,16 @@ export type ChartDataPoint = z.infer<typeof ChartDataPointSchema>;
 // Factory for a schema that transforms an array of `MetricRecord` to ChartDataPoint[]
 export const ChartDataPointArraySchema = (group: string) =>
   MetricRecordArraySchema.transform((arr) =>
-    arr.map((r) => (
-        ChartDataPointSchema.parse({
+    arr.map((r) => {
+        const date = new Date(r.timestamp);
+        if (isNaN(date.getTime())) throw new Error("Invalid date");
+        return ChartDataPointSchema.parse({
           group,
-          key: new Date(r.timestamp).toLocaleString(),
+          key: date.toLocaleString(),
           value: r.value,
           date: new Date(r.timestamp),
-        })
-      )
-    )
+        });
+    })
   );
 
 const GeoRecordSchema = z.object({
@@ -74,8 +73,7 @@ const GeoRecordSchema = z.object({
   city: z.string(),
 });
 export const GeoRecordArraySchema = z.array(GeoRecordSchema);
-export type GeoRecord = z.infer<typeof GeoRecordSchema>;
 export type GeoRecordArray = z.infer<typeof GeoRecordArraySchema>;
+export type GeoRecord = z.infer<typeof GeoRecordSchema>;
 
 export const LatestTotalSupplySchema = z.string().transform((v) => BigNumber(v).toFixed());
-export type LatestTotalSupply = z.infer<typeof LatestTotalSupplySchema>;

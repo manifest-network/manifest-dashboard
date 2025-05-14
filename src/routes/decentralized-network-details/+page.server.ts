@@ -11,7 +11,7 @@ export const load: PageServerLoad = async (event) => {
 	]);
 
   return {
-    aggregateMetric,
-    worldMap
+    aggregateMetric: aggregateMetric.data,
+    worldMap: worldMap.data
   };
 };

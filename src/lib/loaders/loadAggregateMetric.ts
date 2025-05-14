@@ -6,7 +6,7 @@ export function loadAggregateMetric(ids: string[]) {
   return async ({fetch, url}: RequestEvent) => {
     const baseApiParams = extractAndPrepareApiParams(url);
     if (!baseApiParams) {
-      throw error(500, `Invalid API parameters`);
+      error(500, `Invalid API parameters`);
     }
 
     const data = await Promise.all(
@@ -44,7 +44,7 @@ export function loadAggregateMetric(ids: string[]) {
 
         } catch (e) {
           console.error(`Error fetching data for ${id}:`, e);
-          throw error(500, `Error fetching data for ${id}`);
+          error(500, `Error fetching data for ${id}`);
         }
       })
     );

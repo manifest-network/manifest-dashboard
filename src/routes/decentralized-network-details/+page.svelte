@@ -30,7 +30,7 @@
     <div class="grid grid-cols-2">
       {#each configs as config, i}
         <div class="card w-full p-8 mb-4">
-          <ChartCard config={config} data={data.aggregateMetric.data[i]}/>
+          <ChartCard config={config} data={data.aggregateMetric[i]}/>
         </div>
       {/each}
     </div>

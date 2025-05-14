@@ -14,7 +14,7 @@ export function loadLatestTotalSupply() {
       return {data: parsed.data}
     } catch (e) {
       console.error(`Error fetching data:`, e);
-      throw error(500, `Error fetching latest total supply data`);
+      error(500, `Error fetching latest total supply data`);
     }
   };
 }

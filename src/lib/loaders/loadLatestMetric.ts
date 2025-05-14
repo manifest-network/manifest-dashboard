@@ -17,7 +17,7 @@ export function loadLatestMetric(metrics: MetricKey[]) {
       return {data: parsed.data}
     } catch (e) {
       console.error(`Error fetching data:`, e);
-      throw error(500, `Error fetching metrics data`);
+      error(500, `Error fetching metrics data`);
     }
   };
 }

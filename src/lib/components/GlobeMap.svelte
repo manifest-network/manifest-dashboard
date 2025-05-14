@@ -5,6 +5,7 @@
   import {worldTopoJson} from "$lib/utils/worldTopology";
   import {mode} from '$lib/stores/theme';
   import {PerspectiveCamera} from "three";
+  import {type GeoRecordArray, type GeoRecord} from "$lib/schemas";
 
   function computeGlobeColors() {
     return {
@@ -41,7 +42,7 @@
   let w = $state<number>(0);
   let h = $state<number>(0);
   let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
-  let geo = $state<GeoRecord[]>(data.geo);
+  let geo = $state<GeoRecordArray>(data);
   let cityCount = $state<Record<string, number>>({});
   let countriesWithData = $state<Set<string>>(new Set());
 

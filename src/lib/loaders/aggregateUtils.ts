@@ -12,7 +12,7 @@ export function extractAndPrepareApiParams(url: URL): URLSearchParams | null {
     return null
   }
   if (!isValidTimeInterval(interval)) {
-    throw error(400, `Invalid interval parameter. Allowed values are: ${ALLOWED_INTERVALS.join(', ')}`);
+    error(400, `Invalid interval parameter. Allowed values are: ${ALLOWED_INTERVALS.join(', ')}`);
   }
 
   const scale = IntervalMap[interval];

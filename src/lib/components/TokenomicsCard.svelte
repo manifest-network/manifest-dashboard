@@ -1,6 +1,6 @@
 <script lang="ts">
   import {Infinity} from "carbon-icons-svelte";
-  import {formatCurrency, formatLargeNumber} from "$lib/utils/format";
+  import {formatBaseDenom, formatCurrency, formatLargeNumber} from "$lib/utils/format";
 
   const {
     tokenSupply,
@@ -21,7 +21,7 @@
 <div class="card preset-filled-surface-100-900 p-8">
   <div class="flex justify-between items-center mb-3">
     <h2 class="text-2xl font-bold">Tokenomics</h2>
-    <a href="/tokenomic-details" class="text-sm text-primary-500 hover:underline">View Details</a>
+    <a href="/tokenomic-details?interval=1 day" class="text-sm text-primary-500 hover:underline">View Details</a>
   </div>
   <div class="grid md:grid-cols-2 gap-8">
     <div>
@@ -33,7 +33,7 @@
       <p class="text-sm font-semibold mb-3">(Estimated) Circulating MFX Supply</p>
     </div>
     <div>
-      <p class="text-4xl font-bold text-secondary-400-600">{formatLargeNumber(tokenSupply, 4)}</p>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatBaseDenom(tokenSupply, 4)}</p>
       <p class="text-sm font-semibold mb-3">Total MFX Supply</p>
     </div>
     <div>
@@ -43,11 +43,11 @@
       <p class="text-sm font-semibold mb-3">Maximum MFX Supply</p>
     </div>
     <div>
-      <p class="text-4xl font-bold text-secondary-400-600">{formatLargeNumber(totalMinted, 4)}</p>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatBaseDenom(totalMinted, 4)}</p>
       <p class="text-sm font-semibold mb-3">Total MFX Minted</p>
     </div>
     <div>
-      <p class="text-4xl font-bold text-secondary-400-600">{formatLargeNumber(totalBurned, 4)}</p>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatBaseDenom(totalBurned, 4)}</p>
       <p class="text-sm font-semibold mb-3">Total MFX Burned</p>
     </div>
     <div>
