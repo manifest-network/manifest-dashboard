@@ -1,5 +1,6 @@
 import {error, type RequestEvent} from "@sveltejs/kit";
 import {ALLOWED_INTERVALS, IntervalMap, isValidTimeInterval} from "$lib/utils/time";
+import {ChartDataPointArraySchema, MetricRecordArraySchema, type ChartDataPoint} from "$lib/schemas";
 
 function getIntervalStartDate(interval: string): Date {
   const now = new Date();
@@ -62,13 +63,17 @@ export function loadAggregateMetric(ids: string[]) {
             throw new Error(`API request failed with status ${res.status}`);
           }
 
-          const raw: MetricRecord[] = await res.json();
-          return raw.map((r) => ({
-            group: id,
-            key: new Date(r.timestamp).toLocaleString(),
-            value: r.value,
-            date: new Date(r.timestamp)
-          })) as ChartDataPoint[];
+          const raw = await res.json();
+          const parsed = ChartDataPointArraySchema(id).safeParse(raw);
+
+          if (!parsed.success) {
+            console.error(`Invalid response format for ${id}:`, parsed.error);
+            throw error(500, `Invalid response format for ${id}`);
+          }
+
+          const chartData: ChartDataPoint[] = parsed.data;
+          return chartData;
+
         } catch (e) {
           console.error(`Error fetching data for ${id}:`, e);
           throw error(500, `Error fetching data for ${id}`);

@@ -3,7 +3,7 @@
   import {BigNumber} from "bignumber.js";
   import TokenomicsCard from "$lib/components/TokenomicsCard.svelte";
   import DecentralizedNetworkCard from "$lib/components/DecentralizedNetworkCard.svelte";
-  import MainnetCard from "$lib/components/MainnetCard.svelte";
+  import MainnetCard from "$lib/components/BlockchainCard.svelte";
   import WebServicesCard from "$lib/components/WebServicesCard.svelte";
   import KubeCard from "$lib/components/KubeCard.svelte";
   import ObjectStorageCard from "$lib/components/ObjectStorageCard.svelte";

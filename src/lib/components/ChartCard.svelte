@@ -22,7 +22,6 @@
   $effect(() => {
     chartOptions = {
       animations: false,
-      // title,
       axes: {
         bottom: {
           mapsTo: 'date',
@@ -80,7 +79,7 @@
 <main>
   <div class="h-32 lg:h-32 2xl:h-64 w-full" bind:this={chartContainer} bind:clientWidth={w} bind:clientHeight={h}>
     {#if w > 0 && h > 0}
-      <h2>{title}</h2>
+      <h2 class="text font-bold">{title}</h2>
       <AreaChart {data} options={chartOptions} />
     {/if}
   </div>

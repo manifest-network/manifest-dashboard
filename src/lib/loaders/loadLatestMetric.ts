@@ -16,7 +16,6 @@ export function loadLatestMetric(metrics: MetricKey[]) {
       const parsed = PartialMetricsSchema.safeParse(res);
       if (!parsed.success) throw new Error(`Invalid response format: ${parsed.error}`);
       return {data: parsed.data}
-
     } catch (e) {
       console.error(`Error fetching data:`, e);
       return {data}

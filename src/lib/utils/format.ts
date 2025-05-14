@@ -8,7 +8,7 @@ export function formatNumber(num: bigint | number): string {
 }
 
 // Formats a value given in a specific binary unit (MiB or GiB) to a human-readable string, auto-scaling up to EiB.
-export function formatBinaryUnit(value: number, unitBase: "MiB" | "GiB" = "MiB"): string {
+export function formatBinaryUnit(value: string, unitBase: "MiB" | "GiB" = "MiB"): string {
   const units = ["MiB", "GiB", "TiB", "PiB", "EiB"];
   let index = unitBase === "MiB" ? 0 : 1;
 
