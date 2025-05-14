@@ -9,6 +9,7 @@
   import ObjectStorageCard from "$lib/components/ObjectStorageCard.svelte";
   import {readable} from "svelte/store";
   import {invalidateAll} from "$app/navigation";
+  import type {GeoRecordArray, Metrics} from "$lib/schemas";
 
   const {data}: PageProps = $props();
 
@@ -24,11 +25,12 @@
   });
 
 
-  const metrics = $derived(data.data.latestMetric.data)
-  const geoData = $derived(data.data.worldMap)
-  const pwrMfx = $derived(data.pwrMfx);
-  const estimatedMarketCap = $derived(metrics && metrics.manifest_tokenomics_total_supply && BigNumber(metrics.manifest_tokenomics_total_supply).multipliedBy(pwrMfx));
-  const uniqueCountries = $derived(
+  const metrics: Metrics = $derived(data.data.latestMetric.data)
+  const geoData: GeoRecordArray = $derived(data.data.worldMap)
+  const totalSupply: BigNumber = $derived(BigNumber(data.data.latestTotalSupply.data).dividedBy(1e6))
+  const pwrMfx: string = $derived(data.pwrMfx);
+  const estimatedMarketCap: BigNumber = $derived(BigNumber(totalSupply).multipliedBy(pwrMfx));
+  const uniqueCountries: number = $derived(
     new Set(geoData.geo.map(item => item.country_name)).size
   );
 </script>
@@ -46,7 +48,7 @@
       />
 
       <TokenomicsCard
-              tokenSupply={metrics.manifest_tokenomics_total_supply ?? "N/A"}
+              tokenSupply={totalSupply ?? "N/A"}
               totalMinted={metrics.total_mfx_minted_testnet ?? "N/A"}
               totalBurned={metrics.total_mfx_burned_testnet ?? "N/A"}
               pwrMfx={pwrMfx}

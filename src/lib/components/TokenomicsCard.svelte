@@ -1,7 +1,6 @@
 <script lang="ts">
   import {Infinity} from "carbon-icons-svelte";
-  import {formatCurrency, formatNumber} from "$lib/utils/format";
-  import {formatLargeNumber} from "$lib/utils/format.js";
+  import {formatCurrency, formatLargeNumber} from "$lib/utils/format";
 
   const {
     tokenSupply,
@@ -34,7 +33,7 @@
       <p class="text-sm font-semibold mb-3">(Estimated) Circulating Supply</p>
     </div>
     <div>
-      <p class="text-4xl font-bold text-secondary-400-600">{formatNumber(tokenSupply)}</p>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatLargeNumber(tokenSupply, 4)}</p>
       <p class="text-sm font-semibold mb-3">Total Supply</p>
     </div>
     <div>

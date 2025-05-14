@@ -1,10 +1,11 @@
 import {formatLargeNumber} from "$lib/utils/format";
+import {BigNumber} from "bignumber.js";
 
 export const configs: ChartConfig[] = [
   {
     id: 'manifest_tokenomics_total_supply',
-    title: 'Total MFX Supply',
-    yAxisTitle: 'MFX Supply',
+    title: (latest) => `Total MFX Supply: ${latest ? formatLargeNumber(BigNumber(latest.value).dividedBy(1e6).toFixed(4), 4) : "N/A"}`,
+    yAxisTitle: 'umfx Supply',
     category: 'tokenomic'
   },
   {

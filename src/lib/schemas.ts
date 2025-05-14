@@ -11,7 +11,7 @@ const bigNumberLike = z.union([
 ]).transform((v) => BigNumber(v).toFixed());
 
 export const MetricsSchema = z.object({
-  manifest_tokenomics_total_supply: bigNumberLike.default("0"),
+  // manifest_tokenomics_total_supply: bigNumberLike.default("0"),
   manifest_tokenomics_token_count: bigNumberLike.default("0"),
   node_count: bigNumberLike.default("0"),
   system_cpu_cores: bigNumberLike.default("0"),
@@ -43,6 +43,7 @@ export const MetricRecordSchema = z.object({
   value: bigNumberLike,
 });
 export const MetricRecordArraySchema = z.array(MetricRecordSchema);
+export type MetricRecordArray = z.infer<typeof MetricRecordArraySchema>;
 
 export const ChartDataPointSchema = z.object({
   group: z.string(),
@@ -74,3 +75,7 @@ const GeoRecordSchema = z.object({
 });
 export const GeoRecordArraySchema = z.array(GeoRecordSchema);
 export type GeoRecord = z.infer<typeof GeoRecordSchema>;
+export type GeoRecordArray = z.infer<typeof GeoRecordArraySchema>;
+
+export const LatestTotalSupplySchema = z.string().transform((v) => BigNumber(v).toFixed());
+export type LatestTotalSupply = z.infer<typeof LatestTotalSupplySchema>;

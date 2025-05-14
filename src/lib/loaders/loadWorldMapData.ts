@@ -1,5 +1,5 @@
 import {type GeoRecord, GeoRecordArraySchema} from "$lib/schemas";
-import type {RequestEvent} from "@sveltejs/kit";
+import {error, type RequestEvent} from "@sveltejs/kit";
 
 export function loadWorldMapData() {
   return async ({ fetch }: RequestEvent) => {
@@ -13,9 +13,9 @@ export function loadWorldMapData() {
       if (!parsed.success) throw new Error(`Invalid response format: ${parsed.error}`);
       const geoData: GeoRecord[] = parsed.data;
       return { geo: geoData };
-    } catch (error) {
-      console.error(`Error fetching data:`, error);
-      throw new Error(`Error fetching data: ${error}`);
+    } catch (e) {
+      console.error(`Error fetching data:`, e);
+      throw error(500, `Error fetching world map data`);
     }
   }
 }

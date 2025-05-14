@@ -1,61 +1,29 @@
 import {error, type RequestEvent} from "@sveltejs/kit";
-import {ALLOWED_INTERVALS, IntervalMap, isValidTimeInterval} from "$lib/utils/time";
-import {ChartDataPointArraySchema, MetricRecordArraySchema, type ChartDataPoint} from "$lib/schemas";
-
-function getIntervalStartDate(interval: string): Date {
-  const now = new Date();
-  switch (interval) {
-    case '1 minute':  now.setMinutes(now.getMinutes() - 1); break;
-    case '1 hour':    now.setHours(now.getHours() - 1); break;
-    case '1 day':     now.setDate(now.getDate() - 1); break;
-    case '1 week':    now.setDate(now.getDate() - 7); break;
-    case '1 month':   now.setMonth(now.getMonth() - 1); break;
-    case '3 months':  now.setMonth(now.getMonth() - 3); break;
-    case '1 year':    now.setFullYear(now.getFullYear() - 1); break;
-  }
-  return now;
-}
-
-/**
- * Extracts, validates, and prepares URL search parameters for the API call.
- * Throws SvelteKit errors for invalid parameters.
- * Returns a URLSearchParams object ready for the API request.
- */
-function extractAndPrepareApiParams(url: URL): URLSearchParams | null {
-  const interval = url.searchParams.get("interval");
-  if (!interval) {
-    return null
-  }
-  if (!isValidTimeInterval(interval)) {
-    throw error(400, `Invalid interval parameter. Allowed values are: ${ALLOWED_INTERVALS.join(', ')}`);
-  }
-
-  const scale = IntervalMap[interval];
-  const time_from = getIntervalStartDate(interval).toISOString();
-  const time_to = new Date().toISOString();
-
-  // Prepare validated parameters for API call
-  return new URLSearchParams({
-    order: 'timestamp.desc',
-    interval_str: scale,
-    time_from,
-    time_to,
-  });
-}
+import {type ChartDataPoint, ChartDataPointArraySchema} from "$lib/schemas";
+import {extractAndPrepareApiParams} from "$lib/loaders/aggregateUtils";
 
 export function loadAggregateMetric(ids: string[]) {
-  const loadFn = async ({ fetch, url }: RequestEvent) => {
+  return async ({fetch, url}: RequestEvent) => {
     const baseApiParams = extractAndPrepareApiParams(url);
     if (!baseApiParams) {
-      return { ids, data: [] };
+      throw error(500, `Invalid API parameters`);
     }
 
     const data = await Promise.all(
       ids.map(async (id) => {
         const currentParams = new URLSearchParams(baseApiParams);
-        currentParams.set('metric_name', id);
 
-        let apiUrl = `/rpc/get_aggregated_metrics?${currentParams.toString()}`;
+        // Workaround for the total supply metric.
+        // The total supply metric is too large to be store as a number in netdata.
+        // We need to store it as a string in the metadata instead.
+        let apiUrl
+        if (id === "manifest_tokenomics_total_supply") {
+          apiUrl = `/rpc/get_aggregated_total_supply?${currentParams.toString()}`;
+        } else {
+          currentParams.set('metric_name', id);
+          apiUrl = `/rpc/get_aggregated_metrics?${currentParams.toString()}`;
+        }
+
         try {
           const res = await fetch(apiUrl);
           if (!res.ok) {
@@ -68,7 +36,7 @@ export function loadAggregateMetric(ids: string[]) {
 
           if (!parsed.success) {
             console.error(`Invalid response format for ${id}:`, parsed.error);
-            throw error(500, `Invalid response format for ${id}`);
+            throw new Error(`Invalid response format for ${id}`);
           }
 
           const chartData: ChartDataPoint[] = parsed.data;
@@ -81,8 +49,6 @@ export function loadAggregateMetric(ids: string[]) {
       })
     );
 
-    return { ids, data };
+    return {ids, data};
   };
-
-  return loadFn;
 }
