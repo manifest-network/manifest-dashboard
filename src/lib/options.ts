@@ -1,26 +1,37 @@
-import {ScaleTypes} from "@carbon/charts-svelte";
+import {ScaleTypes, TickRotations} from "@carbon/charts-svelte";
 import {getColorFromCSS} from "$lib/utils/colors";
 
 export function getChartOptions(config: ChartConfig, latest?: ChartDataPoint) {
   let themeColor = getColorFromCSS('--color-secondary-600-400')
+    const title =
+    typeof config.title === 'function'
+      ? config.title(latest)
+      : `${config.title}: ${latest?.value ?? "N/A"}`;
 
   return {
-    title:`${config.title}: ${latest?.value ?? "N/A"}`,
+    animations: false,
+    title,
     axes: {
       bottom: {
-        title: 'Timestamp',
+        // title: 'Timestamp',
         mapsTo: 'date',
         scaleType: ScaleTypes.TIME,
+        ticks: {
+          number: 3,
+          rotation: TickRotations.AUTO,
+        }
       },
       left: {
         mapsTo: 'value',
-        title: config.yAxisTitle,
+        // title: config.yAxisTitle,
         scaleType: ScaleTypes.LINEAR,
+        visible: false
       }
     },
     curve: 'curveMonotoneX',
     includeZero: false,
-    height: '400px',
+    height: '100%',
+    width: '100%',
     color: {
       gradient: {
         enabled: true
