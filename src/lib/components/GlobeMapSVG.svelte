@@ -5,6 +5,7 @@
   import {computedColor, getColorFromCSS} from "$lib/utils/colors";
   import {type GeoRecord, type GeoRecordArray} from "$lib/schemas";
   import {mode} from '$lib/stores/theme';
+  import {onDestroy} from "svelte";
 
   const {data} = $props<{ data: GeoRecordArray }>();
 
@@ -28,16 +29,22 @@
   let tooltipX = $state(0);
   let tooltipY = $state(0);
   let fontLoaded = $state(false);
+  let componentActive = true;
 
   // Make sure the `Inter` font is loaded before rendering the points
   $effect(() => {
     if (document.fonts) {
       document.fonts.ready.then(() => {
         document.fonts.load('12px Inter').then(() => {
-          fontLoaded = true;
+          if (componentActive) fontLoaded = true;
         });
       });
     }
+  });
+
+  // Clean up the font loading effect when the component is destroyed
+  onDestroy(() => {
+    componentActive = false;
   });
 
   // checkPointHover checks if the user is currently hovering one of the info point with the mouse cursor
@@ -117,7 +124,7 @@
     }
   };
 
-  const onUp = () => {
+  const onUp = (_: Event) => {
     dragging = false;
   };
 
@@ -167,7 +174,7 @@
 
   $effect(() => {
     // Reference mode to create the dependency
-    const currentMode = $mode;
+    const _ = $mode;
 
     // Update colors
     fillColor = computedColor(getColorFromCSS('--color-surface-600-400'));
@@ -185,7 +192,7 @@
           onmousedown={onDown}
           onmouseup={onUp}
           onmousemove={onMove}
-          onmouseleave={() => { onUp; hoverPoint = null; }}
+          onmouseleave={() => { onUp(new MouseEvent('mouseleave')); hoverPoint = null; }}
   >
     <!-- The Map -->
     <!-- Render the far side of the globe first -->

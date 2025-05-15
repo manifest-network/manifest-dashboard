@@ -5,9 +5,9 @@
   import {mode} from '$lib/stores/theme';
   import {ScaleTypes, TickRotations} from "@carbon/charts-svelte";
   import {getColorFromCSS} from "$lib/utils/colors";
+  import type {ChartDataPoint} from "$lib/schemas";
 
   let themeColor = getColorFromCSS('--color-secondary-600-400')
-  let chartContainer = $state<HTMLDivElement|null>(null);
   let chartOptions = $state({})
   let w = $state<number>(0);
   let h = $state<number>(0);
@@ -77,7 +77,7 @@
 </script>
 
 <main>
-  <div class="h-32 lg:h-32 2xl:h-64 w-full" bind:this={chartContainer} bind:clientWidth={w} bind:clientHeight={h}>
+  <div class="h-32 lg:h-32 2xl:h-64 w-full" bind:clientWidth={w} bind:clientHeight={h}>
     {#if w > 0 && h > 0}
       <h2 class="text font-bold">{title}</h2>
       <AreaChart {data} options={chartOptions} />

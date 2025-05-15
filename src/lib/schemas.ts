@@ -35,6 +35,7 @@ export const MetricsSchema = z.object({
   total_unique_group_testnet: bigNumberLike.default("0"),
 })
 export const PartialMetricsSchema = MetricsSchema.partial();
+export type PartialMetrics = z.infer<typeof PartialMetricsSchema>;
 export type Metrics = z.infer<typeof MetricsSchema>;
 export type MetricKey = keyof z.infer<typeof MetricsSchema>;
 export const MetricRecordSchema = z.object({

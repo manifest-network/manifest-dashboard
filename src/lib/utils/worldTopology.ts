@@ -1,11 +1,14 @@
-import type { Topology } from 'topojson-specification';
+import type { Topology, Objects } from 'topojson-specification';
 import type { FeatureCollection } from 'geojson';
 import { feature } from 'topojson-client';
 import { presimplify, simplify } from 'topojson-simplify';
 import worldTopoRaw from '../../assets/countries-110m.json'
 
-export const worldTopoJson: Topology = worldTopoRaw as unknown as Topology;
-export const worldTopoJsonSimplified: Topology = simplify(presimplify(worldTopoJson), 0.5)
+type ObjectsType = Objects<Record<string, any>> // Can't use GeoJsonProperties here because it can be `null`. Use `Record<> instead.
+type TopologyType = Topology<ObjectsType>
+
+export const worldTopoJson: TopologyType = worldTopoRaw as unknown as TopologyType;
+export const worldTopoJsonSimplified: TopologyType = simplify<ObjectsType>(presimplify<ObjectsType>(worldTopoJson), 0.5)
 
 export const worldGeoJson: FeatureCollection = feature(
   worldTopoJsonSimplified,

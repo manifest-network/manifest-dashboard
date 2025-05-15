@@ -9,7 +9,7 @@
   import ObjectStorageCard from "$lib/components/ObjectStorageCard.svelte";
   import {readable} from "svelte/store";
   import {invalidateAll} from "$app/navigation";
-  import type {GeoRecordArray, Metrics} from "$lib/schemas";
+  import type {GeoRecordArray, PartialMetrics} from "$lib/schemas";
 
   const {data}: PageProps = $props();
 
@@ -25,9 +25,9 @@
   });
 
 
-  const metrics: Metrics = $derived(data.data.latestMetric)
+  const metrics: PartialMetrics = $derived(data.data.latestMetric)
   const geoData: GeoRecordArray = $derived(data.data.worldMap)
-  const totalSupply: BigNumber = $derived(data.data.latestTotalSupply)
+  const totalSupply: string = $derived(data.data.latestTotalSupply)
   const pwrMfx: string = $derived(data.pwrMfx);
   const estimatedMarketCap: BigNumber = $derived(BigNumber(totalSupply).multipliedBy(pwrMfx));
   const uniqueCountries: number = $derived(
