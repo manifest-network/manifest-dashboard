@@ -6,7 +6,7 @@
   import {invalidateAll} from '$app/navigation';
   import GlobeMap2 from "$lib/components/GlobeMap2.svelte";
   import ChartCard from "$lib/components/ChartCard.svelte";
-  import GlobeMap from "$lib/components/GlobeMap.svelte";
+  // import GlobeMap from "$lib/components/GlobeMap.svelte";
 
   let {data}: PageProps = $props();
 

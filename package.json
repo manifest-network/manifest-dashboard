@@ -12,12 +12,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
-		"@types/three": "^0.176.0",
-		"@carbon/charts-svelte": "^1.23.6",
-		"@skeletonlabs/skeleton": "^3.1.2",
-		"@skeletonlabs/skeleton-svelte": "^1.2.1",
 		"@sveltejs/adapter-auto": "^4.0.0",
-		"@sveltejs/kit": "^2.16.0",
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tailwindcss/vite": "^4.0.0",
 		"svelte": "^5.0.0",
@@ -27,14 +22,19 @@
 		"vite": "6.2.5"
 	},
 	"dependencies": {
+		"@carbon/charts-svelte": "^1.23.6",
+		"@skeletonlabs/skeleton": "^3.1.2",
+		"@skeletonlabs/skeleton-svelte": "^1.2.1",
+		"@sveltejs/kit": "^2.16.0",
 		"bignumber.js": "^9.3.0",
 		"carbon-icons-svelte": "^13.3.0",
 		"carbon-pictograms-svelte": "^13.4.0",
 		"colorjs.io": "^0.5.2",
 		"d3": "^7.9.0",
 		"d3-geo": "^3.1.1",
-		"globe.gl": "^2.41.4",
 		"svelte-canvas": "^2.0.2",
+		"topojson-server": "^3.0.1",
+		"topojson-simplify": "^3.0.3",
 		"zod": "^3.24.4"
 	}
 }
