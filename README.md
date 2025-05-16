@@ -80,3 +80,5 @@ You can tell the application where the application is being served by setting th
 ```bash
 ORIGIN=http://localhost:3001 node build
 ```
+
+You can find more information in the [Svelte Node servers](https://svelte.dev/docs/kit/adapter-node) documentation.
