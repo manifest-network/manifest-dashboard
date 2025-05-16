@@ -58,6 +58,8 @@ Set the `VITE_RPC_PROXY_TARGET` environment variable to the API server URL in a 
 VITE_RPC_PROXY_TARGET=http://your-api-server:3000
 ```
 
+The API server address should be an internal address as the data is retrieved server-side.
+
 Build the production build using
 
 ```bash
