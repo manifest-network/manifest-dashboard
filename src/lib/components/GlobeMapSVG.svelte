@@ -31,6 +31,25 @@
   let fontLoaded = $state(false);
   let componentActive = true;
 
+  let autoRotating = $state(true);
+  let inactivityTimeout = $state<number | null>(null);
+  let animationFrame = $state<number | null>(null);
+
+  const rotationSpeed = 0.2; // degrees per frame
+  const inactivityDelay = 1000; // ms before autorotation starts after user stops interacting
+
+  function animateGlobe() {
+    if (autoRotating && !dragging) {
+      rotation = [rotation[0] + rotationSpeed, rotation[1]];
+    }
+    animationFrame = requestAnimationFrame(animateGlobe);
+  }
+
+  // Start animation when component initializes
+  $effect(() => {
+    animationFrame = requestAnimationFrame(animateGlobe);
+  });
+
   // Make sure the `Inter` font is loaded before rendering the points
   $effect(() => {
     if (document.fonts) {
@@ -44,6 +63,8 @@
 
   // Clean up the font loading effect when the component is destroyed
   onDestroy(() => {
+    if (animationFrame) cancelAnimationFrame(animationFrame);
+    if (inactivityTimeout) clearTimeout(inactivityTimeout);
     componentActive = false;
   });
 
@@ -117,6 +138,7 @@
 
   const onDown = (e: Event) => {
     dragging = true;
+    autoRotating = false;
     if (e instanceof MouseEvent) {
       const mouseEvent = e as MouseEvent;
       _x = mouseEvent.clientX;
@@ -126,6 +148,11 @@
 
   const onUp = (_: Event) => {
     dragging = false;
+
+    if (inactivityTimeout) clearTimeout(inactivityTimeout);
+    inactivityTimeout = setTimeout(() => {
+      if (!dragging) autoRotating = true;
+    }, inactivityDelay);
   };
 
   const onMove = (e: Event) => {
@@ -142,6 +169,7 @@
       }
 
       if (dragging) {
+        autoRotating = false;
         const dx = mouseEvent.clientX - _x;
         const dy = mouseEvent.clientY - _y;
 
@@ -153,6 +181,11 @@
 
         _x = mouseEvent.clientX;
         _y = mouseEvent.clientY;
+
+        if (inactivityTimeout) clearTimeout(inactivityTimeout);
+        inactivityTimeout = setTimeout(() => {
+          if (!dragging) autoRotating = true;
+        }, inactivityDelay);
       }
     }
   };
