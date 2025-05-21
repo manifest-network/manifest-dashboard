@@ -63,8 +63,14 @@
 
   // Clean up the font loading effect when the component is destroyed
   onDestroy(() => {
-    if (animationFrame) cancelAnimationFrame(animationFrame);
-    if (inactivityTimeout) clearTimeout(inactivityTimeout);
+    if (animationFrame) {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = null;
+    }
+    if (inactivityTimeout) {
+      clearTimeout(inactivityTimeout);
+      inactivityTimeout = null;
+    }
     componentActive = false;
   });
 
