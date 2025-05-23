@@ -7,17 +7,24 @@ export function formatNumber(num: bigint | number): string {
   return num.toLocaleString();
 }
 
-// Formats a value given in a specific binary unit (MiB or GiB) to a human-readable string, auto-scaling up to EiB.
-export function formatBinaryUnit(value: string, unitBase: "MiB" | "GiB" = "MiB"): string {
-  const units = ["MiB", "GiB", "TiB", "PiB", "EiB"];
-  let index = unitBase === "MiB" ? 0 : 1;
+// Formats a value given in a specific binary unit (MB or GB) to a human-readable string, auto-scaling up to EB.
+export function formatBinaryUnit(value: string, unitBase: "B" | "MB" | "GB" = "MB"): string {
+  const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB"];
+  let index = unitBase === "B" ? 0 : unitBase === "MB" ? 2 : 3;
 
   let remainder = new BigNumber(value);
-  while (index < units.length - 1 && remainder.isGreaterThanOrEqualTo(1024)) {
-    remainder = remainder.dividedBy(1024);
+  while (index < units.length - 1 && remainder.isGreaterThanOrEqualTo(1000)) {
+    remainder = remainder.dividedBy(1000);
     index++;
   }
   return `${remainder.toFixed(2)} ${units[index]}`;
+}
+
+export function formatRoundNumber(value: string, decimalPlaces: number = 0): string {
+  const bigNum = BigNumber(value);
+  if (bigNum.isNaN()) return 'NaN';
+
+  return bigNum.toFixed(decimalPlaces);
 }
 
 export function formatCurrency(value: string, currencySymbol: string = '$', decimalPlaces: number = 2): string {

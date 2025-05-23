@@ -1,4 +1,12 @@
+import {formatRoundNumber} from "$lib/utils/format";
+
 export const configs: ChartConfig[] = [
+  {
+    id: 'blockchain_height_testnet',
+    title: (latest) => `Height: ${latest ? formatRoundNumber(latest.value) : "N/A"}`,
+    yAxisTitle: 'Height',
+    category: 'blockchain'
+  },
   {
     id: 'total_unique_user_testnet',
     title: 'Total Wallets',

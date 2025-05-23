@@ -1,11 +1,12 @@
 <script lang="ts">
   import {formatNumber} from "$lib/utils/format";
 
-  const {totalUniqueUser, totalDao, totalTxCount, tokenCount} = $props<{
+  const {totalUniqueUser, totalDao, totalTxCount, tokenCount, blockchainHeight} = $props<{
     totalUniqueUser: string,
     totalDao: string,
     totalTxCount: string,
-    tokenCount:string
+    tokenCount: string
+    blockchainHeight: string
   }>();
 </script>
 
@@ -15,6 +16,10 @@
     <a href="/blockchain-details?interval=1 day" class="text-sm text-primary-500 hover:underline">View Details</a>
   </div>
   <div class="grid md:grid-cols-2 gap-8">
+    <div>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatNumber(blockchainHeight)}</p>
+      <p class="text-sm font-semibold mb-3">Height</p>
+    </div>
     <div>
       <p class="text-4xl font-bold text-secondary-400-600">{formatNumber(totalUniqueUser)}</p>
       <p class="text-sm font-semibold mb-3">Wallets</p>
