@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {formatBinaryUnit, formatNumber} from "$lib/utils/format.js";
+  import {formatBinaryUnit, formatNumber} from "$lib/utils/format";
 
   const {totalGpu, totalMemory, totalNvidiaGpu, totalAmdGpu, totalNvidiaMemory, totalAmdMemory} = $props<{
     totalGpu: string

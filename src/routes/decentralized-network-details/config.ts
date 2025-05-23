@@ -22,25 +22,25 @@ export const configs: ChartConfig[] = [
   {
     id: 'system_memory',
     title: (latest) => `Total Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
-    yAxisTitle: 'Memory (MiB)',
+    yAxisTitle: 'Memory (MB)',
     category: 'dn'
   },
   {
     id: 'system_memory_used',
     title: (latest) => `Total Used Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
-    yAxisTitle: 'Memory (MiB)',
+    yAxisTitle: 'Memory (MB)',
     category: 'dn'
   },
   {
     id: 'disk_space_total',
     title: (latest) => `Total Disk Space: ${latest ? formatBinaryUnit(latest.value, "GB") : "N/A"}`,
-    yAxisTitle: 'Disk Space (GiB)',
+    yAxisTitle: 'Disk Space (GB)',
     category: 'dn'
   },
   {
     id: 'disk_space_used',
     title: (latest) => `Used Disk Space: ${latest ? formatBinaryUnit(latest.value, "GB") : "N/A"}`,
-    yAxisTitle: 'Disk Space (GiB)',
+    yAxisTitle: 'Disk Space (GB)',
     category: 'dn'
   },
 ]

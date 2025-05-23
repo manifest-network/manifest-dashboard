@@ -10,7 +10,7 @@ export const configs: ChartConfig[] = [
   {
     id: 'kube_memory',
     title: (latest) => `Total K8 Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
-    yAxisTitle: 'Total Memory (MiB)',
+    yAxisTitle: 'Total Memory (MB)',
     category: 'kube'
   },
   {
