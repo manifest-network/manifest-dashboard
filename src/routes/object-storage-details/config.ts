@@ -1,4 +1,4 @@
-import {formatLargeNumber} from "$lib/utils/format";
+import {formatBinaryUnit, formatLargeNumber} from "$lib/utils/format";
 
 export const configs: ChartConfig[] = [
   {
@@ -11,6 +11,12 @@ export const configs: ChartConfig[] = [
     id: 'minio_buckets',
     title: 'Total Buckets',
     yAxisTitle: '# of Buckets',
+    category: 'minio'
+  },
+  {
+    id: 'minio_used',
+    title: (latest) => `Used Storage: ${latest ? formatBinaryUnit(latest.value, "B") : "N/A"}`,
+    yAxisTitle: 'Storage (B)',
     category: 'minio'
   },
 ]

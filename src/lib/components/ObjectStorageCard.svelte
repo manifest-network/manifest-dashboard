@@ -1,10 +1,11 @@
 <script lang="ts">
-  import {formatNumber} from "$lib/utils/format";
+  import {formatBinaryUnit, formatNumber} from "$lib/utils/format";
   import {formatLargeNumber} from "$lib/utils/format.js";
 
-  const {totalObjects, totalBuckets} = $props<{
+  const {totalObjects, totalBuckets, usedStorage} = $props<{
     totalObjects: string,
     totalBuckets: string
+    usedStorage: string
   }>();
 </script>
 
@@ -22,6 +23,10 @@
     <div>
       <p class="text-4xl font-bold text-secondary-400-600">{formatNumber(totalBuckets)}</p>
       <p class="text-sm font-semibold mb-3">Total Buckets</p>
+    </div>
+    <div>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatBinaryUnit(usedStorage, "B")}</p>
+      <p class="text-sm font-semibold mb-3">Used Storage </p>
     </div>
   </div>
 </div>

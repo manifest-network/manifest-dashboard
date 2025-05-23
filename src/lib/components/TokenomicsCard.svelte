@@ -33,7 +33,7 @@
       <p class="text-sm font-semibold mb-3">(Estimated) Circulating MFX Supply</p>
     </div>
     <div>
-      <p class="text-4xl font-bold text-secondary-400-600">{formatBaseDenom(tokenSupply, 4)}</p>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatBaseDenom(tokenSupply)}</p>
       <p class="text-sm font-semibold mb-3">Total MFX Supply</p>
     </div>
     <div>
@@ -43,11 +43,11 @@
       <p class="text-sm font-semibold mb-3">Maximum MFX Supply</p>
     </div>
     <div>
-      <p class="text-4xl font-bold text-secondary-400-600">{formatBaseDenom(totalMinted, 4)}</p>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatBaseDenom(totalMinted)}</p>
       <p class="text-sm font-semibold mb-3">Total MFX Minted</p>
     </div>
     <div>
-      <p class="text-4xl font-bold text-secondary-400-600">{formatBaseDenom(totalBurned, 4)}</p>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatBaseDenom(totalBurned)}</p>
       <p class="text-sm font-semibold mb-3">Total MFX Burned</p>
     </div>
     <div>

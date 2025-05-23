@@ -3,13 +3,15 @@
   import {BigNumber} from "bignumber.js";
   import TokenomicsCard from "$lib/components/TokenomicsCard.svelte";
   import DecentralizedNetworkCard from "$lib/components/DecentralizedNetworkCard.svelte";
-  import MainnetCard from "$lib/components/BlockchainCard.svelte";
-  import WebServicesCard from "$lib/components/WebServicesCard.svelte";
+  import BlockchainCard from "$lib/components/BlockchainCard.svelte";
+  import DecentralizedWebHosting from "$lib/components/DecentralizedWebHosting.svelte";
   import KubeCard from "$lib/components/KubeCard.svelte";
   import ObjectStorageCard from "$lib/components/ObjectStorageCard.svelte";
   import {readable} from "svelte/store";
   import {invalidateAll} from "$app/navigation";
   import type {GeoRecordArray, PartialMetrics} from "$lib/schemas";
+  import GpuCard from "$lib/components/GpuCard.svelte";
+  import WebServiceCard from "$lib/components/WebServiceCard.svelte";
 
   const {data}: PageProps = $props();
 
@@ -44,7 +46,18 @@
               totalCpuCores={metrics.system_cpu_cores ?? "N/A"}
               totalSystemMemory={metrics.system_memory ?? "N/A"}
               totalDiskSpace={metrics.disk_space_total ?? "N/A"}
+              totalProcess={metrics.total_process ?? "N/A"}
+              usedDiskSpace={metrics.disk_space_used ?? "N/A"}
+              usedSystemMemory={metrics.system_memory_used ?? "N/A"}
+      />
+
+      <GpuCard
               totalGpu={metrics.gpu_total ?? "N/A"}
+              totalMemory={metrics.gpu_memory ?? "N/A"}
+              totalNvidiaGpu={metrics.gpu_nvidia_total ?? "N/A"}
+              totalAmdGpu={metrics.gpu_amd_total ?? "N/A"}
+              totalNvidiaMemory={metrics.gpu_nvidia_memory ?? "N/A"}
+              totalAmdMemory={metrics.gpu_amd_memory ?? "N/A"}
       />
 
       <TokenomicsCard
@@ -55,25 +68,33 @@
               marketCap={estimatedMarketCap ? estimatedMarketCap.toFixed() : "N/A"}
       />
 
-      <MainnetCard
+      <BlockchainCard
               totalUniqueUser={metrics.total_unique_user_testnet ?? "N/A"}
               totalDao={metrics.total_unique_group_testnet ?? "N/A"}
               totalTxCount={metrics.total_tx_count_testnet ?? "N/A"}
               tokenCount={metrics.manifest_tokenomics_token_count ?? "N/A"}
+              blockchainHeight={metrics.blockchain_height_testnet ?? "N/A"}
       />
 
-      <WebServicesCard
+      <WebServiceCard
+              totalWebServer={metrics.web_servers ?? "N/A"}
+              totalRequestPerSec={metrics.web_requests_per_sec ?? "N/A"}
+      />
+
+      <DecentralizedWebHosting
               totalWebsites={metrics.web_sites ?? "N/A"}
       />
 
       <KubeCard
               totalNodes={metrics.kube_nodes ?? "N/A"}
               totalPods={metrics.kube_pods ?? "N/A"}
+              totalMemory={metrics.kube_memory ?? "N/A"}
       />
 
       <ObjectStorageCard
               totalBuckets={metrics.minio_buckets ?? "N/A"}
               totalObjects={metrics.minio_total ?? "N/A"}
+              usedStorage={metrics.minio_used ?? "N/A"}
       />
     </div>
   </div>
