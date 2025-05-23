@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {formatNumber, formatRoundNumber} from "$lib/utils/format.js";
+  import {formatNumber, formatRoundNumber} from "$lib/utils/format";
 
   const {totalWebServer, totalRequestPerSec} = $props<{
     totalWebServer: string

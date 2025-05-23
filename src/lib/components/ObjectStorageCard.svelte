@@ -1,6 +1,5 @@
 <script lang="ts">
-  import {formatBinaryUnit, formatNumber} from "$lib/utils/format";
-  import {formatLargeNumber} from "$lib/utils/format.js";
+  import {formatBinaryUnit, formatNumber, formatLargeNumber} from "$lib/utils/format";
 
   const {totalObjects, totalBuckets, usedStorage} = $props<{
     totalObjects: string,

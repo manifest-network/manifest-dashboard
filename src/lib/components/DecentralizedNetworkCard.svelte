@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {formatBinaryUnit, formatLargeNumber, formatNumber, formatRoundNumber} from "$lib/utils/format.js";
+  import {formatBinaryUnit, formatLargeNumber, formatNumber, formatRoundNumber} from "$lib/utils/format";
 
   const {totalUniqueCountries, totalNodeCount, totalCpuCores, totalSystemMemory, totalDiskSpace, totalProcess, usedDiskSpace, usedSystemMemory} = $props<{
     totalUniqueCountries: string,
