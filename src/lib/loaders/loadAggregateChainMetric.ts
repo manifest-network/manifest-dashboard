@@ -2,7 +2,7 @@ import {error, type RequestEvent} from "@sveltejs/kit";
 import {extractAndPrepareApiParams} from "$lib/loaders/aggregateUtils";
 import {type ChartDataPoint, ChartDataPointArraySchema} from "$lib/schemas/charts";
 
-export function loadAggregateMetric(ids: string[]) {
+export function loadAggregateChainMetric(network: NetworkType, ids: string[]) {
   return async ({fetch, url}: RequestEvent) => {
     const baseApiParams = extractAndPrepareApiParams(url);
     if (!baseApiParams) {
@@ -12,7 +12,7 @@ export function loadAggregateMetric(ids: string[]) {
     const data = await Promise.all(
       ids.map(async (id) => {
         const currentParams = new URLSearchParams(baseApiParams);
-        const apiUrl = `/rpc/get_agg_${id}?${currentParams.toString()}`;
+        const apiUrl = `/rpc/get_${network}_agg_${id}?${currentParams.toString()}`;
 
         try {
           const res = await fetch(apiUrl);

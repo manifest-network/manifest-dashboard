@@ -5,7 +5,8 @@
   import {mode} from '$lib/stores/theme';
   import {ScaleTypes, TickRotations} from "@carbon/charts-svelte";
   import {getColorFromCSS} from "$lib/utils/colors";
-  import type {ChartDataPoint} from "$lib/schemas";
+
+  import type {ChartDataPoint} from "$lib/schemas/charts";
 
   let themeColor = getColorFromCSS('--color-secondary-600-400')
   let chartOptions = $state({})

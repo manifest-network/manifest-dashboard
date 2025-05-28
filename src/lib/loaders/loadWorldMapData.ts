@@ -1,5 +1,5 @@
-import {GeoRecordArraySchema} from "$lib/schemas";
 import {error, type RequestEvent} from "@sveltejs/kit";
+import {GeoRecordArraySchema} from "$lib/schemas/geo";
 
 export function loadWorldMapData() {
   return async ({ fetch }: RequestEvent) => {

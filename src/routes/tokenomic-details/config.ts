@@ -8,13 +8,13 @@ export const configs: ChartConfig[] = [
     category: 'tokenomic'
   },
   {
-    id: 'total_mfx_burned_testnet',
+    id: 'total_mfx_burned',
     title: (latest) => `Total MFX Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
     yAxisTitle: 'MFX Burned',
     category: 'tokenomic'
   },
   {
-    id: 'total_mfx_minted_testnet',
+    id: 'total_mfx_minted',
     title: (latest) => `Total MFX Minted: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
     yAxisTitle: 'MFX Minted',
     category: 'tokenomic'
