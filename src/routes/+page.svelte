@@ -9,9 +9,11 @@
   import ObjectStorageCard from "$lib/components/ObjectStorageCard.svelte";
   import {readable} from "svelte/store";
   import {invalidateAll} from "$app/navigation";
-  import type {GeoRecordArray, PartialMetrics} from "$lib/schemas";
   import GpuCard from "$lib/components/GpuCard.svelte";
   import WebServiceCard from "$lib/components/WebServiceCard.svelte";
+  import type {PartialCommonMetric} from "$lib/schemas/commonMetrics";
+  import type {PartialBetaChainMetric} from "$lib/schemas/betaChainMetrics";
+  import type {GeoRecordArray} from "$lib/schemas/geo";
 
   const {data}: PageProps = $props();
 
@@ -27,9 +29,10 @@
   });
 
 
-  const metrics: PartialMetrics = $derived(data.data.latestMetric)
+  const metrics: PartialCommonMetric = $derived(data.data.latestMetric)
+  const chainMetrics: PartialBetaChainMetric = $derived(data.data.latestChainMetric)
   const geoData: GeoRecordArray = $derived(data.data.worldMap)
-  const totalSupply: string = $derived(data.data.latestTotalSupply)
+  const totalSupply: string = $derived(chainMetrics.manifest_tokenomics_total_supply)
   const pwrMfx: string = $derived(data.pwrMfx);
   const estimatedMarketCap: BigNumber = $derived(BigNumber(totalSupply).multipliedBy(pwrMfx));
   const uniqueCountries: number = $derived(
@@ -62,18 +65,18 @@
 
       <TokenomicsCard
               tokenSupply={totalSupply ?? "N/A"}
-              totalMinted={metrics.total_mfx_minted_testnet ?? "N/A"}
-              totalBurned={metrics.total_mfx_burned_testnet ?? "N/A"}
+              totalMinted={chainMetrics.total_mfx_minted ?? "N/A"}
+              totalBurned={chainMetrics.total_mfx_burned ?? "N/A"}
               pwrMfx={pwrMfx}
               marketCap={estimatedMarketCap ? estimatedMarketCap.toFixed() : "N/A"}
       />
 
       <BlockchainCard
-              totalUniqueUser={metrics.total_unique_user_testnet ?? "N/A"}
-              totalDao={metrics.total_unique_group_testnet ?? "N/A"}
-              totalTxCount={metrics.total_tx_count_testnet ?? "N/A"}
-              tokenCount={metrics.manifest_tokenomics_token_count ?? "N/A"}
-              blockchainHeight={metrics.blockchain_height_testnet ?? "N/A"}
+              totalUniqueUser={chainMetrics.total_unique_user ?? "N/A"}
+              totalDao={chainMetrics.total_unique_group ?? "N/A"}
+              totalTxCount={chainMetrics.total_tx_count ?? "N/A"}
+              tokenCount={chainMetrics.manifest_tokenomics_token_count ?? "N/A"}
+              blockchainHeight={chainMetrics.blockchain_height ?? "N/A"}
       />
 
       <WebServiceCard

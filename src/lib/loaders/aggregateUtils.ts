@@ -16,14 +16,14 @@ export function extractAndPrepareApiParams(url: URL): URLSearchParams | null {
   }
 
   const scale = IntervalMap[interval];
-  const time_from = getIntervalStartDate(interval).toISOString();
-  const time_to = new Date().toISOString();
+  const p_from = getIntervalStartDate(interval).toISOString();
+  const p_to = new Date().toISOString();
 
   // Prepare validated parameters for API call
   return new URLSearchParams({
     order: 'timestamp.desc',
-    interval_str: scale,
-    time_from,
-    time_to,
+    p_interval: scale,
+    p_from,
+    p_to,
   });
 }

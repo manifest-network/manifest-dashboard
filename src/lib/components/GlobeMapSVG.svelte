@@ -3,9 +3,9 @@
   import {geoCentroid, geoDistance, geoOrthographic, geoPath} from 'd3-geo';
   import {worldFeatures} from "$lib/utils/worldTopology";
   import {computedColor, getColorFromCSS} from "$lib/utils/colors";
-  import {type GeoRecord, type GeoRecordArray} from "$lib/schemas";
   import {mode} from '$lib/stores/theme';
   import {onDestroy} from "svelte";
+  import type {GeoRecord, GeoRecordArray} from "$lib/schemas/geo";
 
   const {data} = $props<{ data: GeoRecordArray }>();
 
