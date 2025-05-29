@@ -1,9 +1,10 @@
 <script lang="ts">
-  import {formatNumber, formatRoundNumber} from "$lib/utils/format";
+  import {formatLargeNumber, formatNumber, formatRoundNumber} from "$lib/utils/format";
 
-  const {totalWebServer, totalRequestPerSec} = $props<{
+  const {totalWebServer, totalRequestPerSec, totalRequests} = $props<{
     totalWebServer: string
     totalRequestPerSec: string
+    totalRequests: string
   }>();
 </script>
 
@@ -21,6 +22,10 @@
     <div>
       <p class="text-4xl font-bold text-secondary-400-600">{formatRoundNumber(totalRequestPerSec, 2)}</p>
       <p class="text-sm font-semibold mb-3">Total Requests/Sec</p>
+    </div>
+    <div>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatLargeNumber(totalRequests, 2)}</p>
+      <p class="text-sm font-semibold mb-3">Total Requests</p>
     </div>
   </div>
 </div>

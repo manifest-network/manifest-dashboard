@@ -14,6 +14,8 @@
   import type {PartialCommonMetric} from "$lib/schemas/commonMetrics";
   import type {PartialBetaChainMetric} from "$lib/schemas/betaChainMetrics";
   import type {GeoRecordArray} from "$lib/schemas/geo";
+  import type {PartialCumsumMetric} from "$lib/schemas/cumsumMetrics";
+  import NetworkCard from "$lib/components/NetworkCard.svelte";
 
   const {data}: PageProps = $props();
 
@@ -31,6 +33,7 @@
 
   const metrics: PartialCommonMetric = $derived(data.data.latestMetric)
   const chainMetrics: PartialBetaChainMetric = $derived(data.data.latestChainMetric)
+  const cumsumMetrics: PartialCumsumMetric = $derived(data.data.latestCumsumMetric);
   const geoData: GeoRecordArray = $derived(data.data.worldMap)
   const totalSupply: string = $derived(chainMetrics.manifest_tokenomics_total_supply)
   const pwrMfx: string = $derived(data.pwrMfx);
@@ -82,10 +85,12 @@
       <WebServiceCard
               totalWebServer={metrics.web_servers ?? "N/A"}
               totalRequestPerSec={metrics.web_requests_per_sec ?? "N/A"}
+              totalRequests={cumsumMetrics.web_requests ?? "N/A"}
       />
 
       <DecentralizedWebHosting
               totalWebsites={metrics.web_sites ?? "N/A"}
+              totalRequests={cumsumMetrics.decentralized_web_requests ?? "N/A"}
       />
 
       <KubeCard
@@ -98,6 +103,13 @@
               totalBuckets={metrics.minio_buckets ?? "N/A"}
               totalObjects={metrics.minio_total ?? "N/A"}
               usedStorage={metrics.minio_used ?? "N/A"}
+      />
+
+      <NetworkCard
+        totalIpv4BandwidthReceived={cumsumMetrics.system_network_received ?? "N/A"}
+        totalIpv4BandwidthSent={cumsumMetrics.system_network_sent ?? "N/A"}
+        totalIpv4PacketReceived={cumsumMetrics.system_tcp_received ?? "N/A"}
+        totalIpv4PacketSent={cumsumMetrics.system_tcp_sent ?? "N/A"}
       />
     </div>
   </div>

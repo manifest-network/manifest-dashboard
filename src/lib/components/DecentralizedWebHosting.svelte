@@ -1,8 +1,9 @@
 <script lang="ts">
-  import {formatNumber} from "$lib/utils/format";
+  import {formatLargeNumber, formatNumber} from "$lib/utils/format";
 
-  const {totalWebsites} = $props<{
+  const {totalWebsites, totalRequests} = $props<{
     totalWebsites: string
+    totalRequests: string
   }>();
 </script>
 
@@ -16,6 +17,10 @@
     <div>
       <p class="text-4xl font-bold text-secondary-400-600">{formatNumber(totalWebsites)}</p>
       <p class="text-sm font-semibold mb-3">Total Websites</p>
+    </div>
+    <div>
+      <p class="text-4xl font-bold text-secondary-400-600">{formatLargeNumber(totalRequests)}</p>
+      <p class="text-sm font-semibold mb-3">Total Web Requests</p>
     </div>
   </div>
 </div>

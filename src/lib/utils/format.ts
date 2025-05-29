@@ -8,9 +8,10 @@ export function formatNumber(num: bigint | number): string {
 }
 
 // Formats a value given in a specific binary unit (MB or GB) to a human-readable string, auto-scaling up to EB.
-export function formatBinaryUnit(value: string, unitBase: "B" | "MB" | "GB" = "MB"): string {
+export function formatBinaryUnit(value: string, unitBase: "B" | "KB" | "MB" | "GB" = "MB"): string {
   const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB"];
-  let index = unitBase === "B" ? 0 : unitBase === "MB" ? 2 : 3;
+  let index = units.indexOf(unitBase);
+  if (index === -1) index = units.indexOf("MB");
 
   let remainder = new BigNumber(value);
   while (index < units.length - 1 && remainder.isGreaterThanOrEqualTo(1000)) {
