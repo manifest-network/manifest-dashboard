@@ -2,17 +2,20 @@ import type {PageServerLoad} from "../../.svelte-kit/types/src/routes/decentrali
 import {loadWorldMapData} from "$lib/loaders/loadWorldMapData";
 import {loadLatestMetric} from "$lib/loaders/loadLatestMetric";
 import {loadLatestChainMetric} from "$lib/loaders/loadLatestChainMetric";
+import {loadLatestCumsumMetric} from "$lib/loaders/loadLatestCumsumMetrics";
 
 export const load: PageServerLoad = async (event) => {
-  const [latestMetric, latestChainMetric, worldMap] = await Promise.all([
+  const [latestMetric, latestChainMetric, latestCumsumMetric, worldMap] = await Promise.all([
     loadLatestMetric()(event),
     loadLatestChainMetric("testnet")(event),
+    loadLatestCumsumMetric()(event),
     loadWorldMapData()(event),
   ]);
 
   return {
     latestMetric: latestMetric.data,
     latestChainMetric: latestChainMetric.data,
+    latestCumsumMetric: latestCumsumMetric.data,
     worldMap: worldMap.data,
   };
 };
