@@ -90,6 +90,7 @@
 
       <DecentralizedWebHosting
               totalWebsites={metrics.web_sites ?? "N/A"}
+              totalRequests={cumsumMetrics.decentralized_web_requests ?? "N/A"}
       />
 
       <KubeCard

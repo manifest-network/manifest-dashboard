@@ -8,6 +8,7 @@ export const CumsumMetricSchema = z.object({
   system_tcp_received: bigNumberLike.default("0"),
   system_network_sent: bigNumberLike.default("0"),
   system_network_received: bigNumberLike.default("0"),
+  decentralized_web_requests: bigNumberLike.default("0"),
 })
 export const PartialCumsumMetricSchema = CumsumMetricSchema.partial();
 export type PartialCumsumMetric = z.infer<typeof PartialCumsumMetricSchema>;

@@ -15,8 +15,8 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'web_requests',
-    title: (latest) => `Total Requests: ${latest ? formatLargeNumber(latest.value) : "N/A"}`,
-    yAxisTitle: 'Total Requests',
+    title: (latest) => `Total Web Requests: ${latest ? formatLargeNumber(latest.value) : "N/A"}`,
+    yAxisTitle: 'Total Web Requests',
     category: 'web',
     type: "cumsum"
   }
