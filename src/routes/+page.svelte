@@ -36,7 +36,7 @@
   const cumsumMetrics: PartialCumsumMetric = $derived(data.data.latestCumsumMetric);
   const geoData: GeoRecordArray = $derived(data.data.worldMap)
   const totalSupply: string = $derived(chainMetrics.manifest_tokenomics_total_supply)
-  const pwrMfx: string = $derived(data.pwrMfx);
+  const pwrMfx: string = $derived(metrics.talib_mfx_power_conversion ?? "1");
   const estimatedMarketCap: BigNumber = $derived(BigNumber(totalSupply).multipliedBy(pwrMfx));
   const uniqueCountries: number = $derived(
     new Set(geoData.map(item => item.country_name)).size
@@ -44,8 +44,8 @@
 </script>
 
 <main>
-  <div class="max-w-screen mx-auto p-8">
-    <div class="grid md:grid-cols-3 gap-8">
+  <div class="max-w-screen mx-auto p-4">
+    <div class="grid md:grid-cols-3 xl:grid-cols-4 gap-4">
       <DecentralizedNetworkCard
               totalUniqueCountries={uniqueCountries.toFixed() ?? "N/A"}
               totalNodeCount={metrics.node_count ?? "N/A"}

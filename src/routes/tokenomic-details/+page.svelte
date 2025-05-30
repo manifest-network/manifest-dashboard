@@ -22,7 +22,7 @@
 <main>
   <div class="grid grid-cols-2">
     {#each configs as config, i}
-      <div class="card w-full p-8 mb-4">
+      <div class="card w-full p-4 mb-4">
         <ChartCard config={config} data={data.data[i]}/>
       </div>
     {/each}
