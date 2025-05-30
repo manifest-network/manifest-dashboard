@@ -3,8 +3,6 @@ import {configs} from "./config";
 import {loadAggregateChainMetric} from "$lib/loaders/loadAggregateChainMetric";
 import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
 
-// export const load: PageServerLoad = loadAggregateChainMetric("testnet", configs.map(config => config.id));
-
 export const load: PageServerLoad = async (event) => {
   const { chain, common } = configs.reduce(
     (acc, { id, type }) => {

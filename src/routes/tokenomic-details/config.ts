@@ -1,4 +1,4 @@
-import {formatBaseDenom, formatNumber, formatRoundNumber} from "$lib/utils/format";
+import {formatBaseDenom, formatRoundNumber} from "$lib/utils/format";
 
 export const configs: ChartConfig[] = [
   {
