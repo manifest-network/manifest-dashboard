@@ -25,7 +25,7 @@ export const configs: ChartConfig[] = [
   {
     id: 'talib_mfx_power_conversion',
     title: (latest) => `MFX:PWR Conversion Rate: ${latest ? formatRoundNumber(latest.value, 2) : "N/A"}`,
-    yAxisTitle: 'MFX:PWR Conversion Rate',
+    yAxisTitle: 'MFX:PWR',
     category: 'tokenomic',
     type: "common"
   },

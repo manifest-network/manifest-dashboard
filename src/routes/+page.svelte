@@ -44,8 +44,8 @@
 </script>
 
 <main>
-  <div class="max-w-screen mx-auto p-8">
-    <div class="grid md:grid-cols-3 gap-8">
+  <div class="max-w-screen mx-auto p-4">
+    <div class="grid md:grid-cols-3 xl:grid-cols-4 gap-4">
       <DecentralizedNetworkCard
               totalUniqueCountries={uniqueCountries.toFixed() ?? "N/A"}
               totalNodeCount={metrics.node_count ?? "N/A"}

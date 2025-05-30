@@ -25,12 +25,12 @@
 
 <main>
   <div class="grid grid-cols-1 md:grid-cols-2 overflow-hidden p-4">
-    <div class="gap-8">
+    <div class="gap-4">
       <GlobeMapSVG data={data.worldMap} />
     </div>
-    <div class="grid grid-cols-2">
+    <div class="grid grid-cols-1 md:grid-cols-2">
       {#each configs as config, i}
-        <div class="card w-full p-8 mb-4">
+        <div class="card w-full p-2 mb-4">
           <ChartCard config={config} data={data.aggregateMetric[i]}/>
         </div>
       {/each}
