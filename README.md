@@ -5,8 +5,7 @@ A modern dashboard featuring:
 - TypeScript
 - Skeleton UI components
 - Theming (light/dark)
-- Charting with Carbon Charts
-- Carbon pictograms
+- Carbon Charts
 
 ## Getting Started
 
