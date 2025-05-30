@@ -1,4 +1,4 @@
-import {z} from "zod";
+import {z} from "zod/v4";
 import {bigNumberLike} from "$lib/schemas/common";
 import {AllMetricRecordArraySchema} from "$lib/schemas/metricRecord";
 

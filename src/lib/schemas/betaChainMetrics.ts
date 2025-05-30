@@ -1,5 +1,5 @@
 import {AllMetricRecordArraySchema} from "$lib/schemas/metricRecord";
-import {z} from "zod";
+import {z} from "zod/v4";
 import {bigNumberLike} from "$lib/schemas/common";
 
 // Metrics common to the Manifest Ledger testnet and mainnet.

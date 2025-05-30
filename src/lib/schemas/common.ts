@@ -1,4 +1,4 @@
-import {z} from "zod";
+import {z} from "zod/v4";
 import {BigNumber} from "bignumber.js";
 
 // Runtime validation the value can be represented as a BigNumber

@@ -1,4 +1,4 @@
-import {z} from "zod";
+import {z} from "zod/v4";
 
 // A record representing a geographical location as returned by the API
 const GeoRecordSchema = z.object({
