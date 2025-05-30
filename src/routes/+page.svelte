@@ -36,7 +36,7 @@
   const cumsumMetrics: PartialCumsumMetric = $derived(data.data.latestCumsumMetric);
   const geoData: GeoRecordArray = $derived(data.data.worldMap)
   const totalSupply: string = $derived(chainMetrics.manifest_tokenomics_total_supply)
-  const pwrMfx: string = $derived(data.pwrMfx);
+  const pwrMfx: string = $derived(metrics.talib_mfx_power_conversion ?? "1");
   const estimatedMarketCap: BigNumber = $derived(BigNumber(totalSupply).multipliedBy(pwrMfx));
   const uniqueCountries: number = $derived(
     new Set(geoData.map(item => item.country_name)).size

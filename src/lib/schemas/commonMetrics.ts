@@ -26,6 +26,7 @@ export const CommonMetricSchema = z.object({
   minio_total: bigNumberLike.default("0"),
   minio_used: bigNumberLike.default("0"),
   total_process: bigNumberLike.default("0"),
+  talib_mfx_power_conversion: bigNumberLike.default("0"),
 });
 
 // Partial version of the CommonMetricSchema, useful for cases where not all metrics are available.
