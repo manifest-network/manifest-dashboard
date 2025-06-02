@@ -3,7 +3,7 @@ import {formatLargeNumber} from "$lib/utils/format";
 export const configs: ChartConfig[] = [
   {
     id: 'web_servers',
-    title: 'Total # of Web Servers',
+    title: 'Total Web Servers',
     yAxisTitle: '# of Web Servers',
     category: 'web'
   },
@@ -15,8 +15,8 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'web_requests',
-    title: (latest) => `Total Web Requests: ${latest ? formatLargeNumber(latest.value) : "N/A"}`,
-    yAxisTitle: 'Total Web Requests',
+    title: (latest) => `Total Requests: ${latest ? formatLargeNumber(latest.value) : "N/A"}`,
+    yAxisTitle: 'Total Requests',
     category: 'web',
     type: "cumsum"
   }

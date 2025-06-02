@@ -15,7 +15,7 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'kube_pods',
-    title: 'Total Pods',
+    title: 'Total K8 Pods',
     yAxisTitle: '# of K8 Pods',
     category: 'kube'
   },

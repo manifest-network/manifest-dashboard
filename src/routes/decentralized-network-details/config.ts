@@ -3,13 +3,13 @@ import {formatBinaryUnit, formatLargeNumber, formatRoundNumber} from "$lib/utils
 export const configs: ChartConfig[] = [
   {
     id: 'node_count',
-    title: (latest) => `Total Number of Nodes: ${latest ? formatRoundNumber(latest.value) : "N/A"}`,
+    title: (latest) => `Total Nodes: ${latest ? formatRoundNumber(latest.value) : "N/A"}`,
     yAxisTitle: '# of Nodes',
     category: 'dn'
   },
   {
     id: 'system_cpu_cores',
-    title: (latest) => `Total Number of CPU Cores: ${latest ? formatRoundNumber(latest.value) : "N/A"}`,
+    title: (latest) => `Total CPU Cores: ${latest ? formatRoundNumber(latest.value) : "N/A"}`,
     yAxisTitle: '# of CPU Cores',
     category: 'dn'
   },
@@ -21,13 +21,13 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'system_memory',
-    title: (latest) => `Total Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
+    title: (latest) => `Total System Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
     yAxisTitle: 'Memory (MB)',
     category: 'dn'
   },
   {
     id: 'system_memory_used',
-    title: (latest) => `Total Used Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
+    title: (latest) => `Used System Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
     yAxisTitle: 'Memory (MB)',
     category: 'dn'
   },

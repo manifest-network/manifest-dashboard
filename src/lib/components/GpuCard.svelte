@@ -24,7 +24,7 @@
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBinaryUnit(totalMemory, "B")}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total Memory</p>
+      <p class="text-xs font-medium text-muted-foreground">Total GPU Memory</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatNumber(totalNvidiaGpu)}</p>

@@ -9,7 +9,7 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'gpu_memory',
-    title: (latest) => `Total Memory: ${latest ? formatBinaryUnit(latest.value, "B") : "N/A"}`,
+    title: (latest) => `Total GPU Memory: ${latest ? formatBinaryUnit(latest.value, "B") : "N/A"}`,
     yAxisTitle: 'Total Memory (B)',
     category: 'ai'
   },

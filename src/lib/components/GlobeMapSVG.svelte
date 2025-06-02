@@ -284,10 +284,11 @@
               const coords = projection([point.longitude, point.latitude]);
               if (coords) {
                 context.beginPath();
-                context.arc(coords[0], coords[1], 4, 0, 2 * Math.PI);
+                context.arc(coords[0], coords[1], 7, 0, 2 * Math.PI);
                 context.fill();
 
-                context.fillText(point.city, coords[0], coords[1] + 6);
+                // Uncomment the following line to display city names on the map
+                // context.fillText(point.city, coords[0], coords[1] + 6);
                 context.fillStyle = pointColor;
               }
             }

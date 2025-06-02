@@ -9,7 +9,7 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'decentralized_web_requests',
-    title: (latest) => `Web Requests: ${latest ? formatLargeNumber(latest.value) : "N/A"}`,
+    title: (latest) => `Total Web Requests: ${latest ? formatLargeNumber(latest.value) : "N/A"}`,
     yAxisTitle: 'Web Requests',
     category: 'gc',
     type: "cumsum"

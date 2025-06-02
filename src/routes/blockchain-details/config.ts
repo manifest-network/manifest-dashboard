@@ -9,25 +9,25 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'total_unique_user',
-    title: 'Total Wallets',
+    title: 'Wallets',
     yAxisTitle: '# of Wallets',
     category: 'blockchain'
   },
   {
     id: 'total_unique_group',
-    title: 'Total Groups/DAOs',
+    title: 'Groups/DAOs',
     yAxisTitle: '# of Groups/DAOs',
     category: 'blockchain'
   },
   {
     id: 'total_tx_count',
-    title: 'Total Transactions',
+    title: 'Transactions',
     yAxisTitle: '# of Transactions',
     category: 'blockchain'
   },
   {
     id: 'manifest_tokenomics_token_count',
-    title: 'Total Denominations',
+    title: 'Unique Denominations',
     yAxisTitle: '# of Denominations',
     category: 'blockchain'
   },
