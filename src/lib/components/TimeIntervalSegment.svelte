@@ -9,7 +9,6 @@
     {label: '1 Month', value: '1 month'},
     {label: '1 Week', value: '1 week'},
     {label: '1 Day', value: '1 day'},
-    {label: '1 Hour', value: '1 hour'},
   ];
 
   const defaultInterval: TimeSpan = '1 day'
