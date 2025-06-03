@@ -5,13 +5,15 @@ export const configs: ChartConfig[] = [
     id: 'web_servers',
     title: 'Total Web Servers',
     yAxisTitle: '# of Web Servers',
-    category: 'web'
+    category: 'web',
+    type: "common"
   },
   {
     id: 'web_requests_per_sec',
     title: 'Web Requests/Sec',
     yAxisTitle: 'Web Requests/Sec',
-    category: 'web'
+    category: 'web',
+    type: "common"
   },
   {
     id: 'web_requests',
