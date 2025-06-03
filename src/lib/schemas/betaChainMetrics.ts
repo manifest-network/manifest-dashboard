@@ -1,4 +1,4 @@
-import {AllMetricRecordArraySchema} from "$lib/schemas/metricRecord";
+import {AllMetricRecordArraySchema, makePreprocessedMetricRecordSchema} from "$lib/schemas/metricRecord";
 import {z} from "zod/v4";
 import {bigNumberLike} from "$lib/schemas/common";
 
@@ -16,12 +16,11 @@ export const BetaChainMetricSchema = z.object({
 export type PartialBetaChainMetric = z.infer<typeof BetaChainMetricSchema>;
 export type BetaChainMetricKey = keyof z.infer<typeof BetaChainMetricSchema>;
 export const BetaChainMetricsByKeySchema = AllMetricRecordArraySchema.transform(
-  (arr) =>
-    arr.reduce((acc, {table_name, tags, value}) => {
-      const key = table_name as BetaChainMetricKey;
-      // Handle the special case for manifest_tokenomics_total_supply
-      // The actual value is stored in the tags object under 'supply', not in the value field.
-      acc[key] = key === "manifest_tokenomics_total_supply" ? tags?.supply ?? bigNumberLike.parse("0") : value
+  (arr) => BetaChainMetricSchema.parse(
+    arr.reduce((acc, raw) => {
+      const key = raw.table_name as BetaChainMetricKey;
+      const parsed = makePreprocessedMetricRecordSchema(key).parse(raw);
+      acc[key] = parsed.value;
       return acc
     }, {} as PartialBetaChainMetric)
-);
+));
