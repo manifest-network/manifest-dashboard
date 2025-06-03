@@ -31,6 +31,7 @@ Create a `.env` file in the root directory and add your environment variables. F
 
 ```env
 VITE_RPC_PROXY_TARGET=http://your-api-server:3000
+NETWORK=testnet
 ```
 
 Restart the dev server after changing `.env`.
