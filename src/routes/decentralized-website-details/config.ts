@@ -5,7 +5,8 @@ export const configs: ChartConfig[] = [
     id: 'web_sites',
     title: 'Total Websites',
     yAxisTitle: '# of Websites',
-    category: 'gc'
+    category: 'gc',
+    type: "common"
   },
   {
     id: 'decentralized_web_requests',
