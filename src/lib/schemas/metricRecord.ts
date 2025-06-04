@@ -68,6 +68,10 @@ export function makePreprocessedMetricRecordSchema(metricKey: string) {
 
     const adjusted = baseValueBN.toString();
 
+    if (metricKey === "manifest_tokenomics_total_supply") {
+      tags.supply = adjusted;
+    }
+
     return { timestamp, tags, value: adjusted };
   }, MetricRecordSchema);
 }
