@@ -1,10 +1,10 @@
 import {z} from "zod/v4";
 import {bigNumberLike} from "$lib/schemas/common";
-import {BigNumber} from "bignumber.js";
-import {NETWORK, LAUNCH_DATE} from '$env/static/private';
+import {LAUNCH_DATE, NETWORK} from "$env/static/private";
 import {METRIC_OFFSETS} from "$lib/utils/metricOffsets";
+import {BigNumber} from "bignumber.js";
 
-const launchTime = new Date(LAUNCH_DATE).getTime()
+const launchTime = new Date(LAUNCH_DATE).getTime();
 
 // A metric record as returned by the API when querying all metrics
 export const AllMetricRecordSchema = z.object({
@@ -30,38 +30,44 @@ export function makePreprocessedMetricRecordSchema(metricKey: string) {
       throw new Error(`Invalid metric record for key "${metricKey}": ${parsed.error.message}`);
     }
 
-    const rec = parsed.data;
-    const ts = new Date(rec.timestamp).getTime();
+    const { timestamp, tags, value } = parsed.data;
+    const ts = new Date(timestamp).getTime();
 
-    let baseValue: string;
-    if (NETWORK === "mainnet" && ts < launchTime) {
-      baseValue = bigNumberLike.parse("0");
-    } else if (metricKey === "manifest_tokenomics_total_supply") {
-      baseValue = bigNumberLike.parse(rec.tags.supply ?? "0");
-    } else {
-      baseValue = bigNumberLike.parse(rec.value);
-    }
+    const isMainnet = NETWORK === "mainnet";
+    const offset = METRIC_OFFSETS[metricKey];
+    const hasOffset = offset !== undefined;
 
-    // 1b) If there’s an offset for this metric AND ts ≥ launchTime, subtract it:
-    const offsetBn = METRIC_OFFSETS[metricKey];
-    if (offsetBn !== undefined && ts >= launchTime) {
-      const diff = new BigNumber(baseValue).minus(new BigNumber(offsetBn));
-      baseValue = diff.isNegative() ? "0" : diff.toString();
-    }
+    let baseValueBN: BigNumber;
 
-    const adjusted = baseValue.toString();
+    // If the metric is "manifest_tokenomics_total_supply", use the supply tag
+    // This is a special case where the value is stored in the tags object.
     if (metricKey === "manifest_tokenomics_total_supply") {
-      return {
-        timestamp: rec.timestamp,
-        tags: { ...rec.tags, supply: adjusted },
-        value: adjusted,
-      };
+      baseValueBN = new BigNumber(tags.supply ?? "0");
     } else {
-      return {
-        timestamp: rec.timestamp,
-        tags: rec.tags,
-        value: adjusted,
-      };
+      baseValueBN = new BigNumber(value);
     }
+
+    // Set the value to 0 if the metric is
+    // - on Mainnet
+    // - before the launch time and
+    // - has an offset
+    if (isMainnet && ts < launchTime && hasOffset) {
+      baseValueBN = new BigNumber(0);
+    }
+
+    // Adjust the value by subtracting the offset if:
+    // - on Mainnet
+    // - after the launch time and
+    // - has an offset
+    if (isMainnet && ts >= launchTime && hasOffset) {
+      baseValueBN = baseValueBN.minus(offset);
+      if (baseValueBN.isNegative()) {
+        baseValueBN = new BigNumber(0);
+      }
+    }
+
+    const adjusted = baseValueBN.toString();
+
+    return { timestamp, tags, value: adjusted };
   }, MetricRecordSchema);
 }
