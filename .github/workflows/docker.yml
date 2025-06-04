@@ -32,6 +32,7 @@ jobs:
           touch .env
           echo "VITE_RPC_PROXY_TARGET=${{ secrets.VITE_RPC_PROXY_TARGET }}" >> .env
           echo "NETWORK=${{ vars.NETWORK }}" >> .env
+          echo "LAUNCH_DATE=${{ secrets.LAUNCH_DATE }}" >> .env
           cat .env
 
       - name: Get the Git tag
