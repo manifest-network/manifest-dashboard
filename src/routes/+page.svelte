@@ -31,12 +31,17 @@
   });
 
 
-  const metrics: PartialCommonMetric = $derived(data.data.latestMetric)
-  const chainMetrics: PartialBetaChainMetric = $derived(data.data.latestChainMetric)
-  const cumsumMetrics: PartialCumsumMetric = $derived(data.data.latestCumsumMetric);
-  const geoData: GeoRecordArray = $derived(data.data.worldMap)
-  const totalSupply: string = $derived(chainMetrics.manifest_tokenomics_total_supply)
-  const pwrMfx: string = $derived(metrics.talib_mfx_power_conversion ?? "1");
+  const metrics: PartialCommonMetric = $derived(data.latestMetric)
+  const chainMetrics: PartialBetaChainMetric = $derived(data.latestChainMetric)
+  const cumsumMetrics: PartialCumsumMetric = $derived(data.latestCumsumMetric);
+  const geoData: GeoRecordArray = $derived(data.worldMap)
+
+  // Divide the total supply by the number of decimal places (6) to get the actual token amount
+  const totalSupply: BigNumber = $derived(BigNumber(chainMetrics.manifest_tokenomics_total_supply).div(1_000_000))
+
+  // Convert the MANY PWR:MFX conversion rate to Manifest by dividing by the 1:10 split
+  const pwrMfx: BigNumber = $derived(BigNumber(metrics.talib_mfx_power_conversion ?? "1").div(10));
+
   const estimatedMarketCap: BigNumber = $derived(BigNumber(totalSupply).multipliedBy(pwrMfx));
   const uniqueCountries: number = $derived(
     new Set(geoData.map(item => item.country_name)).size
@@ -67,10 +72,10 @@
       />
 
       <TokenomicsCard
-              tokenSupply={totalSupply ?? "N/A"}
+              tokenSupply={totalSupply.toFixed() ?? "N/A"}
               totalMinted={chainMetrics.total_mfx_minted ?? "N/A"}
               totalBurned={chainMetrics.total_mfx_burned ?? "N/A"}
-              pwrMfx={pwrMfx}
+              pwrMfx={pwrMfx.toFixed()}
               marketCap={estimatedMarketCap ? estimatedMarketCap.toFixed() : "N/A"}
       />
 
