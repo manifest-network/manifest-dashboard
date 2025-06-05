@@ -284,8 +284,12 @@
               const coords = projection([point.longitude, point.latitude]);
               if (coords) {
                 context.beginPath();
-                context.arc(coords[0], coords[1], 7, 0, 2 * Math.PI);
+                context.arc(coords[0], coords[1], 5, 0, 2 * Math.PI);
                 context.fill();
+
+                context.lineWidth = 1;
+                context.strokeStyle = strokeColor;  // or any CSS-driven color
+                context.stroke();
 
                 // Uncomment the following line to display city names on the map
                 // context.fillText(point.city, coords[0], coords[1] + 6);

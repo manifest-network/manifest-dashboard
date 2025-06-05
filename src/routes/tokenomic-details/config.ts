@@ -1,4 +1,5 @@
 import {formatBaseDenom, formatRoundNumber} from "$lib/utils/format";
+import {BigNumber} from "bignumber.js";
 
 export const configs: ChartConfig[] = [
   {
@@ -24,8 +25,8 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'talib_mfx_power_conversion',
-    title: (latest) => `MFX:PWR Conversion Rate: ${latest ? formatRoundNumber(latest.value, 2) : "N/A"}`,
-    yAxisTitle: 'MFX:PWR',
+    title: (latest) => `MFX:PWR Conversion Rate: ${latest ? BigNumber(latest.value).div(10) : "N/A"}`,
+    yAxisTitle: 'MFX:PWR (10x)',
     category: 'tokenomic',
     type: "common"
   },
