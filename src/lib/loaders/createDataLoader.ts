@@ -39,9 +39,9 @@ export function createDataLoader(
   };
 }
 
-export function createSingleLoader(
+export function createSingleLoader<T>(
   buildUrl: () => string,
-  schema: ZodType
+  schema: ZodType<T, any>
 ) {
   return async ({fetch}: RequestEvent) => {
     try {
