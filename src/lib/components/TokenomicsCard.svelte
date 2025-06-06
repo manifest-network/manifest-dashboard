@@ -7,13 +7,15 @@
     totalMinted,
     totalBurned,
     pwrMfx,
-    marketCap
+    marketCap,
+    circulatingSupply,
   } = $props<{
     tokenSupply: string,
     totalMinted: string,
     totalBurned: string,
     pwrMfx: string,
     marketCap: string
+    circulatingSupply: string
   }>();
 
 </script>
@@ -29,7 +31,7 @@
       <p class="text-xs font-medium text-muted-foreground">(Estimated) Fully Diluted Valuation</p>
     </div>
     <div>
-      <p class="text-xl font-bold text-secondary-400-600">TBD</p>
+      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(circulatingSupply)}</p>
       <p class="text-xs font-medium text-muted-foreground">(Estimated) Circulating MFX Supply</p>
     </div>
     <div>
