@@ -41,14 +41,17 @@ export function makePreprocessedMetricRecordSchema(metricKey: string) {
     const hasOffset = offset !== undefined;
 
     let baseValueBN: BigNumber;
+    let tagProperty: keyof typeof tags | undefined;
 
     // Special cases where the value is stored in the tags object.
     switch (metricKey) {
       case "manifest_tokenomics_total_supply":
         baseValueBN = new BigNumber(tags.supply ?? "0");
+        tagProperty = "supply";
         break;
       case "manifest_tokenomics_excluded_supply":
         baseValueBN = new BigNumber(tags.excluded_supply ?? "0");
+        tagProperty = "excluded_supply";
         break;
       default:
         baseValueBN = new BigNumber(value);
@@ -75,15 +78,9 @@ export function makePreprocessedMetricRecordSchema(metricKey: string) {
 
     const adjusted = baseValueBN.toString();
 
-    switch (metricKey) {
-      case "manifest_tokenomics_total_supply":
-        tags.supply = adjusted;
-        break;
-      case "manifest_tokenomics_excluded_supply":
-        tags.excluded_supply = adjusted;
-        break;
-      default:
-        break;
+    // If this is a special case, we store the adjusted value in the tags object
+    if (tagProperty) {
+      tags[tagProperty] = adjusted;
     }
 
     return { timestamp, tags, value: adjusted };
