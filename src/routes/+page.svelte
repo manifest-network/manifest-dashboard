@@ -35,14 +35,13 @@
   const chainMetrics: PartialBetaChainMetric = $derived(data.latestChainMetric)
   const cumsumMetrics: PartialCumsumMetric = $derived(data.latestCumsumMetric);
   const geoData: GeoRecordArray = $derived(data.worldMap)
-
-  // Divide the total supply by the number of decimal places (6) to get the actual token amount
-  const totalSupply: BigNumber = $derived(BigNumber(chainMetrics.manifest_tokenomics_total_supply).div(1_000_000))
+  const totalSupply: BigNumber = $derived(BigNumber(chainMetrics.manifest_tokenomics_total_supply))
 
   // Convert the MANY PWR:MFX conversion rate to Manifest by dividing by the 1:10 split
   const pwrMfx: BigNumber = $derived(BigNumber(metrics.talib_mfx_power_conversion ?? "1").div(10));
 
-  const estimatedMarketCap: BigNumber = $derived(BigNumber(totalSupply).multipliedBy(pwrMfx));
+  // Divide the total supply by the number of decimal places (6) to get the actual token amount
+  const estimatedMarketCap: BigNumber = $derived(totalSupply.div(1_000_000).multipliedBy(pwrMfx));
   const uniqueCountries: number = $derived(
     new Set(geoData.map(item => item.country_name)).size
   );
