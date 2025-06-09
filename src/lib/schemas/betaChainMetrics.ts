@@ -12,7 +12,8 @@ export const BetaChainMetricSchema = z.object({
   blockchain_height: bigNumberLike.default("0"),
   manifest_tokenomics_total_supply: bigNumberLike.default("0"),
   manifest_tokenomics_token_count: bigNumberLike.default("0"),
-  manifest_tokenomics_excluded_supply: bigNumberLike.default("0")
+  manifest_tokenomics_excluded_supply: bigNumberLike.default("0"),
+  locked_tokens: bigNumberLike.default("0"),
 })
 export type PartialBetaChainMetric = z.infer<typeof BetaChainMetricSchema>;
 export type BetaChainMetricKey = keyof z.infer<typeof BetaChainMetricSchema>;

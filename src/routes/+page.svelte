@@ -79,6 +79,7 @@
               pwrMfx={pwrMfx.toFixed()}
               marketCap={estimatedMarketCap ? estimatedMarketCap.toFixed() : "N/A"}
               circulatingSupply={circulatingSupply ? circulatingSupply.toFixed() : "N/A"}
+              lockedTokens={chainMetrics.locked_tokens ?? "N/A"}
       />
 
       <BlockchainCard

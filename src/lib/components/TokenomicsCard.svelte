@@ -9,6 +9,7 @@
     pwrMfx,
     marketCap,
     circulatingSupply,
+    lockedTokens,
   } = $props<{
     tokenSupply: string,
     totalMinted: string,
@@ -16,6 +17,7 @@
     pwrMfx: string,
     marketCap: string
     circulatingSupply: string
+    lockedTokens: string
   }>();
 
 </script>
@@ -55,6 +57,10 @@
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{pwrMfx}</p>
       <p class="text-xs font-medium text-muted-foreground">PRW:MFX Conversion Rate</p>
+    </div>
+    <div>
+      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(lockedTokens)}</p>
+      <p class="text-xs font-medium text-muted-foreground">Locked MFX</p>
     </div>
   </div>
 </div>
