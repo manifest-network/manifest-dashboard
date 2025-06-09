@@ -10,7 +10,6 @@ const launchTime = new Date(LAUNCH_DATE).getTime();
 export const AllMetricRecordSchema = z.object({
   table_name: z.string(),
   timestamp: z.iso.datetime({offset: true}),
-  tags: z.object({ supply: bigNumberLike, excluded_supply: bigNumberLike }).partial().default({}),
   value: bigNumberLike,
 })
 // An array of metric records as returned by the API when querying all metrics
@@ -19,7 +18,6 @@ export const AllMetricRecordArraySchema = z.array(AllMetricRecordSchema)
 // A metric record as returned by the API when querying a specific metric
 export const MetricRecordSchema = z.object({
   timestamp: z.iso.datetime({offset: true}),
-  tags: z.object({ supply: bigNumberLike, excluded_supply: bigNumberLike }).partial().default({}),
   value: bigNumberLike,
 })
 
@@ -33,29 +31,14 @@ export function makePreprocessedMetricRecordSchema(metricKey: string) {
       throw new Error(`Invalid metric record for key "${metricKey}": ${parsed.error.message}`);
     }
 
-    const { timestamp, tags, value } = parsed.data;
+    const { timestamp, value } = parsed.data;
     const ts = new Date(timestamp).getTime();
 
     const isMainnet = NETWORK === "mainnet";
     const offset = METRIC_OFFSETS[metricKey];
     const hasOffset = offset !== undefined;
 
-    let baseValueBN: BigNumber;
-    let tagProperty: keyof typeof tags | undefined;
-
-    // Special cases where the value is stored in the tags object.
-    switch (metricKey) {
-      case "manifest_tokenomics_total_supply":
-        baseValueBN = new BigNumber(tags.supply ?? "0");
-        tagProperty = "supply";
-        break;
-      case "manifest_tokenomics_excluded_supply":
-        baseValueBN = new BigNumber(tags.excluded_supply ?? "0");
-        tagProperty = "excluded_supply";
-        break;
-      default:
-        baseValueBN = new BigNumber(value);
-    }
+    let baseValueBN = new BigNumber(value)
 
     // Set the value to 0 if the metric is
     // - on Mainnet
@@ -78,11 +61,6 @@ export function makePreprocessedMetricRecordSchema(metricKey: string) {
 
     const adjusted = baseValueBN.toString();
 
-    // If this is a special case, we store the adjusted value in the tags object
-    if (tagProperty) {
-      tags[tagProperty] = adjusted;
-    }
-
-    return { timestamp, tags, value: adjusted };
+    return { timestamp, value: adjusted };
   }, MetricRecordSchema);
 }
