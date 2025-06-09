@@ -1,4 +1,4 @@
-import {formatBaseDenom, formatRoundNumber} from "$lib/utils/format";
+import {formatBaseDenom} from "$lib/utils/format";
 import {BigNumber} from "bignumber.js";
 
 export const configs: ChartConfig[] = [
@@ -29,5 +29,12 @@ export const configs: ChartConfig[] = [
     yAxisTitle: 'MFX:PWR (10x)',
     category: 'tokenomic',
     type: "common"
+  },
+  {
+    id: 'locked_tokens',
+    title: (latest) => `Locked MFX: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'Locked Tokens',
+    category: 'tokenomic',
+    type: "chain"
   },
 ]
