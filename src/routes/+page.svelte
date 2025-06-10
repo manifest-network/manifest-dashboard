@@ -35,9 +35,8 @@
   const chainMetrics: PartialBetaChainMetric = $derived(data.latestChainMetric)
   const cumsumMetrics: PartialCumsumMetric = $derived(data.latestCumsumMetric);
   const geoData: GeoRecordArray = $derived(data.worldMap)
+  const circulatingSupplyMetrics: string = $derived(data.latestCirculatingSupplyMetric)
   const totalSupply: BigNumber = $derived(BigNumber(chainMetrics.manifest_tokenomics_total_supply))
-  const excludedSupply: BigNumber = $derived(BigNumber(chainMetrics.manifest_tokenomics_excluded_supply))
-  const circulatingSupply: BigNumber = $derived(totalSupply.minus(excludedSupply));
 
   // Convert the MANY PWR:MFX conversion rate to Manifest by dividing by the 1:10 split
   const pwrMfx: BigNumber = $derived(BigNumber(metrics.talib_mfx_power_conversion ?? "1").div(10));
@@ -78,7 +77,7 @@
               totalBurned={chainMetrics.total_mfx_burned ?? "N/A"}
               pwrMfx={pwrMfx.toFixed()}
               marketCap={estimatedMarketCap ? estimatedMarketCap.toFixed() : "N/A"}
-              circulatingSupply={circulatingSupply ? circulatingSupply.toFixed() : "N/A"}
+              circulatingSupply={circulatingSupplyMetrics}
               lockedTokens={chainMetrics.locked_tokens ?? "N/A"}
       />
 

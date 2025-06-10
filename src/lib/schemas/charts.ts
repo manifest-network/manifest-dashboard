@@ -19,14 +19,10 @@ export const ChartDataPointArraySchema = (group: string) => {
     arr.map((r) => {
       const date = new Date(r.timestamp);
 
-      // By now, if this is the “total_supply” metric, r.tags.supply holds the adjusted value.
-      // Otherwise, r.value is the adjusted value.
-      const rawValue = r.tags?.supply ? r.tags.supply : r.value;
-
       return ChartDataPointSchema.parse({
         group,
         key: date.toISOString(),
-        value: rawValue,
+        value: r.value,
         date,
       });
     })
