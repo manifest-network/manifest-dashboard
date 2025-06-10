@@ -30,7 +30,6 @@ export function createDataLoader(
           return parsed.data as ChartDataPoint[];
         } catch (e) {
           console.error(`Error fetching ${id}:`, e);
-          error(500, `Error fetching data for ${id}`);
         }
       })
     );
@@ -53,7 +52,6 @@ export function createSingleLoader<T>(
       return {data: parsed.data};
     } catch (e) {
       console.error(`Error fetching data:`, e);
-      error(500, `Error fetching metrics data`);
     }
   };
 }
