@@ -37,4 +37,11 @@ export const configs: ChartConfig[] = [
     category: 'tokenomic',
     type: "chain"
   },
+  {
+    id: 'circulating_supply',
+    title: (latest) => `Circulating Supply: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'Circulating Supply',
+    category: 'tokenomic',
+    type: "supply"
+  },
 ]

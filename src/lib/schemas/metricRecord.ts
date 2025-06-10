@@ -21,6 +21,17 @@ export const MetricRecordSchema = z.object({
   value: bigNumberLike,
 })
 
+export const MetricRecordArraySchema = z.array(MetricRecordSchema)
+
+export const SingleMetricValueSchema = MetricRecordArraySchema.transform(
+  (arr) => {
+    if (arr.length !== 1) {
+      throw new Error(`Expected array of length 1, got ${arr.length}`)
+    }
+    return arr[0].value
+  }
+)
+
 // All metric preprocessing happens here. Includes adjustments for
 // - Mainnet offsets and launch date
 // - Special cases where the value is stored in the tags object
