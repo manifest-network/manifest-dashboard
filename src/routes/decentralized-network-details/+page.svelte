@@ -8,7 +8,7 @@
   import ChartCard from "$lib/components/ChartCard.svelte";
   // import GlobeMap from "$lib/components/GlobeMap.svelte";
 
-  let {data}: PageProps = $props();
+  const {data}: PageProps = $props();
 
   const tick = readable(Date.now(), (set) => {
     const id = setInterval(() => set(Date.now()), 10000);
