@@ -14,7 +14,7 @@ export const load: PageServerLoad = async (event) => {
     latestMetric: loadLatestMetric(),
     latestChainMetric: loadLatestChainMetric(network),
     latestCumsumMetric: loadLatestCumsumMetric(),
-    latestCirculatingSupply: loadLatestSupplyMetric(network, "circulating_supply"),
+    latestCirculatingSupplyMetric: loadLatestSupplyMetric(network, "circulating_supply"),
     worldMap: loadWorldMapData()
   };
 

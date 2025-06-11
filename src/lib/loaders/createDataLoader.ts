@@ -13,7 +13,6 @@ export function createDataLoader(
 
     const params = new URLSearchParams(baseParams);
     const apiUrl = buildUrl(params);
-    console.log(`Fetching data for ${id} from ${apiUrl}`);
     try {
       const res = await fetch(apiUrl);
       if (!res.ok) throw new Error(`API request failed: ${res.status}`);
