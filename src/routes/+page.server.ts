@@ -1,4 +1,5 @@
-import type {PageServerLoad} from "../../.svelte-kit/types/src/routes/decentralized-network-details/$types";
+import type { HttpError } from "@sveltejs/kit";
+import type {PageServerLoad} from "./$types";
 import {loadWorldMapData} from "$lib/loaders/loadWorldMapData";
 import {loadLatestMetric} from "$lib/loaders/loadLatestMetric";
 import {loadLatestChainMetric} from "$lib/loaders/loadLatestChainMetric";
@@ -21,9 +22,10 @@ export const load: PageServerLoad = async (event) => {
     Object.entries(tasks).map(([key, loader]) =>
       loader(event)
         .then(res => ({key, data: (res as any).data, error: null}))
-        .catch(err => ({key, data: null, error: (err as Error).message || "Unknown error"}))
+        .catch(err => ({key, data: null, error: (err as HttpError).body.message || "Unknown error"}))
     )
   );
+
 
   const result: Record<string, any> = {};
   for (const e of entries) {

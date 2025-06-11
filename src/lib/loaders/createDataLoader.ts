@@ -4,38 +4,27 @@ import {type ChartDataPoint, ChartDataPointArraySchema} from "$lib/schemas/chart
 import type {ZodType} from "zod/v4";
 
 export function createDataLoader(
-  ids: string[],
-  buildUrl: (id: string, params: URLSearchParams) => string
+  id: string,
+  buildUrl: (params: URLSearchParams) => string
 ) {
   return async ({fetch, url}: RequestEvent) => {
     const baseParams = extractAndPrepareApiParams(url);
     if (!baseParams) error(500, `Invalid API parameters`);
 
-    const data = await Promise.all(
-      ids.map(async (id) => {
-        const params = new URLSearchParams(baseParams);
-        const apiUrl = buildUrl(id, params);
-        try {
-          const res = await fetch(apiUrl);
-          if (!res.ok) {
-            console.error(`Failed to fetch ${id}: ${res.status}`);
-            throw new Error(`API request failed: ${res.status}`);
-          }
-          const raw = await res.json();
-          const parsed = ChartDataPointArraySchema(id).safeParse(raw);
-          if (!parsed.success) {
-            console.error(`Invalid format ${id}:`, parsed.error);
-            throw new Error(`Invalid response format`);
-          }
-          return parsed.data as ChartDataPoint[];
-        } catch (e) {
-          console.error(`Error fetching ${id}:`, e);
-          error(500, `Error fetching data for ${id}`);
-        }
-      })
-    );
-
-    return {ids, data};
+    const params = new URLSearchParams(baseParams);
+    const apiUrl = buildUrl(params);
+    console.log(`Fetching data for ${id} from ${apiUrl}`);
+    try {
+      const res = await fetch(apiUrl);
+      if (!res.ok) throw new Error(`API request failed: ${res.status}`);
+      const raw = await res.json();
+      const parsed = ChartDataPointArraySchema(id).safeParse(raw);
+      if (!parsed.success) throw new Error(`Invalid response format`);
+      return {data: parsed.data as ChartDataPoint[]};
+    } catch (e) {
+      console.error(`Error fetching ${id}:`, e);
+      error(500, `Error fetching data for ${id}`);
+    }
   };
 }
 
