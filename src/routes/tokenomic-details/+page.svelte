@@ -8,6 +8,24 @@
 
   let {data}: PageProps = $props();
 
+  const tokenomics = $derived(configs.map((config) => ({
+    config,
+    metrics: [
+      {
+        data: data[`aggregateMetric_${config.id}`],
+        error: data[`aggregateMetric_${config.id}Error`]
+      },
+      {
+        data: data[`aggregateChainMetric_${config.id}`],
+        error: data[`aggregateChainMetric_${config.id}Error`]
+      },
+      {
+        data: data[`aggregateSupplyMetric_${config.id}`],
+        error: data[`aggregateSupplyMetric_${config.id}Error`]
+      }
+    ]
+  })));
+
   const tick = readable(Date.now(), (set) => {
     const id = setInterval(() => set(Date.now()), 10000);
     return () => clearInterval(id);
@@ -22,26 +40,16 @@
 
 <main>
   <div class="grid grid-cols-2">
-    {#each configs as config}
-      {#if data[`aggregateMetric_${config.id}Error`]}
-        <ErrorCard title={"Chart Failed"} error={data[`aggregateMetric_${config.id}Error`]}/>
-      {:else if data[`aggregateChainMetric_${config.id}Error`]}
-        <ErrorCard title={"Chart Failed"} error={data[`aggregateChainMetric_${config.id}Error`]}/>
-      {:else if data[`aggregateSupplyMetric_${config.id}Error`]}
-        <ErrorCard title={"Chart Failed"} error={data[`aggregateSupplyMetric_${config.id}Error`]}/>
-      {:else if data[`aggregateMetric_${config.id}`]}
-        <div class="card w-full p-4 mb-4">
-          <ChartCard config={config} data={data[`aggregateMetric_${config.id}`]}/>
-        </div>
-      {:else if data[`aggregateChainMetric_${config.id}`]}
-        <div class="card w-full p-4 mb-4">
-          <ChartCard config={config} data={data[`aggregateChainMetric_${config.id}`]} />
-        </div>
-      {:else if data[`aggregateSupplyMetric_${config.id}`]}
-        <div class="card w-full p-4 mb-4">
-          <ChartCard config={config} data={data[`aggregateSupplyMetric_${config.id}`]} />
-        </div>
-      {/if}
+    {#each tokenomics as {config, metrics}}
+      {#each metrics as {data: mData, error: mError}}
+        {#if mError}
+          <ErrorCard title="Chart Failed" error={mError}/>
+        {:else if mData}
+          <div class="card w-full p-4 mb-4">
+            <ChartCard config={config} data={mData}/>
+          </div>
+        {/if}
+      {/each}
     {/each}
   </div>
 </main>

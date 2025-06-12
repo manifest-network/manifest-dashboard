@@ -10,15 +10,20 @@
   // import GlobeMap from "$lib/components/GlobeMap.svelte";
 
   const {data}: PageProps = $props();
+  const aggMetrics = $derived(configs.map((config) => ({
+    config,
+    metrics: [
+      {
+        data: data[`aggregateMetric_${config.id}`],
+        error: data[`aggregateMetric_${config.id}Error`]
+      },
+    ]
+  })));
 
   const tick = readable(Date.now(), (set) => {
     const id = setInterval(() => set(Date.now()), 10000);
     return () => clearInterval(id);
   });
-
-  $effect(() => {
-  console.log("Page props:", data);
-  })
 
   $effect(() => {
     if ($tick) {
@@ -38,15 +43,17 @@
       </div>
     {/if}
     <div class="grid grid-cols-1 md:grid-cols-2">
-        {#each configs as config}
-          {#if data[`aggregateMetric_${config.id}Error`]}
-            <ErrorCard title={"Chart Failed"} error={data[`aggregateMetric_${config.id}Error`]}/>
-          {:else if data[`aggregateMetric_${config.id}`]}
-          <div class="card w-full p-2 mb-4">
-            <ChartCard config={config} data={data[`aggregateMetric_${config.id}`]}/>
-          </div>
+      {#each aggMetrics as {config, metrics}}
+        {#each metrics as {data: mData, error: mError}}
+          {#if mError}
+            <ErrorCard title="Chart Failed" error={mError}/>
+          {:else if mData}
+            <div class="card w-full p-4 mb-4">
+              <ChartCard config={config} data={mData}/>
+            </div>
           {/if}
         {/each}
+      {/each}
     </div>
   </div>
 </main>

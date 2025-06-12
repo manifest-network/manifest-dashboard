@@ -57,9 +57,10 @@
 <main>
   <div class="max-w-screen mx-auto p-4">
     <div class="grid md:grid-cols-3 xl:grid-cols-4 gap-4">
-      {#if metricsError || geoDataError}
-        <ErrorCard title="Decentralized Network"
-                   error={metricsError ? "Unable to load metrics" : geoDataError ? "Unable to load geo data" : "Unknown error"}/>
+      {#if metricsError}
+        <ErrorCard title="Decentralized Network" error={metricsError}/>
+      {:else if geoDataError}
+        <ErrorCard title="World Map" error={geoDataError}/>
       {:else}
         <DecentralizedNetworkCard
                 totalUniqueCountries={uniqueCountries.toFixed() ?? "N/A"}
@@ -74,7 +75,7 @@
       {/if}
 
       {#if metricsError}
-        <ErrorCard title="AI" error={metricsError ? "Unable to load metrics" : "Unknown error"}/>
+        <ErrorCard title="AI" error={metricsError}/>
       {:else}
         <GpuCard
                 totalGpu={metrics.gpu_total ?? "N/A"}
@@ -86,13 +87,12 @@
         />
       {/if}
 
-      {#if chainMetricsError || metricsError || circulatingSupplyMetricsError}
-        <ErrorCard title="Tokenomics"
-                   error={chainMetricsError ? "Unable to load chain metrics" :
-                      metricsError ? "Unable to load metrics" :
-                      circulatingSupplyMetricsError ? "Unable to load circulating supply metrics" :
-                      "Unknown error"}
-        />
+      {#if chainMetricsError}
+        <ErrorCard title="Tokenomics" error={chainMetricsError}/>
+      {:else if metricsError}
+        <ErrorCard title="Tokenomics" error={metricsError}/>
+      {:else if circulatingSupplyMetricsError}
+        <ErrorCard title="Tokenomics" error={circulatingSupplyMetricsError}/>
       {:else}
         <TokenomicsCard
                 tokenSupply={totalSupply.toFixed() ?? "N/A"}
@@ -106,9 +106,7 @@
       {/if}
 
       {#if chainMetricsError}
-        <ErrorCard title="Blockchain Metrics"
-                   error={chainMetricsError ? "Unable to load chain metrics" : "Unknown error"}
-        />
+        <ErrorCard title="Blockchain Metrics" error={chainMetricsError}/>
       {:else}
         <BlockchainCard
                 totalUniqueUser={chainMetrics.total_unique_user ?? "N/A"}
@@ -119,10 +117,10 @@
         />
       {/if}
 
-      {#if metricsError || cumsumMetricsError}
-        <ErrorCard title="Web Services"
-                   error={metricsError ? "Unable to load metrics" : cumsumMetricsError ? "Unable to load cumulative metrics" : "Unknown error"}
-        />
+      {#if metricsError}
+        <ErrorCard title="Web Services" error={metricsError}/>
+      {:else if cumsumMetricsError}
+        <ErrorCard title="Web Services" error={cumsumMetricsError}/>
       {:else}
         <WebServiceCard
                 totalWebServer={metrics.web_servers ?? "N/A"}
@@ -131,10 +129,10 @@
         />
       {/if}
 
-      {#if metricsError || cumsumMetricsError}
-        <ErrorCard title="Decentralized Web Hosting"
-                   error={metricsError ? "Unable to load metrics" : cumsumMetricsError ? "Unable to load cumulative metrics" : "Unknown error"}
-        />
+      {#if metricsError}
+        <ErrorCard title="Decentralized Web Hosting" error={metricsError}/>
+      {:else if cumsumMetricsError}
+        <ErrorCard title="Decentralized Web Hosting" error={cumsumMetricsError}/>
       {:else}
         <DecentralizedWebHosting
                 totalWebsites={metrics.web_sites ?? "N/A"}
@@ -143,8 +141,7 @@
       {/if}
 
       {#if metricsError}
-        <ErrorCard title="Kubernetes Metrics"
-                   error={metricsError ? "Unable to load metrics" : "Unknown error"}
+        <ErrorCard title="Kubernetes Metrics" error={metricsError}
         />
       {:else}
         <KubeCard
@@ -155,9 +152,7 @@
       {/if}
 
       {#if metricsError}
-        <ErrorCard title="Object Storage"
-                   error={metricsError ? "Unable to load metrics" : "Unknown error"}
-        />
+        <ErrorCard title="Object Storage" error={metricsError} />
       {:else}
         <ObjectStorageCard
                 totalBuckets={metrics.minio_buckets ?? "N/A"}
@@ -167,9 +162,7 @@
       {/if}
 
       {#if cumsumMetricsError}
-        <ErrorCard title="Network Metrics"
-                   error={cumsumMetricsError ? "Unable to load cumulative metrics" : "Unknown error"}
-        />
+        <ErrorCard title="Network Metrics" error={cumsumMetricsError} />
       {:else}
         <NetworkCard
                 totalIpv4BandwidthReceived={cumsumMetrics.system_network_received ?? "N/A"}
