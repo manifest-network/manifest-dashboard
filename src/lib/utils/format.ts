@@ -70,3 +70,10 @@ export function formatLargeNumber(val: string, decimalPlaces: number = 2): strin
   return isNegative ? `-${ret}` : ret
 }
 
+export function formatId(id: string): string {
+   return id
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+

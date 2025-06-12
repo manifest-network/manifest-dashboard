@@ -16,6 +16,7 @@
   import type {GeoRecordArray} from "$lib/schemas/geo";
   import type {PartialCumsumMetric} from "$lib/schemas/cumsumMetrics";
   import NetworkCard from "$lib/components/NetworkCard.svelte";
+  import ErrorCard from "$lib/components/ErrorCard.svelte";
 
   const {data}: PageProps = $props();
 
@@ -32,10 +33,15 @@
 
 
   const metrics: PartialCommonMetric = $derived(data.latestMetric)
+  const metricsError = $derived(data.latestMetricError)
   const chainMetrics: PartialBetaChainMetric = $derived(data.latestChainMetric)
+  const chainMetricsError = $derived(data.latestChainMetricError);
   const cumsumMetrics: PartialCumsumMetric = $derived(data.latestCumsumMetric);
+  const cumsumMetricsError = $derived(data.latestCumsumMetricError);
   const geoData: GeoRecordArray = $derived(data.worldMap)
+  const geoDataError = $derived(data.worldMapError);
   const circulatingSupplyMetrics: string = $derived(data.latestCirculatingSupplyMetric)
+  const circulatingSupplyMetricsError = $derived(data.latestCirculatingSupplyMetricError);
   const totalSupply: BigNumber = $derived(BigNumber(chainMetrics.manifest_tokenomics_total_supply))
 
   // Convert the MANY PWR:MFX conversion rate to Manifest by dividing by the 1:10 split
@@ -51,73 +57,120 @@
 <main>
   <div class="max-w-screen mx-auto p-4">
     <div class="grid md:grid-cols-3 xl:grid-cols-4 gap-4">
-      <DecentralizedNetworkCard
-              totalUniqueCountries={uniqueCountries.toFixed() ?? "N/A"}
-              totalNodeCount={metrics.node_count ?? "N/A"}
-              totalCpuCores={metrics.system_cpu_cores ?? "N/A"}
-              totalSystemMemory={metrics.system_memory ?? "N/A"}
-              totalDiskSpace={metrics.disk_space_total ?? "N/A"}
-              totalProcess={metrics.total_process ?? "N/A"}
-              usedDiskSpace={metrics.disk_space_used ?? "N/A"}
-              usedSystemMemory={metrics.system_memory_used ?? "N/A"}
-      />
+      {#if metricsError}
+        <ErrorCard title="Decentralized Network" error={metricsError}/>
+      {:else if geoDataError}
+        <ErrorCard title="World Map" error={geoDataError}/>
+      {:else}
+        <DecentralizedNetworkCard
+                totalUniqueCountries={uniqueCountries.toFixed() ?? "N/A"}
+                totalNodeCount={metrics.node_count ?? "N/A"}
+                totalCpuCores={metrics.system_cpu_cores ?? "N/A"}
+                totalSystemMemory={metrics.system_memory ?? "N/A"}
+                totalDiskSpace={metrics.disk_space_total ?? "N/A"}
+                totalProcess={metrics.total_process ?? "N/A"}
+                usedDiskSpace={metrics.disk_space_used ?? "N/A"}
+                usedSystemMemory={metrics.system_memory_used ?? "N/A"}
+        />
+      {/if}
 
-      <GpuCard
-              totalGpu={metrics.gpu_total ?? "N/A"}
-              totalMemory={metrics.gpu_memory ?? "N/A"}
-              totalNvidiaGpu={metrics.gpu_nvidia_total ?? "N/A"}
-              totalAmdGpu={metrics.gpu_amd_total ?? "N/A"}
-              totalNvidiaMemory={metrics.gpu_nvidia_memory ?? "N/A"}
-              totalAmdMemory={metrics.gpu_amd_memory ?? "N/A"}
-      />
+      {#if metricsError}
+        <ErrorCard title="AI" error={metricsError}/>
+      {:else}
+        <GpuCard
+                totalGpu={metrics.gpu_total ?? "N/A"}
+                totalMemory={metrics.gpu_memory ?? "N/A"}
+                totalNvidiaGpu={metrics.gpu_nvidia_total ?? "N/A"}
+                totalAmdGpu={metrics.gpu_amd_total ?? "N/A"}
+                totalNvidiaMemory={metrics.gpu_nvidia_memory ?? "N/A"}
+                totalAmdMemory={metrics.gpu_amd_memory ?? "N/A"}
+        />
+      {/if}
 
-      <TokenomicsCard
-              tokenSupply={totalSupply.toFixed() ?? "N/A"}
-              totalMinted={chainMetrics.total_mfx_minted ?? "N/A"}
-              totalBurned={chainMetrics.total_mfx_burned ?? "N/A"}
-              pwrMfx={pwrMfx.toFixed()}
-              marketCap={estimatedMarketCap ? estimatedMarketCap.toFixed() : "N/A"}
-              circulatingSupply={circulatingSupplyMetrics}
-              lockedTokens={chainMetrics.locked_tokens ?? "N/A"}
-      />
+      {#if chainMetricsError}
+        <ErrorCard title="Tokenomics" error={chainMetricsError}/>
+      {:else if metricsError}
+        <ErrorCard title="Tokenomics" error={metricsError}/>
+      {:else if circulatingSupplyMetricsError}
+        <ErrorCard title="Tokenomics" error={circulatingSupplyMetricsError}/>
+      {:else}
+        <TokenomicsCard
+                tokenSupply={totalSupply.toFixed() ?? "N/A"}
+                totalMinted={chainMetrics.total_mfx_minted ?? "N/A"}
+                totalBurned={chainMetrics.total_mfx_burned ?? "N/A"}
+                pwrMfx={pwrMfx.toFixed()}
+                marketCap={estimatedMarketCap ? estimatedMarketCap.toFixed() : "N/A"}
+                circulatingSupply={circulatingSupplyMetrics}
+                lockedTokens={chainMetrics.locked_tokens ?? "N/A"}
+        />
+      {/if}
 
-      <BlockchainCard
-              totalUniqueUser={chainMetrics.total_unique_user ?? "N/A"}
-              totalDao={chainMetrics.total_unique_group ?? "N/A"}
-              totalTxCount={chainMetrics.total_tx_count ?? "N/A"}
-              tokenCount={chainMetrics.manifest_tokenomics_token_count ?? "N/A"}
-              blockchainHeight={chainMetrics.blockchain_height ?? "N/A"}
-      />
+      {#if chainMetricsError}
+        <ErrorCard title="Blockchain Metrics" error={chainMetricsError}/>
+      {:else}
+        <BlockchainCard
+                totalUniqueUser={chainMetrics.total_unique_user ?? "N/A"}
+                totalDao={chainMetrics.total_unique_group ?? "N/A"}
+                totalTxCount={chainMetrics.total_tx_count ?? "N/A"}
+                tokenCount={chainMetrics.manifest_tokenomics_token_count ?? "N/A"}
+                blockchainHeight={chainMetrics.blockchain_height ?? "N/A"}
+        />
+      {/if}
 
-      <WebServiceCard
-              totalWebServer={metrics.web_servers ?? "N/A"}
-              totalRequestPerSec={metrics.web_requests_per_sec ?? "N/A"}
-              totalRequests={cumsumMetrics.web_requests ?? "N/A"}
-      />
+      {#if metricsError}
+        <ErrorCard title="Web Services" error={metricsError}/>
+      {:else if cumsumMetricsError}
+        <ErrorCard title="Web Services" error={cumsumMetricsError}/>
+      {:else}
+        <WebServiceCard
+                totalWebServer={metrics.web_servers ?? "N/A"}
+                totalRequestPerSec={metrics.web_requests_per_sec ?? "N/A"}
+                totalRequests={cumsumMetrics.web_requests ?? "N/A"}
+        />
+      {/if}
 
-      <DecentralizedWebHosting
-              totalWebsites={metrics.web_sites ?? "N/A"}
-              totalRequests={cumsumMetrics.decentralized_web_requests ?? "N/A"}
-      />
+      {#if metricsError}
+        <ErrorCard title="Decentralized Web Hosting" error={metricsError}/>
+      {:else if cumsumMetricsError}
+        <ErrorCard title="Decentralized Web Hosting" error={cumsumMetricsError}/>
+      {:else}
+        <DecentralizedWebHosting
+                totalWebsites={metrics.web_sites ?? "N/A"}
+                totalRequests={cumsumMetrics.decentralized_web_requests ?? "N/A"}
+        />
+      {/if}
 
-      <KubeCard
-              totalNodes={metrics.kube_nodes ?? "N/A"}
-              totalPods={metrics.kube_pods ?? "N/A"}
-              totalMemory={metrics.kube_memory ?? "N/A"}
-      />
+      {#if metricsError}
+        <ErrorCard title="Kubernetes Metrics" error={metricsError}
+        />
+      {:else}
+        <KubeCard
+                totalNodes={metrics.kube_nodes ?? "N/A"}
+                totalPods={metrics.kube_pods ?? "N/A"}
+                totalMemory={metrics.kube_memory ?? "N/A"}
+        />
+      {/if}
 
-      <ObjectStorageCard
-              totalBuckets={metrics.minio_buckets ?? "N/A"}
-              totalObjects={metrics.minio_total ?? "N/A"}
-              usedStorage={metrics.minio_used ?? "N/A"}
-      />
+      {#if metricsError}
+        <ErrorCard title="Object Storage" error={metricsError} />
+      {:else}
+        <ObjectStorageCard
+                totalBuckets={metrics.minio_buckets ?? "N/A"}
+                totalObjects={metrics.minio_total ?? "N/A"}
+                usedStorage={metrics.minio_used ?? "N/A"}
+        />
+      {/if}
 
-      <NetworkCard
-        totalIpv4BandwidthReceived={cumsumMetrics.system_network_received ?? "N/A"}
-        totalIpv4BandwidthSent={cumsumMetrics.system_network_sent ?? "N/A"}
-        totalIpv4PacketReceived={cumsumMetrics.system_tcp_received ?? "N/A"}
-        totalIpv4PacketSent={cumsumMetrics.system_tcp_sent ?? "N/A"}
-      />
+      {#if cumsumMetricsError}
+        <ErrorCard title="Network Metrics" error={cumsumMetricsError} />
+      {:else}
+        <NetworkCard
+                totalIpv4BandwidthReceived={cumsumMetrics.system_network_received ?? "N/A"}
+                totalIpv4BandwidthSent={cumsumMetrics.system_network_sent ?? "N/A"}
+                totalIpv4PacketReceived={cumsumMetrics.system_tcp_received ?? "N/A"}
+                totalIpv4PacketSent={cumsumMetrics.system_tcp_sent ?? "N/A"}
+        />
+      {/if}
     </div>
   </div>
 </main>

@@ -1,17 +1,17 @@
 import {configs} from './config'
-import { loadAggregateMetric } from "$lib/loaders/loadAggregateMetric";
-import { loadWorldMapData } from "$lib/loaders/loadWorldMapData";
-import type {PageServerLoad} from "./$types";
+import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
+import {loadWorldMapData} from "$lib/loaders/loadWorldMapData";
+import type {PageServerLoad, PageServerLoadEvent} from "./$types";
+import {runTasks} from "$lib/utils/runTasks";
 
 export const load: PageServerLoad = async (event) => {
-  const metricIds = configs.map(config => config.id);
-  	const [aggregateMetric, worldMap] = await Promise.all([
-		loadAggregateMetric(metricIds)(event),
-		loadWorldMapData()(event)
-	]);
+  const metricTasks = configs.reduce((acc, { id }) => {
+    acc[`aggregateMetric_${id}`] = loadAggregateMetric(id);
+    return acc;
+  }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
 
-  return {
-    aggregateMetric: aggregateMetric.data,
-    worldMap: worldMap.data
-  };
+  return runTasks(event, {
+    ...metricTasks,
+    worldMap: loadWorldMapData()
+  });
 };

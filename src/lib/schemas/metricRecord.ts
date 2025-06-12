@@ -26,7 +26,7 @@ export const MetricRecordArraySchema = z.array(MetricRecordSchema)
 export const SingleMetricValueSchema = MetricRecordArraySchema.transform(
   (arr) => {
     if (arr.length !== 1) {
-      throw new Error(`Expected array of length 1, got ${arr.length}`)
+      return "N/A"
     }
     return arr[0].value
   }

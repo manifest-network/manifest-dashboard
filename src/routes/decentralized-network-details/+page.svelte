@@ -6,9 +6,19 @@
   import {invalidateAll} from '$app/navigation';
   import GlobeMapSVG from "$lib/components/GlobeMapSVG.svelte";
   import ChartCard from "$lib/components/ChartCard.svelte";
+  import ErrorCard from "$lib/components/ErrorCard.svelte";
   // import GlobeMap from "$lib/components/GlobeMap.svelte";
 
-  let {data}: PageProps = $props();
+  const {data}: PageProps = $props();
+  const aggMetrics = $derived(configs.map((config) => ({
+    config,
+    metrics: [
+      {
+        data: data[`aggregateMetric_${config.id}`],
+        error: data[`aggregateMetric_${config.id}Error`]
+      },
+    ]
+  })));
 
   const tick = readable(Date.now(), (set) => {
     const id = setInterval(() => set(Date.now()), 10000);
@@ -25,14 +35,24 @@
 
 <main>
   <div class="grid grid-cols-1 md:grid-cols-2 overflow-hidden p-4">
-    <div class="gap-4">
-      <GlobeMapSVG data={data.worldMap} />
-    </div>
+    {#if data.worldMapError}
+      <ErrorCard title="Globe Error" error="Failed to load world map data."/>
+    {:else if data.worldMap}
+      <div class="gap-4">
+        <GlobeMapSVG data={data.worldMap}/>
+      </div>
+    {/if}
     <div class="grid grid-cols-1 md:grid-cols-2">
-      {#each configs as config, i}
-        <div class="card w-full p-2 mb-4">
-          <ChartCard config={config} data={data.aggregateMetric[i]}/>
-        </div>
+      {#each aggMetrics as {config, metrics}}
+        {#each metrics as {data: mData, error: mError}}
+          {#if mError}
+            <ErrorCard title="Chart Failed" error={mError}/>
+          {:else if mData}
+            <div class="card w-full p-4 mb-4">
+              <ChartCard config={config} data={mData}/>
+            </div>
+          {/if}
+        {/each}
       {/each}
     </div>
   </div>
