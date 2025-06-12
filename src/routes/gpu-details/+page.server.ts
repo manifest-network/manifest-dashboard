@@ -9,5 +9,5 @@ export const load: PageServerLoad = async (event) => {
     return acc;
   }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
 
-  return runTasks(event, {...metricTasks})
+  return runTasks(event, metricTasks)
 };
