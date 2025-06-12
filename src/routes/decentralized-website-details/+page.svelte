@@ -4,6 +4,7 @@
   import {invalidateAll} from "$app/navigation";
   import {configs} from "./config";
   import ChartCard from "$lib/components/ChartCard.svelte";
+  import ErrorCard from "$lib/components/ErrorCard.svelte";
 
   let {data}: PageProps = $props();
 
@@ -21,10 +22,20 @@
 
 <main>
   <div class="grid grid-cols-2">
-    {#each configs as config, i}
-      <div class="card w-full p-4 mb-4">
-        <ChartCard config={config} data={data.data[i]}/>
-      </div>
+    {#each configs as config}
+      {#if data[`aggregateMetric_${config.id}Error`]}
+        <ErrorCard title={"Chart Failed"} error={data[`aggregateMetric_${config.id}Error`]}/>
+        {:else if data[`cumsumMetric_${config.id}Error`]}
+        <ErrorCard title={"Cumulative Chart Failed"} error={data[`cumsumMetric_${config.id}Error`]}/>
+      {:else if data[`aggregateMetric_${config.id}`]}
+        <div class="card w-full p-2 mb-4">
+          <ChartCard config={config} data={data[`aggregateMetric_${config.id}`]}/>
+        </div>
+        {:else if data[`cumsumMetric_${config.id}`]}
+        <div class="card w-full p-2 mb-4">
+          <ChartCard config={config} data={data[`cumsumMetric_${config.id}`]} />
+        </div>
+      {/if}
     {/each}
   </div>
 </main>

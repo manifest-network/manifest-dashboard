@@ -2,6 +2,7 @@ import {error, type RequestEvent} from "@sveltejs/kit";
 import {extractAndPrepareApiParams} from "$lib/loaders/aggregateUtils";
 import {type ChartDataPoint, ChartDataPointArraySchema} from "$lib/schemas/charts";
 import type {ZodType} from "zod/v4";
+import {formatId} from "$lib/utils/format";
 
 export function createDataLoader(
   id: string,
@@ -22,7 +23,7 @@ export function createDataLoader(
       return {data: parsed.data as ChartDataPoint[]};
     } catch (e) {
       console.error(`Error fetching ${id}:`, e);
-      error(500, `Error fetching data for ${id}`);
+      error(500, `Error fetching data for "${formatId(id)}"`);
     }
   };
 }

@@ -1,7 +1,8 @@
-import type {PageServerLoad} from "./$types";
+import type {PageServerLoad, PageServerLoadEvent} from "./$types";
 import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
 import {configs} from "./config";
 import {loadCumsumMetric} from "$lib/loaders/loadCumsumMetric";
+import {runTasks} from "$lib/utils/runTasks";
 
 export const load: PageServerLoad = async (event) => {
   const { aggregate, cumsum } = configs.reduce(
@@ -13,18 +14,18 @@ export const load: PageServerLoad = async (event) => {
     { aggregate: [] as string[], cumsum: [] as string[] }
   )
 
-  const [aggregateMetric, cumsumMetric] = await Promise.all([
-    loadAggregateMetric(aggregate)(event),
-    loadCumsumMetric(cumsum)(event)
-  ]);
+  const metricTasks = aggregate.reduce((acc, id ) => {
+    acc[`aggregateMetric_${id}`] = loadAggregateMetric(id);
+    return acc;
+  }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
 
-  const aggData = aggregateMetric.data;
-  const cumData = cumsumMetric.data;
-  let ai = 0, ci = 0;
-  const data = configs.map(({ type }) =>
-    type === 'cumsum' ? cumData[ci++] : aggData[ai++]
-  );
+  const cumsumTasks = cumsum.reduce((acc, id) => {
+    acc[`cumsumMetric_${id}`] = loadCumsumMetric(id);
+    return acc;
+  }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
 
-
-  return { data };
+  return runTasks(event, {
+    ...metricTasks,
+    ...cumsumTasks
+  });
 };
