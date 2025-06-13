@@ -3,6 +3,27 @@ import {BigNumber} from "bignumber.js";
 
 export const configs: ChartConfig[] = [
   {
+    id: 'fdv',
+    title: (latest) => `Estimated FDV.: $${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'Estimated FDV.',
+    category: 'tokenomic',
+    type: "supply"
+  },
+  {
+    id: 'market_cap',
+    title: (latest) => `Estimated Market Cap.: $${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'Estimated Market Cap.',
+    category: 'tokenomic',
+    type: "supply"
+  },
+  {
+    id: 'circulating_supply',
+    title: (latest) => `Circulating Supply: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'Circulating Supply',
+    category: 'tokenomic',
+    type: "supply"
+  },
+  {
     id: 'manifest_tokenomics_total_supply',
     title: (latest) => `Total MFX Supply: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
     yAxisTitle: 'Token Supply',
@@ -17,11 +38,11 @@ export const configs: ChartConfig[] = [
     type: "chain"
   },
   {
-    id: 'total_mfx_burned',
+    id: 'burned_supply',
     title: (latest) => `Total MFX Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
     yAxisTitle: 'Token Burned',
     category: 'tokenomic',
-    type: "chain"
+    type: "supply"
   },
   {
     id: 'talib_mfx_power_conversion',
@@ -38,10 +59,10 @@ export const configs: ChartConfig[] = [
     type: "chain"
   },
   {
-    id: 'circulating_supply',
-    title: (latest) => `Circulating Supply: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
-    yAxisTitle: 'Circulating Supply',
+    id: 'locked_fees',
+    title: (latest) => `Burned Fees: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'Burned Fees',
     category: 'tokenomic',
-    type: "supply"
+    type: "chain"
   },
 ]

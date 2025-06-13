@@ -10,6 +10,8 @@
     marketCap,
     circulatingSupply,
     lockedTokens,
+    lockedFees,
+    fdv,
   } = $props<{
     tokenSupply: string,
     totalMinted: string,
@@ -18,6 +20,8 @@
     marketCap: string
     circulatingSupply: string
     lockedTokens: string
+    lockedFees: string
+    fdv: string
   }>();
 
 </script>
@@ -29,8 +33,12 @@
   </div>
   <div class="grid grid-cols-2 gap-x-4 gap-y-2">
     <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatCurrency(marketCap)}</p>
+      <p class="text-xl font-bold text-secondary-400-600">${formatBaseDenom(fdv)}</p>
       <p class="text-xs font-medium text-muted-foreground">(Estimated) Fully Diluted Valuation</p>
+    </div>
+    <div>
+      <p class="text-xl font-bold text-secondary-400-600">${formatBaseDenom(marketCap)}</p>
+      <p class="text-xs font-medium text-muted-foreground">(Estimated) Market Cap.</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(circulatingSupply)}</p>
@@ -52,7 +60,7 @@
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalBurned)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total MFX Burned</p>
+      <p class="text-xs font-medium text-muted-foreground">Total MFX Burned (incl. fees)</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{pwrMfx}</p>
@@ -61,6 +69,10 @@
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(lockedTokens)}</p>
       <p class="text-xs font-medium text-muted-foreground">Locked MFX</p>
+    </div>
+    <div>
+      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(lockedFees)}</p>
+      <p class="text-xs font-medium text-muted-foreground">MFX Fees Spent</p>
     </div>
   </div>
 </div>

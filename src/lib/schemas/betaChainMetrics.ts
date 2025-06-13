@@ -4,7 +4,6 @@ import {bigNumberLike} from "$lib/schemas/common";
 
 // Metrics common to the Manifest Ledger testnet and mainnet.
 export const BetaChainMetricSchema = z.object({
-  total_mfx_burned: bigNumberLike.default("0"),
   total_mfx_minted: bigNumberLike.default("0"),
   total_tx_count: bigNumberLike.default("0"),
   total_unique_user: bigNumberLike.default("0"),
@@ -12,8 +11,8 @@ export const BetaChainMetricSchema = z.object({
   blockchain_height: bigNumberLike.default("0"),
   manifest_tokenomics_total_supply: bigNumberLike.default("0"),
   manifest_tokenomics_token_count: bigNumberLike.default("0"),
-  manifest_tokenomics_excluded_supply: bigNumberLike.default("0"),
   locked_tokens: bigNumberLike.default("0"),
+  locked_fees: bigNumberLike.default("0"),
 })
 export type PartialBetaChainMetric = z.infer<typeof BetaChainMetricSchema>;
 export type BetaChainMetricKey = keyof z.infer<typeof BetaChainMetricSchema>;
