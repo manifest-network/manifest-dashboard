@@ -42,13 +42,16 @@
   const geoDataError = $derived(data.worldMapError);
   const circulatingSupplyMetrics: string = $derived(data.latestCirculatingSupplyMetric)
   const circulatingSupplyMetricsError = $derived(data.latestCirculatingSupplyMetricError);
+  const burnedSupplyMetrics: string = $derived(data.latestBurnedSupplyMetric)
+  const burnedSupplyMetricsError = $derived(data.latestBurnedSupplyMetricError);
+  const fdvMetrics: string = $derived(data.latestFdv)
+  const fdvMetricsError = $derived(data.latestFdvError);
+  const mcMetrics: string = $derived(data.latestMc)
+  const mcMetricsError = $derived(data.latestMcError);
   const totalSupply: BigNumber = $derived(BigNumber(chainMetrics.manifest_tokenomics_total_supply))
 
-  // Convert the MANY PWR:MFX conversion rate to Manifest by dividing by the 1:10 split
   const pwrMfx: BigNumber = $derived(BigNumber(metrics.talib_mfx_power_conversion ?? "1").div(10));
 
-  // Divide the total supply by the number of decimal places (6) to get the actual token amount
-  const estimatedMarketCap: BigNumber = $derived(totalSupply.div(1_000_000).multipliedBy(pwrMfx));
   const uniqueCountries: number = $derived(
     new Set(geoData.map(item => item.country_name)).size
   );
@@ -93,15 +96,23 @@
         <ErrorCard title="Tokenomics" error={metricsError}/>
       {:else if circulatingSupplyMetricsError}
         <ErrorCard title="Tokenomics" error={circulatingSupplyMetricsError}/>
+      {:else if mcMetricsError}
+        <ErrorCard title="Tokenomics" error={mcMetricsError}/>
+      {:else if fdvMetricsError}
+        <ErrorCard title="Tokenomics" error={fdvMetricsError}/>
+      {:else if burnedSupplyMetricsError}
+        <ErrorCard title="Tokenomics" error={burnedSupplyMetricsError}/>
       {:else}
         <TokenomicsCard
                 tokenSupply={totalSupply.toFixed() ?? "N/A"}
                 totalMinted={chainMetrics.total_mfx_minted ?? "N/A"}
-                totalBurned={chainMetrics.total_mfx_burned ?? "N/A"}
+                totalBurned={burnedSupplyMetrics ?? "N/A"}
                 pwrMfx={pwrMfx.toFixed()}
-                marketCap={estimatedMarketCap ? estimatedMarketCap.toFixed() : "N/A"}
+                marketCap={mcMetrics ?? "N/A"}
                 circulatingSupply={circulatingSupplyMetrics}
                 lockedTokens={chainMetrics.locked_tokens ?? "N/A"}
+                lockedFees={chainMetrics.locked_fees ?? "N/A"}
+                fdv={fdvMetrics ?? "N/A"}
         />
       {/if}
 

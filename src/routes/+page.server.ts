@@ -14,6 +14,9 @@ export const load: PageServerLoad = async (event) => {
     latestChainMetric: loadLatestChainMetric(network),
     latestCumsumMetric: loadLatestCumsumMetric(),
     latestCirculatingSupplyMetric: loadLatestSupplyMetric(network, 'circulating_supply'),
+    latestBurnedSupplyMetric: loadLatestSupplyMetric(network, 'burned_supply'),
+    latestFdv: loadLatestSupplyMetric(network, 'fdv'),
+    latestMc: loadLatestSupplyMetric(network, 'market_cap'),
     worldMap: loadWorldMapData()
   });
 };
