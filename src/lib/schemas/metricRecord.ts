@@ -21,16 +21,11 @@ export const MetricRecordSchema = z.object({
   value: bigNumberLike,
 })
 
-export const MetricRecordArraySchema = z.array(MetricRecordSchema)
-
-export const SingleMetricValueSchema = MetricRecordArraySchema.transform(
-  (arr) => {
-    if (arr.length !== 1) {
-      return "N/A"
-    }
-    return arr[0].value
-  }
-)
+export function makeSingleMetricValueSchema(metricKey: string) {
+  return z
+    .array(makePreprocessedMetricRecordSchema(metricKey))
+    .transform((arr) => (arr.length !== 1 ? "N/A" : arr[0].value));
+}
 
 // All metric preprocessing happens here. Includes adjustments for
 // - Mainnet offsets and launch date
