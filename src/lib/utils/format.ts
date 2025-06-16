@@ -42,7 +42,7 @@ export function formatBaseDenom(val: string){
   const converted = bigNum.dividedBy(1e6);
   if (converted.isNaN()) return 'NaN';
 
-  return formatLargeNumber(converted.toFixed(4), 4);
+  return formatLargeNumber(converted.toFixed(1), 1);
 }
 
 export function formatLargeNumber(val: string, decimalPlaces: number = 2): string {
@@ -56,16 +56,16 @@ export function formatLargeNumber(val: string, decimalPlaces: number = 2): strin
 
   if (absolute.isZero()) ret = BigNumber(0).toFixed(decimalPlaces);
   else if (absolute.isLessThan(1e3)) ret = absolute.toFixed(decimalPlaces);
-  else if (absolute.isLessThan(1e6)) ret = `${absolute.dividedBy(1e3).toFixed(decimalPlaces)}K`;
-  else if (absolute.isLessThan(1e9)) ret = `${absolute.dividedBy(1e6).toFixed(decimalPlaces)}M`;
-  else if (absolute.isLessThan(1e12)) ret = `${absolute.dividedBy(1e9).toFixed(decimalPlaces)}B`;
-  else if (absolute.isLessThan(1e15)) ret = `${absolute.dividedBy(1e12).toFixed(decimalPlaces)}T`;
-  else if (absolute.isLessThan(1e18)) ret = `${absolute.dividedBy(1e15).toFixed(decimalPlaces)}Q`;
-  else if (absolute.isLessThan(1e21)) ret = `${absolute.dividedBy(1e18).toFixed(decimalPlaces)}E`;
-  else if (absolute.isLessThan(1e24)) ret = `${absolute.dividedBy(1e21).toFixed(decimalPlaces)}Z`;
-  else if (absolute.isLessThan(1e27)) ret = `${absolute.dividedBy(1e24).toFixed(decimalPlaces)}Y`;
-  else if (absolute.isLessThan(1e30)) ret = `${absolute.dividedBy(1e27).toFixed(decimalPlaces)}X`;
-  else if (absolute.isLessThan(1e33)) ret = `${absolute.dividedBy(1e30).toFixed(decimalPlaces)}W`;
+  else if (absolute.isLessThan(1e6)) ret = `${absolute.dividedBy(1e3).toFixed(decimalPlaces)} K`;
+  else if (absolute.isLessThan(1e9)) ret = `${absolute.dividedBy(1e6).toFixed(decimalPlaces)} M`;
+  else if (absolute.isLessThan(1e12)) ret = `${absolute.dividedBy(1e9).toFixed(decimalPlaces)} B`;
+  else if (absolute.isLessThan(1e15)) ret = `${absolute.dividedBy(1e12).toFixed(decimalPlaces)} T`;
+  else if (absolute.isLessThan(1e18)) ret = `${absolute.dividedBy(1e15).toFixed(decimalPlaces)} Q`;
+  else if (absolute.isLessThan(1e21)) ret = `${absolute.dividedBy(1e18).toFixed(decimalPlaces)} E`;
+  else if (absolute.isLessThan(1e24)) ret = `${absolute.dividedBy(1e21).toFixed(decimalPlaces)} Z`;
+  else if (absolute.isLessThan(1e27)) ret = `${absolute.dividedBy(1e24).toFixed(decimalPlaces)} Y`;
+  else if (absolute.isLessThan(1e30)) ret = `${absolute.dividedBy(1e27).toFixed(decimalPlaces)} X`;
+  else if (absolute.isLessThan(1e33)) ret = `${absolute.dividedBy(1e30).toFixed(decimalPlaces)} W`;
 
   return isNegative ? `-${ret}` : ret
 }
