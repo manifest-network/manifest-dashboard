@@ -74,12 +74,15 @@
     componentActive = false;
   });
 
+  function isVisible(point: GeoRecord): boolean {
+    return geoDistance([point.longitude, point.latitude], center) <= Math.PI / 2;
+  }
+
   // checkPointHover checks if the user is currently hovering one of the info point with the mouse cursor
   function checkPointHover(x: number, y: number) {
     if (data && data.length > 0) {
       for (const point of data) {
-        const d = geoDistance([point.longitude, point.latitude], rotation);
-        if (d > Math.PI / 2) {
+        if (isVisible(point)) {
           const coords = projection([point.longitude, point.latitude]);
           if (coords) {
             const dx = coords[0] - x;
@@ -280,7 +283,7 @@
           context.textBaseline = 'top';
 
           citiesWithData.forEach((point: GeoRecord) => {
-            if (geoDistance([point.longitude, point.latitude], rotation) > Math.PI / 2) {
+            if (isVisible(point)) {
               const coords = projection([point.longitude, point.latitude]);
               if (coords) {
                 context.beginPath();
