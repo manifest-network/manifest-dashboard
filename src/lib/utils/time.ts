@@ -4,7 +4,7 @@ export const IntervalMap: Record<TimeSpan, TimeScale> = {
   "1 week": "1 day",
   "1 month": "1 day",
   "3 months": "1 day",
-  "1 year": "1 week",
+  "1 year": "1 day",
 }
 
 export const ALLOWED_INTERVALS: TimeSpan[] = [
