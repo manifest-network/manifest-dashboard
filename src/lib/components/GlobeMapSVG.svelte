@@ -1,11 +1,17 @@
 <script lang="ts">
   import {Canvas, Layer} from 'svelte-canvas';
   import {geoCentroid, geoDistance, geoOrthographic, geoPath} from 'd3-geo';
+  import { quadtree } from 'd3-quadtree';
   import {worldFeatures} from "$lib/utils/worldTopology";
   import {computedColor, getColorFromCSS} from "$lib/utils/colors";
   import {mode} from '$lib/stores/theme';
   import {onDestroy} from "svelte";
   import type {GeoRecord, GeoRecordArray} from "$lib/schemas/geo";
+
+  interface Cluster {
+    readonly members: readonly GeoRecord[];
+    readonly coords: readonly [number, number];
+  }
 
   const {data} = $props<{ data: GeoRecordArray }>();
 
@@ -25,7 +31,7 @@
   let dragging = $state(false);
   let _x = $state(0);
   let _y = $state(0);
-  let hoverPoint = $state<GeoRecord | null>(null);
+  let hoverCluster = $state<Cluster | null>(null);
   let tooltipX = $state(0);
   let tooltipY = $state(0);
   let fontLoaded = $state(false);
@@ -37,6 +43,59 @@
 
   const rotationSpeed = 0.2; // degrees per frame
   const inactivityDelay = 1000; // ms before autorotation starts after user stops interacting
+
+  const CLUSTER_RADIUS = 8;
+  let clusters = $derived.by(() => {
+    // Build a quadtree on screen-space points
+    const visiblePoints = [...citiesWithData.values()].filter(isVisible);
+    const tree = quadtree<GeoRecord>()
+      .x(d => projection([d.longitude, d.latitude])![0])
+      .y(d => projection([d.longitude, d.latitude])![1])
+      .addAll(visiblePoints);
+
+    const out: Cluster[] = [];
+
+    // Radius-based neighbor lookup
+    function neighbors(x: number, y: number) {
+      const result: GeoRecord[] = [];
+      const r2 = CLUSTER_RADIUS * CLUSTER_RADIUS;
+      tree.visit((node, x0, y0, x1, y1) => {
+        const dx = Math.max(0, x0 - x, x - x1);
+        const dy = Math.max(0, y0 - y, y - y1);
+        if (dx*dx + dy*dy > r2) return true;
+        if (!node.length) {
+          let d: any = node;
+          do {
+            const pt = d.data as GeoRecord;
+            const [px, py] = projection([pt.longitude, pt.latitude])!;
+            if ((px - x)**2 + (py - y)**2 <= r2) result.push(pt);
+            d = d.next;
+          } while (d);
+        }
+        return false;
+      });
+      return result as readonly GeoRecord[];
+    }
+
+    // Build clusters
+    for (const pt of visiblePoints) {
+      const [x, y] = projection([pt.longitude, pt.latitude])!;
+      if (out.some(c => c.members.includes(pt))) continue;
+      out.push({ members: neighbors(x, y), coords: [x, y] as const });
+    }
+
+    return out;
+  });
+
+  // Hover detection for clusters
+  function checkClusterHover(mx: number, my: number): Cluster | null {
+    for (const c of clusters) {
+      if (Math.hypot(c.coords[0] - mx, c.coords[1] - my) <= CLUSTER_RADIUS) {
+        return c;
+      }
+    }
+    return null;
+  }
 
   function animateGlobe() {
     if (autoRotating && !dragging) {
@@ -78,26 +137,6 @@
     return geoDistance([point.longitude, point.latitude], center) <= Math.PI / 2;
   }
 
-  // checkPointHover checks if the user is currently hovering one of the info point with the mouse cursor
-  function checkPointHover(x: number, y: number) {
-    if (data && data.length > 0) {
-      for (const point of data) {
-        if (isVisible(point)) {
-          const coords = projection([point.longitude, point.latitude]);
-          if (coords) {
-            const dx = coords[0] - x;
-            const dy = coords[1] - y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance <= 8) { // 8px radius for hover detection
-              return point;
-            }
-          }
-        }
-      }
-    }
-    return null;
-  }
-
   // getCityCount returns the number of reported server per city
   const getCityCount = (city: string, country: string) => {
     const key = `${city},${country}`;
@@ -115,7 +154,7 @@
           country_name = 'United States of America'
         }
         countriesWithData.add(country_name)
-        citiesWithData.set(item.city, item)
+        citiesWithData.set(`${item.city},${item.country_name}`, item)
       })
     }
   });
@@ -171,8 +210,8 @@
       const x = mouseEvent.clientX - rect.left;
       const y = mouseEvent.clientY - rect.top;
 
-      hoverPoint = checkPointHover(x, y);
-      if (hoverPoint) {
+      hoverCluster = checkClusterHover(x, y);
+      if (hoverCluster) {
         tooltipX = mouseEvent.clientX;
         tooltipY = mouseEvent.clientY;
       }
@@ -231,10 +270,10 @@
       width = e.width;
       height = e.height;
   }}
-          onmousedown={onDown}
-          onmouseup={onUp}
-          onmousemove={onMove}
-          onmouseleave={() => { onUp(new MouseEvent('mouseleave')); hoverPoint = null; }}
+          onpointerdown={onDown}
+          onpointerup={onUp}
+          onpointermove={onMove}
+          onpointerleave={() => { onUp(new PointerEvent('pointerleave')); hoverCluster = null; }}
   >
     <!-- The Map -->
     <!-- Render the far side of the globe first -->
@@ -282,33 +321,28 @@
           context.textAlign = 'center';
           context.textBaseline = 'top';
 
-          citiesWithData.forEach((point: GeoRecord) => {
-            if (isVisible(point)) {
-              const coords = projection([point.longitude, point.latitude]);
-              if (coords) {
-                context.beginPath();
-                context.arc(coords[0], coords[1], 5, 0, 2 * Math.PI);
-                context.fill();
+          clusters.forEach(c => {
+            const isCluster = c.members.length > 1;
+            const radius = isCluster ? 7 : 5;
 
-                context.lineWidth = 1;
-                context.strokeStyle = strokeColor;  // or any CSS-driven color
-                context.stroke();
-
-                // Uncomment the following line to display city names on the map
-                // context.fillText(point.city, coords[0], coords[1] + 6);
-                context.fillStyle = pointColor;
-              }
-            }
+            context.beginPath();
+            context.arc(c.coords[0], c.coords[1], radius, 0, 2*Math.PI);
+            context.fillStyle = isCluster ? computedColor(getColorFromCSS('--color-secondary-900')) : pointColor;
+            context.fill();
+            context.lineWidth = 1;
+            context.stroke();
           });
         }
       }
     />
   </Canvas>
 
-  {#if hoverPoint}
+  {#if hoverCluster}
     <div class="tooltip" style="left: {tooltipX + 10}px; top: {tooltipY - 10}px">
       <div class="tooltip-content">
-        <b>{hoverPoint.city}</b>: {getCityCount(hoverPoint.city, hoverPoint.country_name)}
+        {#each hoverCluster.members as cityRec}
+          <div><b>{cityRec.city}</b>: {getCityCount(cityRec.city, cityRec.country_name)}</div>
+        {/each}
       </div>
     </div>
   {/if}
