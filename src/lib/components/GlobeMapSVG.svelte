@@ -1,12 +1,13 @@
 <script lang="ts">
   import {Canvas, Layer} from 'svelte-canvas';
   import {geoCentroid, geoDistance, geoOrthographic, geoPath} from 'd3-geo';
-  import { quadtree } from 'd3-quadtree';
+  import {quadtree} from 'd3-quadtree';
   import {worldFeatures} from "$lib/utils/worldTopology";
   import {computedColor, getColorFromCSS} from "$lib/utils/colors";
   import {mode} from '$lib/stores/theme';
   import {onDestroy} from "svelte";
   import type {GeoRecord, GeoRecordArray} from "$lib/schemas/geo";
+  import throttle from 'lodash/throttle';
 
   interface Cluster {
     readonly members: readonly GeoRecord[];
@@ -62,13 +63,13 @@
       tree.visit((node, x0, y0, x1, y1) => {
         const dx = Math.max(0, x0 - x, x - x1);
         const dy = Math.max(0, y0 - y, y - y1);
-        if (dx*dx + dy*dy > r2) return true;
+        if (dx * dx + dy * dy > r2) return true;
         if (!node.length) {
           let d: any = node;
           do {
             const pt = d.data as GeoRecord;
             const [px, py] = projection([pt.longitude, pt.latitude])!;
-            if ((px - x)**2 + (py - y)**2 <= r2) result.push(pt);
+            if ((px - x) ** 2 + (py - y) ** 2 <= r2) result.push(pt);
             d = d.next;
           } while (d);
         }
@@ -81,7 +82,7 @@
     for (const pt of visiblePoints) {
       const [x, y] = projection([pt.longitude, pt.latitude])!;
       if (out.some(c => c.members.includes(pt))) continue;
-      out.push({ members: neighbors(x, y), coords: [x, y] as const });
+      out.push({members: neighbors(x, y), coords: [x, y] as const});
     }
 
     return out;
@@ -96,6 +97,20 @@
     }
     return null;
   }
+
+  const throttledCheck = throttle(
+    (x: number, y: number) => {
+      const tmp = checkClusterHover(x, y);
+        hoverCluster = tmp ? {
+          ...tmp,
+          members: [...tmp.members].sort((a, b) =>
+            a.city.localeCompare(b.city)
+          )
+        } : null;
+    },
+    16,
+    {leading: true, trailing: true}
+  );
 
   function animateGlobe() {
     if (autoRotating && !dragging) {
@@ -131,6 +146,7 @@
       inactivityTimeout = null;
     }
     componentActive = false;
+    throttledCheck.cancel();
   });
 
   function isVisible(point: GeoRecord): boolean {
@@ -209,8 +225,8 @@
       const rect = (e.target as HTMLCanvasElement).getBoundingClientRect();
       const x = mouseEvent.clientX - rect.left;
       const y = mouseEvent.clientY - rect.top;
+      throttledCheck(x, y);
 
-      hoverCluster = checkClusterHover(x, y);
       if (hoverCluster) {
         tooltipX = mouseEvent.clientX;
         tooltipY = mouseEvent.clientY;
