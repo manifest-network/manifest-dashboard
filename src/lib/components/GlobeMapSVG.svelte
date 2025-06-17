@@ -1,7 +1,7 @@
 <script lang="ts">
   import {Canvas, Layer} from 'svelte-canvas';
   import {geoCentroid, geoDistance, geoOrthographic, geoPath} from 'd3-geo';
-  import {quadtree} from 'd3-quadtree';
+  import {quadtree, type QuadtreeLeaf} from 'd3-quadtree';
   import {worldFeatures} from "$lib/utils/worldTopology";
   import {computedColor, getColorFromCSS} from "$lib/utils/colors";
   import {mode} from '$lib/stores/theme';
@@ -65,7 +65,7 @@
         const dy = Math.max(0, y0 - y, y - y1);
         if (dx * dx + dy * dy > r2) return true;
         if (!node.length) {
-          let d: any = node;
+          let d: QuadtreeLeaf<GeoRecord> | undefined = node;
           do {
             const pt = d.data as GeoRecord;
             const [px, py] = projection([pt.longitude, pt.latitude])!;
@@ -101,12 +101,12 @@
   const throttledCheck = throttle(
     (x: number, y: number) => {
       const tmp = checkClusterHover(x, y);
-        hoverCluster = tmp ? {
-          ...tmp,
-          members: [...tmp.members].sort((a, b) =>
-            a.city.localeCompare(b.city)
-          )
-        } : null;
+      hoverCluster = tmp ? {
+        ...tmp,
+        members: [...tmp.members].sort((a, b) =>
+          a.city.localeCompare(b.city)
+        )
+      } : null;
     },
     16,
     {leading: true, trailing: true}
@@ -203,8 +203,8 @@
   const onDown = (e: Event) => {
     dragging = true;
     autoRotating = false;
-    if (e instanceof MouseEvent) {
-      const mouseEvent = e as MouseEvent;
+    if (e instanceof PointerEvent) {
+      const mouseEvent = e as PointerEvent;
       _x = mouseEvent.clientX;
       _y = mouseEvent.clientY;
     }
@@ -220,8 +220,8 @@
   };
 
   const onMove = (e: Event) => {
-    if (e instanceof MouseEvent) {
-      const mouseEvent = e as MouseEvent;
+    if (e instanceof PointerEvent) {
+      const mouseEvent = e as PointerEvent;
       const rect = (e.target as HTMLCanvasElement).getBoundingClientRect();
       const x = mouseEvent.clientX - rect.left;
       const y = mouseEvent.clientY - rect.top;
@@ -354,7 +354,7 @@
   </Canvas>
 
   {#if hoverCluster}
-    <div class="tooltip" style="left: {tooltipX + 10}px; top: {tooltipY - 10}px">
+    <div class="tooltip" style:left="{tooltipX + 10}px" style:top="{tooltipY - 10}px">
       <div class="tooltip-content">
         {#each hoverCluster.members as cityRec}
           <div><b>{cityRec.city}</b>: {getCityCount(cityRec.city, cityRec.country_name)}</div>
