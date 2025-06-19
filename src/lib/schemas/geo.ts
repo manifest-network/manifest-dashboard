@@ -4,8 +4,8 @@ import {z} from "zod/v4";
 const GeoRecordSchema = z.object({
   latitude: z.number(),
   longitude: z.number(),
-  country_name: z.string(),
-  city: z.string(),
+  country_name: z.string().nullish().transform((v) => v ?? "Unknown country"),
+  city: z.string().nullish().transform((v) => v ?? "Unknown city"),
 });
 // An array of geographical records, used for the world map
 export const GeoRecordArraySchema = z.array(GeoRecordSchema);
