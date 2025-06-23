@@ -362,7 +362,8 @@
   </Canvas>
 
   <div class="absolute bottom-4 left-4 z-10 pointer-events-auto group">
-    <button type="button" class="btn preset-outlined-primary-800-200" onclick={handleGlobeRotation}>
+    <button type="button" class="btn preset-outlined-primary-800-200" onclick={handleGlobeRotation}
+            aria-label="Toggle globe rotation">
       {#if autoRotating}
         <Paused size={24}/>
       {:else}
@@ -370,7 +371,8 @@
       {/if}
     </button>
     <!-- Pure CSS tooltip on Canvas -->
-    <div class="tooltip absolute top-full opacity-0 group-hover:opacity-100 group-hover:delay-1000 transition-opacity pointer-events-none delay-0 z-20" style:left="{60}px" style:top="{10}px">
+    <div class="tooltip absolute top-full opacity-0 group-hover:opacity-100 group-hover:delay-1000 transition-opacity pointer-events-none delay-0 z-20"
+         style:left="{60}px" style:top="{10}px">
       <div class="tooltip-content">
         Toggle globe rotation
       </div>
