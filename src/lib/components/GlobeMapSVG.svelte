@@ -8,6 +8,8 @@
   import {onDestroy} from "svelte";
   import type {GeoRecord, GeoRecordArray} from "$lib/schemas/geo";
   import throttle from 'lodash/throttle';
+  import Paused from 'carbon-icons-svelte/lib/Pause.svelte';
+  import Play from 'carbon-icons-svelte/lib/Play.svelte';
 
   interface Cluster {
     readonly members: readonly GeoRecord[];
@@ -39,6 +41,7 @@
   let componentActive = true;
 
   let autoRotating = $state(true);
+  let manuallyDisabledRotation = $state(false);
   let inactivityTimeout = $state<number | null>(null);
   let animationFrame = $state<number | null>(null);
 
@@ -215,7 +218,7 @@
 
     if (inactivityTimeout) clearTimeout(inactivityTimeout);
     inactivityTimeout = setTimeout(() => {
-      if (!dragging) autoRotating = true;
+      if (!dragging && !manuallyDisabledRotation) autoRotating = true;
     }, inactivityDelay);
   };
 
@@ -248,7 +251,7 @@
 
         if (inactivityTimeout) clearTimeout(inactivityTimeout);
         inactivityTimeout = setTimeout(() => {
-          if (!dragging) autoRotating = true;
+          if (!dragging && !manuallyDisabledRotation) autoRotating = true;
         }, inactivityDelay);
       }
     }
@@ -278,6 +281,11 @@
     strokeColor = computedColor(getColorFromCSS('--color-primary-100-900'));
     pointColor = computedColor(getColorFromCSS('--color-secondary-500'));
   });
+
+  function handleGlobeRotation() {
+    autoRotating = !autoRotating;
+    manuallyDisabledRotation = !manuallyDisabledRotation
+  }
 </script>
 
 <main class="globe-root">
@@ -353,6 +361,24 @@
     />
   </Canvas>
 
+  <div class="absolute bottom-4 left-4 z-10 pointer-events-auto group">
+    <button type="button" class="btn preset-outlined-primary-800-200" onclick={handleGlobeRotation}
+            aria-label="Toggle globe rotation">
+      {#if autoRotating}
+        <Paused size={24}/>
+      {:else}
+        <Play size={24}/>
+      {/if}
+    </button>
+    <!-- Pure CSS tooltip on Canvas -->
+    <div class="tooltip absolute top-full opacity-0 group-hover:opacity-100 group-hover:delay-1000 transition-opacity pointer-events-none delay-0 z-20"
+         style:left="{60}px" style:top="{10}px">
+      <div class="tooltip-content">
+        Toggle globe rotation
+      </div>
+    </div>
+  </div>
+
   {#if hoverCluster}
     <div class="tooltip" style:left="{tooltipX + 10}px" style:top="{tooltipY - 10}px">
       <div class="tooltip-content">
@@ -366,6 +392,7 @@
 
 <style>
     .globe-root {
+        position: relative;
         width: 100%;
         height: 85vh;
         touch-action: none;
