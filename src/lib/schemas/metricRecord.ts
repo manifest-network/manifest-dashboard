@@ -3,6 +3,7 @@ import {bigNumberLike} from "$lib/schemas/common";
 import {LAUNCH_DATE, NETWORK} from "$env/static/private";
 import {METRIC_OFFSETS} from "$lib/utils/metricOffsets";
 import {BigNumber} from "bignumber.js";
+import memoize from "lodash/memoize";
 
 const launchTime = new Date(LAUNCH_DATE).getTime();
 
@@ -21,17 +22,18 @@ export const MetricRecordSchema = z.object({
   value: bigNumberLike,
 })
 
-export function makeSingleMetricValueSchema(metricKey: string) {
+export type MetricRecord = z.infer<typeof MetricRecordSchema>;
+
+function buildSingleValueSchema(metricKey: string) {
   return z
     .array(makePreprocessedMetricRecordSchema(metricKey))
     .transform((arr) => (arr.length !== 1 ? "N/A" : arr[0].value));
 }
 
-// All metric preprocessing happens here. Includes adjustments for
-// - Mainnet offsets and launch date
-// - Special cases where the value is stored in the tags object
-export function makePreprocessedMetricRecordSchema(metricKey: string) {
-  return z.preprocess((raw) => {
+export const makeSingleMetricValueSchema = memoize(buildSingleValueSchema);
+
+function buildSchemaForMetric(metricKey: string) {
+   return z.preprocess((raw) => {
     const parsed = MetricRecordSchema.safeParse(raw);
     if (!parsed.success) {
       throw new Error(`Invalid metric record for key "${metricKey}": ${parsed.error.message}`);
@@ -69,4 +71,10 @@ export function makePreprocessedMetricRecordSchema(metricKey: string) {
 
     return { timestamp, value: adjusted };
   }, MetricRecordSchema);
+
 }
+
+// All metric preprocessing happens here. Includes adjustments for
+// - Mainnet offsets and launch date
+// - Special cases where the value is stored in the tags object
+export const makePreprocessedMetricRecordSchema = memoize(buildSchemaForMetric)
