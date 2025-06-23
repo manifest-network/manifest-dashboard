@@ -11,7 +11,7 @@ export const ChartDataPointSchema = z.object({
   date: z.date(),
 })
 
-export type ChartDataPoint = z.infer<typeof ChartDataPointSchema>
+export type ChartDataPoint = z.infer<typeof ChartDataPointSchema>;
 
 function preprocessPoints(group: string, arr: MetricRecord[]): ChartDataPoint[] {
   return arr.map((r) => {
