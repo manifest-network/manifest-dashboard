@@ -10,7 +10,6 @@
   import throttle from 'lodash/throttle';
   import Paused from 'carbon-icons-svelte/lib/Pause.svelte';
   import Play from 'carbon-icons-svelte/lib/Play.svelte';
-  import {Tooltip} from '@skeletonlabs/skeleton-svelte';
 
   interface Cluster {
     readonly members: readonly GeoRecord[];
