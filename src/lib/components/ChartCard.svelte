@@ -5,11 +5,10 @@
   import {mode} from '$lib/stores/theme';
   import {ScaleTypes, TickRotations} from "@carbon/charts-svelte";
   import {getColorFromCSS} from "$lib/utils/colors";
-
   import type {ChartDataPoint} from "$lib/schemas/charts";
+  import memoize from "lodash/memoize";
 
   let themeColor = getColorFromCSS('--color-secondary-600-400')
-  let chartOptions = $state({})
   let w = $state<number>(0);
   let h = $state<number>(0);
 
@@ -20,8 +19,8 @@
 
   let isDark = $derived($mode === 'dark');
 
-  $effect(() => {
-    chartOptions = {
+  function rawCreateConfig(id: string, w: number, h: number, isDark: boolean, yAxisTitle: string) {
+    return {
       animations: false,
       axes: {
         bottom: {
@@ -37,22 +36,21 @@
         left: {
           mapsTo: 'value',
           scaleType: ScaleTypes.LINEAR,
-          title: config.yAxisTitle,
+          title: yAxisTitle,
           ticks: {
             values: []
           }
         }
       },
-      curve: 'curveMonotoneX',
       includeZero: false,
-      height: h,
-      width: w,
+      height: h.toString(),
+      width: w.toString(),
       color: {
         gradient: {
           enabled: true
         },
         scale: {
-          [config.id]: themeColor
+          [id]: themeColor
         }
       },
       points: {
@@ -74,7 +72,12 @@
       },
       theme: isDark ? 'g90' : 'g10'
     }
+  }
+
+  const createConfig = memoize((id: string, w: number, h: number, isDark: boolean, yAxisTitle: string) => {
+    return rawCreateConfig(id, w, h, isDark, yAxisTitle);
   });
+  let chartOptions = $derived(createConfig(config.id, w, h, isDark, config.yAxisTitle));
 </script>
 
 <main>
