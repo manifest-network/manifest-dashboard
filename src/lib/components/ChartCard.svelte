@@ -60,8 +60,8 @@
 
   const createConfig = memoize((id: string, w: number, h: number, isDark: boolean, yAxisTitle: string) => {
     return rawCreateConfig(id, w, h, isDark, yAxisTitle);
-  }, (id, w, h, isDark, yAxisTitle) => {
-    return `${id}-${w}-${h}-${isDark}-${yAxisTitle}`;
+  }, (id, _w, _h, isDark, yAxisTitle) => {
+    return `${id}-${isDark}-${yAxisTitle}`;
   });
   let chartOptions = $derived(createConfig(config.id, w, h, isDark, config.yAxisTitle));
 </script>
