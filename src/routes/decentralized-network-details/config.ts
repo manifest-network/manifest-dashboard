@@ -24,14 +24,14 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'system_memory',
-    title: (latest) => `Total System Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
+    title: (latest) => `Total Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
     yAxisTitle: 'Memory (MB)',
     category: 'dn',
     type: "common"
   },
   {
     id: 'system_memory_used',
-    title: (latest) => `Used System Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
+    title: (latest) => `Used Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
     yAxisTitle: 'Memory (MB)',
     category: 'dn',
     type: "common"

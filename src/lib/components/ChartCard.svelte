@@ -14,8 +14,8 @@
 
   const {config, data}: { config: ChartConfig, data: ChartDataPoint[] } = $props();
   const title = $derived(typeof config.title === 'function'
-      ? config.title(data?.[0])
-      : `${config.title}: ${data?.[0]?.value ?? "N/A"}`);
+    ? config.title(data?.[0])
+    : `${config.title}: ${data?.[0]?.value ?? "N/A"}`);
 
   let isDark = $derived($mode === 'dark');
 
@@ -37,38 +37,22 @@
           mapsTo: 'value',
           scaleType: ScaleTypes.LINEAR,
           title: yAxisTitle,
-          ticks: {
-            values: []
-          }
+          ticks: {values: []}
         }
       },
       includeZero: false,
       height: h.toString(),
       width: w.toString(),
       color: {
-        gradient: {
-          enabled: true
-        },
-        scale: {
-          [id]: themeColor
-        }
+        gradient: {enabled: true},
+        scale: {[id]: themeColor}
       },
-      points: {
-        enabled: false
-      },
-      legend: {
-        enabled: false
-      },
-      toolbar: {
-        enabled: false
-      },
+      points: {enabled: false},
+      legend: {enabled: false},
+      toolbar: {enabled: false},
       grid: {
-        x: {
-          enabled: false
-        },
-        y: {
-          enabled: false,
-        }
+        x: {enabled: false},
+        y: {enabled: false}
       },
       theme: isDark ? 'g90' : 'g10'
     }

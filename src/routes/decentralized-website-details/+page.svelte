@@ -22,7 +22,7 @@
   })));
 
   const tick = readable(Date.now(), (set) => {
-    const id = setInterval(() => set(Date.now()), 10000);
+    const id = setInterval(() => set(Date.now()), 60000);
     return () => clearInterval(id);
   });
 
