@@ -6,7 +6,7 @@ import {error} from "@sveltejs/kit";
  * Throws SvelteKit errors for invalid parameters.
  * Returns a URLSearchParams object ready for the API request.
  */
-export function extractAndPrepareApiParams(url: URL): URLSearchParams | null {
+export function extractAndPrepareTimeParams(url: URL): URLSearchParams | null {
   const interval = url.searchParams.get("interval");
   if (!interval) {
     return null

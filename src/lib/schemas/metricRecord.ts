@@ -1,9 +1,10 @@
 import {z} from "zod/v4";
 import {bigNumberLike} from "$lib/schemas/common";
 import {LAUNCH_DATE, NETWORK} from "$env/static/private";
-import {METRIC_OFFSETS} from "$lib/utils/metricOffsets";
 import {BigNumber} from "bignumber.js";
 import memoize from "lodash/memoize";
+import {METRIC_OFFSETS} from "$lib/config/offsets";
+import {METRIC_MODIFIERS} from "$lib/config/modifiers";
 
 const launchTime = new Date(LAUNCH_DATE).getTime();
 
@@ -45,6 +46,8 @@ function buildSchemaForMetric(metricKey: string) {
     const isMainnet = NETWORK === "mainnet";
     const offset = METRIC_OFFSETS[metricKey];
     const hasOffset = offset !== undefined;
+    const modifier = METRIC_MODIFIERS[metricKey];
+    const hasModifier = modifier !== undefined;
 
     let baseValueBN = new BigNumber(value)
 
@@ -65,6 +68,14 @@ function buildSchemaForMetric(metricKey: string) {
       if (baseValueBN.isNegative()) {
         baseValueBN = new BigNumber(0);
       }
+    }
+
+    // Adjust the value by applying the modifier if:
+    // - on Mainnet
+    // - after the launch time and
+    // - has a modifier
+    if (hasModifier) {
+      baseValueBN = modifier(baseValueBN);
     }
 
     const adjusted = baseValueBN.toString();

@@ -1,5 +1,8 @@
 import {createDataLoader} from "./createDataLoader";
+import {NETWORK} from "$env/static/private";
 
-export function loadAggregateSupplyMetric(network: string, id: string) {
-  return createDataLoader(id, (params) => `/rpc/get_${network}_${id}?${params.toString()}`);
+export function loadAggregateSupplyMetric(id: string) {
+  return createDataLoader(id,`/rpc/get_agg_${id}`, new URLSearchParams({
+    p_schema: NETWORK as NetworkType,
+  }));
 }

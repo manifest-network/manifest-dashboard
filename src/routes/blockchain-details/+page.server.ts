@@ -1,13 +1,12 @@
 import type {PageServerLoad} from "./$types";
 import {configs} from "./config";
-import {loadAggregateChainMetric} from "$lib/loaders/loadAggregateChainMetric";
-import { NETWORK } from '$env/static/private';
 import type {PageServerLoadEvent} from "./$types";
 import {runTasks} from "$lib/utils/runTasks";
+import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
 
 export const load: PageServerLoad = async (event) => {
-  const metricTasks = configs.reduce((acc, { id }) => {
-    acc[`aggregateMetric_${id}`] = loadAggregateChainMetric(NETWORK as NetworkType, id);
+  const metricTasks = configs.reduce((acc, { id, type }) => {
+    acc[`aggregateMetric_${id}`] = loadAggregateMetric(id, type);
     return acc;
   }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
 
