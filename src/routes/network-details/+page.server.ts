@@ -5,8 +5,8 @@ import type {PageServerLoadEvent} from "./$types";
 import {runTasks} from "$lib/utils/runTasks";
 
 export const load: PageServerLoad = async (event) => {
-  const metricTasks = configs.reduce((acc, { id }) => {
-    acc[`cumsumMetric_${id}`] = loadCumsumMetric(id);
+  const metricTasks = configs.reduce((acc, { id, type }) => {
+    acc[`cumsumMetric_${id}`] = loadCumsumMetric(id, type);
     return acc;
   }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
 

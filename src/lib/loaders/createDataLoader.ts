@@ -1,19 +1,26 @@
 import {error, type RequestEvent} from "@sveltejs/kit";
-import {extractAndPrepareApiParams} from "$lib/loaders/aggregateUtils";
+import {extractAndPrepareTimeParams} from "$lib/loaders/aggregateUtils";
 import {type ChartDataPoint, ChartDataPointArraySchema} from "$lib/schemas/charts";
 import type {ZodType} from "zod/v4";
 import {formatId} from "$lib/utils/format";
 
 export function createDataLoader(
   id: string,
-  buildUrl: (params: URLSearchParams) => string
+  basePath: string,
+  baseParams: URLSearchParams,
 ) {
   return async ({fetch, url}: RequestEvent) => {
-    const baseParams = extractAndPrepareApiParams(url);
-    if (!baseParams) error(500, `Invalid API parameters`);
+    const timeParams = extractAndPrepareTimeParams(url);
+    if (!timeParams) error(500, `Invalid API parameters`);
 
     const params = new URLSearchParams(baseParams);
-    const apiUrl = buildUrl(params);
+    for (const [key, value] of timeParams) {
+      if (params.has(key)) {
+        console.warn(`Overriding existing parameter "${key}" with new value "${value}"`);
+      }
+      params.set(key, value);
+    }
+    const apiUrl = `${basePath}?${params.toString()}`
     try {
       const res = await fetch(apiUrl);
       if (!res.ok) throw new Error(`API request failed: ${res.status}`);
@@ -29,12 +36,12 @@ export function createDataLoader(
 }
 
 export function createSingleLoader<T>(
-  buildUrl: () => string,
+  baseUrl: string,
   schema: ZodType<T, any>
 ) {
   return async ({fetch}: RequestEvent) => {
     try {
-      const res = await fetch(buildUrl());
+      const res = await fetch(baseUrl);
       if (!res.ok) throw new Error(`API request failed: ${res.status}`);
       const raw = await res.json();
       const parsed = schema.safeParse(raw);

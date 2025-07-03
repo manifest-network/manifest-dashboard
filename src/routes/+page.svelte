@@ -40,17 +40,8 @@
   const cumsumMetricsError = $derived(data.latestCumsumMetricError);
   const geoData: GeoRecordArray = $derived(data.worldMap)
   const geoDataError = $derived(data.worldMapError);
-  const circulatingSupplyMetrics: string = $derived(data.latestCirculatingSupplyMetric)
-  const circulatingSupplyMetricsError = $derived(data.latestCirculatingSupplyMetricError);
-  const burnedSupplyMetrics: string = $derived(data.latestBurnedSupplyMetric)
-  const burnedSupplyMetricsError = $derived(data.latestBurnedSupplyMetricError);
-  const fdvMetrics: string = $derived(data.latestFdv)
-  const fdvMetricsError = $derived(data.latestFdvError);
-  const mcMetrics: string = $derived(data.latestMc)
-  const mcMetricsError = $derived(data.latestMcError);
-  const totalSupply: BigNumber = $derived(BigNumber(chainMetrics.manifest_tokenomics_total_supply))
-
-  const pwrMfx: BigNumber = $derived(BigNumber(metrics.talib_mfx_power_conversion ?? "1").div(10));
+  const tokenMetrics = $derived(data.latestTokenMetric);
+  const tokenMetricsError = $derived(data.latestTokenMetricError);
 
   const uniqueCountries: number = $derived(
     new Set(geoData.map(item => item.country_name)).size
@@ -94,25 +85,19 @@
         <ErrorCard title="Tokenomics" error={chainMetricsError}/>
       {:else if metricsError}
         <ErrorCard title="Tokenomics" error={metricsError}/>
-      {:else if circulatingSupplyMetricsError}
-        <ErrorCard title="Tokenomics" error={circulatingSupplyMetricsError}/>
-      {:else if mcMetricsError}
-        <ErrorCard title="Tokenomics" error={mcMetricsError}/>
-      {:else if fdvMetricsError}
-        <ErrorCard title="Tokenomics" error={fdvMetricsError}/>
-      {:else if burnedSupplyMetricsError}
-        <ErrorCard title="Tokenomics" error={burnedSupplyMetricsError}/>
+      {:else if tokenMetricsError}
+        <ErrorCard title="Tokenomics" error={tokenMetricsError}/>
       {:else}
         <TokenomicsCard
-                tokenSupply={totalSupply.toFixed() ?? "N/A"}
+                tokenSupply={chainMetrics.manifest_tokenomics_total_supply ?? "N/A"}
                 totalMinted={chainMetrics.total_mfx_minted ?? "N/A"}
-                totalBurned={burnedSupplyMetrics ?? "N/A"}
-                pwrMfx={pwrMfx.toFixed()}
-                marketCap={mcMetrics ?? "N/A"}
-                circulatingSupply={circulatingSupplyMetrics}
+                totalBurned={tokenMetrics.burned_supply ?? "N/A"}
+                pwrMfx={metrics.talib_mfx_power_conversion ? BigNumber(metrics.talib_mfx_power_conversion).div(10) : "N/A"}
+                marketCap={tokenMetrics.market_cap ?? "N/A"}
+                circulatingSupply={tokenMetrics.circulating_supply ?? "N/A"}
                 lockedTokens={chainMetrics.locked_tokens ?? "N/A"}
                 lockedFees={chainMetrics.locked_fees ?? "N/A"}
-                fdv={fdvMetrics ?? "N/A"}
+                fdv={tokenMetrics.fdv ?? "N/A"}
         />
       {/if}
 
