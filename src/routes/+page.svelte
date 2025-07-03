@@ -92,7 +92,7 @@
                 tokenSupply={chainMetrics.manifest_tokenomics_total_supply ?? "N/A"}
                 totalMinted={chainMetrics.total_mfx_minted ?? "N/A"}
                 totalBurned={tokenMetrics.burned_supply ?? "N/A"}
-                pwrMfx={metrics.talib_mfx_power_conversion ?? "N/A"}
+                pwrMfx={metrics.talib_mfx_power_conversion ? BigNumber(metrics.talib_mfx_power_conversion).div(10) : "N/A"}
                 marketCap={tokenMetrics.market_cap ?? "N/A"}
                 circulatingSupply={tokenMetrics.circulating_supply ?? "N/A"}
                 lockedTokens={chainMetrics.locked_tokens ?? "N/A"}
