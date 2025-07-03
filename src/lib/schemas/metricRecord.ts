@@ -71,8 +71,6 @@ function buildSchemaForMetric(metricKey: string) {
     }
 
     // Adjust the value by applying the modifier if:
-    // - on Mainnet
-    // - after the launch time and
     // - has a modifier
     if (hasModifier) {
       baseValueBN = modifier(baseValueBN);
