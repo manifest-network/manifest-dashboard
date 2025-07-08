@@ -5,12 +5,13 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build",
-		"build-release": "bun update-version && vite build",
+		"build": "bun generate_sitemap.js && vite build",
+		"build-release": "bun generate_sitemap.js && bun update-version && vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"gen-sitemap": "bun generate_sitemap.js"
 	},
 	"resolutions": {
 		"zod": "3.25.67"
