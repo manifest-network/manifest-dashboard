@@ -44,7 +44,7 @@
   const tokenMetricsError = $derived(data.latestTokenMetricError);
 
   const uniqueCountries: number = $derived(
-    new Set(geoData.map(item => item?.country_name)).size
+    new Set(geoData.map(item => item?.country_name).filter(Boolean)).size
   );
 </script>
 
