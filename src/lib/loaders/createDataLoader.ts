@@ -40,16 +40,16 @@ export function createSingleLoader<T>(
   schema: ZodType<T, any>
 ) {
   return async ({fetch}: RequestEvent) => {
-    try {
+    // try {
       const res = await fetch(baseUrl);
       if (!res.ok) throw new Error(`API request failed: ${res.status}`);
       const raw = await res.json();
       const parsed = schema.safeParse(raw);
       if (!parsed.success) throw new Error(`Invalid response format: ${parsed.error}`);
       return {data: parsed.data};
-    } catch (e) {
-      console.error(`Error fetching data:`, e);
-      error(500, `Error fetching metrics data`);
-    }
+    // } catch (e) {
+    //   console.error(`Error fetching data:`, e);
+      // error(500, `Error fetching metrics data`);
+    // }
   };
 }
