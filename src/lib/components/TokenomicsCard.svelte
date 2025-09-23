@@ -60,7 +60,7 @@
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalBurned)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total MFX Burned (incl. fees)</p>
+      <p class="text-xs font-medium text-muted-foreground">Total MFX Burned</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{pwrMfx}</p>
@@ -68,11 +68,11 @@
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(lockedTokens)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Locked MFX</p>
+      <p class="text-xs font-medium text-muted-foreground">Locked MFX (excl. fees)</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(lockedFees)}</p>
-      <p class="text-xs font-medium text-muted-foreground">MFX Fees Spent</p>
+      <p class="text-xs font-medium text-muted-foreground">Locked fees</p>
     </div>
   </div>
 </div>
