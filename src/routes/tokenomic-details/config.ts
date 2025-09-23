@@ -38,11 +38,11 @@ export const configs: ChartConfig[] = [
     type: "chain"
   },
   {
-    id: 'burned_supply',
+    id: 'total_mfx_burned',
     title: (latest) => `Total MFX Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
     yAxisTitle: 'Token Burned',
     category: 'tokenomic',
-    type: "supply"
+    type: "chain"
   },
   {
     id: 'talib_mfx_power_conversion',
