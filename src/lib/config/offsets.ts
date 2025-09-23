@@ -4,5 +4,5 @@ import {bigNumberLike} from "$lib/schemas/common";
 
 export const METRIC_OFFSETS: Partial<Record<string, string>> = {
   total_mfx_burned: bigNumberLike.parse("135304300855786304018"),
-  locked_fees: bigNumberLike.parse("134244018"),
+  locked_fees: bigNumberLike.parse("162820233"),
 }
