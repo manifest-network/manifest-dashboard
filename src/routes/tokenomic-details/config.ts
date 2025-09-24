@@ -33,14 +33,21 @@ export const configs: ChartConfig[] = [
   {
     id: 'total_mfx_minted',
     title: (latest) => `Total MFX Minted: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
-    yAxisTitle: 'Token Minted',
+    yAxisTitle: 'MFX Minted',
+    category: 'tokenomic',
+    type: "chain"
+  },
+  {
+    id: 'total_pwr_minted',
+    title: (latest) => `Total PWR Minted: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'PWR Minted',
     category: 'tokenomic',
     type: "chain"
   },
   {
     id: 'total_mfx_burned',
     title: (latest) => `Total MFX Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
-    yAxisTitle: 'Token Burned',
+    yAxisTitle: 'MFX Burned',
     category: 'tokenomic',
     type: "chain"
   },

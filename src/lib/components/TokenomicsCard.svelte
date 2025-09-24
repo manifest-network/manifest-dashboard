@@ -1,11 +1,12 @@
 <script lang="ts">
   import {Infinity} from "carbon-icons-svelte";
-  import {formatBaseDenom, formatCurrency, formatLargeNumber} from "$lib/utils/format";
+  import {formatBaseDenom} from "$lib/utils/format";
 
   const {
     tokenSupply,
     totalMinted,
     totalBurned,
+    totalPwrMinted,
     pwrMfx,
     marketCap,
     circulatingSupply,
@@ -57,6 +58,10 @@
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalMinted)}</p>
       <p class="text-xs font-medium text-muted-foreground">Total MFX Minted</p>
+    </div>
+    <div>
+      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalPwrMinted)}</p>
+      <p class="text-xs font-medium text-muted-foreground">Total PWR Minted</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalBurned)}</p>
