@@ -1,11 +1,13 @@
 <script lang="ts">
   import {Infinity} from "carbon-icons-svelte";
-  import {formatBaseDenom, formatCurrency, formatLargeNumber} from "$lib/utils/format";
+  import {formatBaseDenom} from "$lib/utils/format";
 
   const {
     tokenSupply,
     totalMinted,
     totalBurned,
+    totalPwrMinted,
+    totalPwrBurned,
     pwrMfx,
     marketCap,
     circulatingSupply,
@@ -16,6 +18,8 @@
     tokenSupply: string,
     totalMinted: string,
     totalBurned: string,
+    totalPwrMinted: string,
+    totalPwrBurned: string,
     pwrMfx: string,
     marketCap: string
     circulatingSupply: string
@@ -54,6 +58,7 @@
       </p>
       <p class="text-xs font-medium text-muted-foreground">Maximum MFX Supply</p>
     </div>
+    <br/>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalMinted)}</p>
       <p class="text-xs font-medium text-muted-foreground">Total MFX Minted</p>
@@ -63,8 +68,16 @@
       <p class="text-xs font-medium text-muted-foreground">Total MFX Burned</p>
     </div>
     <div>
+      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalPwrMinted)}</p>
+      <p class="text-xs font-medium text-muted-foreground">Total PWR Minted</p>
+    </div>
+    <div>
+      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalPwrBurned)}</p>
+      <p class="text-xs font-medium text-muted-foreground">Total PWR Burned</p>
+    </div>
+    <div>
       <p class="text-xl font-bold text-secondary-400-600">{pwrMfx}</p>
-      <p class="text-xs font-medium text-muted-foreground">PRW:MFX Conversion Rate</p>
+      <p class="text-xs font-medium text-muted-foreground">PWR:MFX Conversion Rate</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(lockedTokens)}</p>
