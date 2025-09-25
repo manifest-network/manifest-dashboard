@@ -58,7 +58,7 @@
       </p>
       <p class="text-xs font-medium text-muted-foreground">Maximum MFX Supply</p>
     </div>
-    <p></p>
+    <br/>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalMinted)}</p>
       <p class="text-xs font-medium text-muted-foreground">Total MFX Minted</p>
