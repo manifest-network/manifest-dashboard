@@ -77,7 +77,7 @@
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{pwrMfx}</p>
-      <p class="text-xs font-medium text-muted-foreground">PRW:MFX Conversion Rate</p>
+      <p class="text-xs font-medium text-muted-foreground">PWR:MFX Conversion Rate</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(lockedTokens)}</p>
