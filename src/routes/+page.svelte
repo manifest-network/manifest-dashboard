@@ -93,6 +93,7 @@
                 totalMinted={chainMetrics.total_mfx_minted ?? "N/A"}
                 totalBurned={chainMetrics.total_mfx_burned ?? "N/A"}
                 totalPwrMinted={chainMetrics.total_pwr_minted ?? "N/A"}
+                totalPwrBurned={chainMetrics.total_pwr_burned ?? "N/A"}
                 pwrMfx={metrics.talib_mfx_power_conversion ? BigNumber(metrics.talib_mfx_power_conversion).div(10).toFixed() : "N/A"}
                 marketCap={tokenMetrics.market_cap ?? "N/A"}
                 circulatingSupply={tokenMetrics.circulating_supply ?? "N/A"}

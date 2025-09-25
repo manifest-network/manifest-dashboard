@@ -7,6 +7,7 @@
     totalMinted,
     totalBurned,
     totalPwrMinted,
+    totalPwrBurned,
     pwrMfx,
     marketCap,
     circulatingSupply,
@@ -17,6 +18,8 @@
     tokenSupply: string,
     totalMinted: string,
     totalBurned: string,
+    totalPwrMinted: string,
+    totalPwrBurned: string,
     pwrMfx: string,
     marketCap: string
     circulatingSupply: string
@@ -66,6 +69,10 @@
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalBurned)}</p>
       <p class="text-xs font-medium text-muted-foreground">Total MFX Burned</p>
+    </div>
+    <div>
+      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalPwrBurned)}</p>
+      <p class="text-xs font-medium text-muted-foreground">Total PWR Burned</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{pwrMfx}</p>

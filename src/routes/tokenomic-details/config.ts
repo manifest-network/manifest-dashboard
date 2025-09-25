@@ -45,6 +45,13 @@ export const configs: ChartConfig[] = [
     type: "chain"
   },
   {
+    id: 'total_pwr_burned',
+    title: (latest) => `Total PWR Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'PWR Burned',
+    category: 'tokenomic',
+    type: "chain"
+  },
+  {
     id: 'total_mfx_burned',
     title: (latest) => `Total MFX Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
     yAxisTitle: 'MFX Burned',
