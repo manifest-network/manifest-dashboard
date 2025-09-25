@@ -58,17 +58,18 @@
       </p>
       <p class="text-xs font-medium text-muted-foreground">Maximum MFX Supply</p>
     </div>
+    <p></p>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalMinted)}</p>
       <p class="text-xs font-medium text-muted-foreground">Total MFX Minted</p>
     </div>
     <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalPwrMinted)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total PWR Minted</p>
-    </div>
-    <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalBurned)}</p>
       <p class="text-xs font-medium text-muted-foreground">Total MFX Burned</p>
+    </div>
+    <div>
+      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalPwrMinted)}</p>
+      <p class="text-xs font-medium text-muted-foreground">Total PWR Minted</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalPwrBurned)}</p>
