@@ -37,13 +37,13 @@ export const configs: ChartConfig[] = [
     category: 'tokenomic',
     type: "chain"
   },
-  {
-    id: 'burned_supply',
-    title: (latest) => `Total MFX Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
-    yAxisTitle: 'Token Burned',
-    category: 'tokenomic',
-    type: "supply"
-  },
+  // {
+  //   id: 'burned_supply',
+  //   title: (latest) => `Total MFX Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+  //   yAxisTitle: 'Token Burned',
+  //   category: 'tokenomic',
+  //   type: "supply"
+  // },
   {
     id: 'talib_mfx_power_conversion',
     title: (latest) => `MFX:PWR Conversion Rate: ${latest ? BigNumber(latest.value).div(10) : "N/A"}`,

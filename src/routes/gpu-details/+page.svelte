@@ -3,22 +3,12 @@
   import {readable} from "svelte/store";
   import {invalidateAll} from "$app/navigation";
   import {configs} from "./config";
-  import ChartCard from "$lib/components/ChartCard.svelte";
-  import ErrorCard from "$lib/components/ErrorCard.svelte";
+  import {RELOAD_INTERVAL_MS} from "$lib/const";
+  import ChartGrid from "$lib/components/ChartGrid.svelte";
 
   let {data}: PageProps = $props();
-  const aggMetrics = $derived(configs.map((config) => ({
-    config,
-    metrics: [
-      {
-        data: data[`aggregateMetric_${config.id}`],
-        error: data[`aggregateMetric_${config.id}Error`]
-      },
-    ]
-  })));
-
   const tick = readable(Date.now(), (set) => {
-    const id = setInterval(() => set(Date.now()), 60000);
+    const id = setInterval(() => set(Date.now()), RELOAD_INTERVAL_MS);
     return () => clearInterval(id);
   });
 
@@ -29,18 +19,4 @@
   });
 </script>
 
-<main>
-  <div class="grid grid-cols-2">
-    {#each aggMetrics as {config, metrics}}
-      {#each metrics as {data: mData, error: mError}}
-        {#if mError}
-          <ErrorCard title="Chart Failed" error={mError}/>
-        {:else if mData}
-          <div class="card w-full p-4 mb-6">
-            <ChartCard config={config} data={mData}/>
-          </div>
-        {/if}
-      {/each}
-    {/each}
-  </div>
-</main>
+<ChartGrid {configs} {data} />

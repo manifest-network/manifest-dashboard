@@ -1,14 +1,7 @@
 import type {PageServerLoad} from "./$types";
 import {configs} from "./config";
-import {loadCumsumMetric} from "$lib/loaders/loadCumsumMetric";
-import type {PageServerLoadEvent} from "./$types";
-import {runTasks} from "$lib/utils/runTasks";
+import {loadAggregateMetrics} from "$lib/loaders/loaders";
 
-export const load: PageServerLoad = async (event) => {
-  const metricTasks = configs.reduce((acc, { id, type }) => {
-    acc[`cumsumMetric_${id}`] = loadCumsumMetric(id, type);
-    return acc;
-  }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
-
-  return runTasks(event, metricTasks)
+export const load: PageServerLoad = async ({fetch, url}) => {
+  return loadAggregateMetrics(fetch, url, configs)
 };

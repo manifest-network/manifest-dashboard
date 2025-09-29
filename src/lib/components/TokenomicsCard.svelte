@@ -1,6 +1,7 @@
 <script lang="ts">
   import {Infinity} from "carbon-icons-svelte";
-  import {formatBaseDenom, formatCurrency, formatLargeNumber} from "$lib/utils/format";
+  import {formatBaseDenom} from "$lib/utils/format";
+  import BigNumber from "bignumber.js";
 
   const {
     tokenSupply,
@@ -16,7 +17,7 @@
     tokenSupply: string,
     totalMinted: string,
     totalBurned: string,
-    pwrMfx: string,
+    pwrMfx?: string,
     marketCap: string
     circulatingSupply: string
     lockedTokens: string
@@ -24,6 +25,7 @@
     fdv: string
   }>();
 
+  const pwrMfxValue = pwrMfx ? BigNumber(pwrMfx).div(10).toFixed() : 'N/A';
 </script>
 
 <div class="card border-l-2 border-primary-200-800 pl-3 hover:shadow-md hover:border-secondary-500 transition preset-filled-surface-100-900 p-4">
@@ -63,7 +65,7 @@
       <p class="text-xs font-medium text-muted-foreground">Total MFX Burned (incl. fees)</p>
     </div>
     <div>
-      <p class="text-xl font-bold text-secondary-400-600">{pwrMfx}</p>
+      <p class="text-xl font-bold text-secondary-400-600">{pwrMfxValue}</p>
       <p class="text-xs font-medium text-muted-foreground">PRW:MFX Conversion Rate</p>
     </div>
     <div>

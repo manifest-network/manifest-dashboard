@@ -4,24 +4,16 @@
   import {configs} from "./config";
   import {readable} from 'svelte/store';
   import {invalidateAll} from '$app/navigation';
+  import ChartGrid from "$lib/components/ChartGrid.svelte";
+  import {ERROR_RESET_INTERVAL_MS, RELOAD_INTERVAL_MS} from "$lib/const";
+  // TODO: Issue with set_context_after_init triggered by svelte-canvas
+  // TODO: https://github.com/sveltejs/svelte/issues/16629
   import GlobeMapSVG from "$lib/components/GlobeMapSVG.svelte";
-  import ChartCard from "$lib/components/ChartCard.svelte";
   import ErrorCard from "$lib/components/ErrorCard.svelte";
-  // import GlobeMap from "$lib/components/GlobeMap.svelte";
 
   const {data}: PageProps = $props();
-  const aggMetrics = $derived(configs.map((config) => ({
-    config,
-    metrics: [
-      {
-        data: data[`aggregateMetric_${config.id}`],
-        error: data[`aggregateMetric_${config.id}Error`]
-      },
-    ]
-  })));
-
   const tick = readable(Date.now(), (set) => {
-    const id = setInterval(() => set(Date.now()), 60000);
+    const id = setInterval(() => set(Date.now()), RELOAD_INTERVAL_MS);
     return () => clearInterval(id);
   });
 
@@ -35,25 +27,27 @@
 
 <main>
   <div class="grid grid-cols-1 md:grid-cols-2 overflow-hidden p-4">
-    {#if data.worldMapError}
-      <ErrorCard title="Globe Error" error="Failed to load world map data."/>
-    {:else if data.worldMap}
-      <div class="gap-4">
-        <GlobeMapSVG data={data.worldMap}/>
-      </div>
-    {/if}
-    <div class="grid grid-cols-1 md:grid-cols-2">
-      {#each aggMetrics as {config, metrics}}
-        {#each metrics as {data: mData, error: mError}}
-          {#if mError}
-            <ErrorCard title="Chart Failed" error={mError}/>
-          {:else if mData}
-            <div class="card w-full p-4 mb-4">
-              <ChartCard config={config} data={mData}/>
-            </div>
-          {/if}
-        {/each}
-      {/each}
-    </div>
+    <svelte:boundary>
+<!-- TODO: Issue with set_context_after_init triggered by svelte-canvas  -->
+<!-- TODO: https://github.com/sveltejs/svelte/issues/16629 -->
+      <GlobeMapSVG data={await data.world} />
+      {#snippet failed(error, reset)}
+        <div class="card w-full p-4 mb-6">
+          <ErrorCard title="World" error={"An error occurred while fetching world data."} />
+        </div>
+        {@html (() => {
+            console.error(error);
+            setTimeout(() => reset(), ERROR_RESET_INTERVAL_MS);
+            return "";
+        })()}
+      {/snippet}
+
+      {#snippet pending()}
+        <p>loading...</p>
+      {/snippet}
+
+    </svelte:boundary>
+
+    <ChartGrid {configs} data={data.metrics} />
   </div>
 </main>

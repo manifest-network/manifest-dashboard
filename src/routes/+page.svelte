@@ -1,6 +1,5 @@
 <script lang="ts">
   import type {PageProps} from "./$types";
-  import {BigNumber} from "bignumber.js";
   import TokenomicsCard from "$lib/components/TokenomicsCard.svelte";
   import DecentralizedNetworkCard from "$lib/components/DecentralizedNetworkCard.svelte";
   import BlockchainCard from "$lib/components/BlockchainCard.svelte";
@@ -11,17 +10,13 @@
   import {invalidateAll} from "$app/navigation";
   import GpuCard from "$lib/components/GpuCard.svelte";
   import WebServiceCard from "$lib/components/WebServiceCard.svelte";
-  import type {PartialCommonMetric} from "$lib/schemas/commonMetrics";
-  import type {PartialBetaChainMetric} from "$lib/schemas/betaChainMetrics";
-  import type {GeoRecordArray} from "$lib/schemas/geo";
-  import type {PartialCumsumMetric} from "$lib/schemas/cumsumMetrics";
   import NetworkCard from "$lib/components/NetworkCard.svelte";
   import ErrorCard from "$lib/components/ErrorCard.svelte";
 
   const {data}: PageProps = $props();
 
   const tick = readable(Date.now(), (set) => {
-    const id = setInterval(() => set(Date.now()), 60000);
+    const id = setInterval(() => set(Date.now()), 10000);
     return () => clearInterval(id);
   });
 
@@ -32,141 +27,210 @@
   });
 
 
-  const metrics: PartialCommonMetric = $derived(data.latestMetric)
-  const metricsError = $derived(data.latestMetricError)
-  const chainMetrics: PartialBetaChainMetric = $derived(data.latestChainMetric)
-  const chainMetricsError = $derived(data.latestChainMetricError);
-  const cumsumMetrics: PartialCumsumMetric = $derived(data.latestCumsumMetric);
-  const cumsumMetricsError = $derived(data.latestCumsumMetricError);
-  const geoData: GeoRecordArray = $derived(data.worldMap)
-  const geoDataError = $derived(data.worldMapError);
-  const tokenMetrics = $derived(data.latestTokenMetric);
-  const tokenMetricsError = $derived(data.latestTokenMetricError);
-
-  const uniqueCountries: number = $derived(
-    new Set(geoData.map(item => item?.country_name).filter(Boolean)).size
-  );
 </script>
 
 <main>
   <div class="max-w-screen mx-auto p-4">
     <div class="grid md:grid-cols-3 xl:grid-cols-4 gap-4">
-      {#if metricsError}
-        <ErrorCard title="Decentralized Network" error={metricsError}/>
-      {:else if geoDataError}
-        <ErrorCard title="World Map" error={geoDataError}/>
-      {:else}
+
+      <svelte:boundary>
         <DecentralizedNetworkCard
-                totalUniqueCountries={uniqueCountries.toFixed() ?? "N/A"}
-                totalNodeCount={metrics.node_count ?? "N/A"}
-                totalCpuCores={metrics.system_cpu_cores ?? "N/A"}
-                totalSystemMemory={metrics.system_memory ?? "N/A"}
-                totalDiskSpace={metrics.disk_space_total ?? "N/A"}
-                totalProcess={metrics.total_process ?? "N/A"}
-                usedDiskSpace={metrics.disk_space_used ?? "N/A"}
-                usedSystemMemory={metrics.system_memory_used ?? "N/A"}
+                totalUniqueCountries={new Set((await data.worldMap).map(item => item?.country_name).filter(Boolean)).size.toFixed() ?? "N/A"}
+                totalNodeCount={(await data.latestMetric).node_count ?? "N/A"}
+                totalCpuCores={(await data.latestMetric).system_cpu_cores ?? "N/A"}
+                totalSystemMemory={(await data.latestMetric).system_memory ?? "N/A"}
+                totalDiskSpace={(await data.latestMetric).disk_space_total ?? "N/A"}
+                totalProcess={(await data.latestMetric).total_process ?? "N/A"}
+                usedDiskSpace={(await data.latestMetric).disk_space_used ?? "N/A"}
+                usedSystemMemory={(await data.latestMetric).system_memory_used ?? "N/A"}
         />
-      {/if}
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Decentralized Network" error={"An error occurred while fetching decentralized network data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
 
-      {#if metricsError}
-        <ErrorCard title="AI" error={metricsError}/>
-      {:else}
-        <GpuCard
-                totalGpu={metrics.gpu_total ?? "N/A"}
-                totalMemory={metrics.gpu_memory ?? "N/A"}
-                totalNvidiaGpu={metrics.gpu_nvidia_total ?? "N/A"}
-                totalAmdGpu={metrics.gpu_amd_total ?? "N/A"}
-                totalNvidiaMemory={metrics.gpu_nvidia_memory ?? "N/A"}
-                totalAmdMemory={metrics.gpu_amd_memory ?? "N/A"}
-        />
-      {/if}
+        {#snippet pending()}
+          <p>loading...</p>
+        {/snippet}
+      </svelte:boundary>
 
-      {#if chainMetricsError}
-        <ErrorCard title="Tokenomics" error={chainMetricsError}/>
-      {:else if metricsError}
-        <ErrorCard title="Tokenomics" error={metricsError}/>
-      {:else if tokenMetricsError}
-        <ErrorCard title="Tokenomics" error={tokenMetricsError}/>
-      {:else}
-        <TokenomicsCard
-                tokenSupply={chainMetrics.manifest_tokenomics_total_supply ?? "N/A"}
-                totalMinted={chainMetrics.total_mfx_minted ?? "N/A"}
-                totalBurned={tokenMetrics.burned_supply ?? "N/A"}
-                pwrMfx={metrics.talib_mfx_power_conversion ? BigNumber(metrics.talib_mfx_power_conversion).div(10).toFixed() : "N/A"}
-                marketCap={tokenMetrics.market_cap ?? "N/A"}
-                circulatingSupply={tokenMetrics.circulating_supply ?? "N/A"}
-                lockedTokens={chainMetrics.locked_tokens ?? "N/A"}
-                lockedFees={chainMetrics.locked_fees ?? "N/A"}
-                fdv={tokenMetrics.fdv ?? "N/A"}
-        />
-      {/if}
+      <svelte:boundary>
+          <GpuCard
+                  totalGpu={(await data.latestMetric).gpu_total ?? "N/A"}
+                  totalMemory={(await data.latestMetric).gpu_memory ?? "N/A"}
+                  totalNvidiaGpu={(await data.latestMetric).gpu_nvidia_total ?? "N/A"}
+                  totalAmdGpu={(await data.latestMetric).gpu_amd_total ?? "N/A"}
+                  totalNvidiaMemory={(await data.latestMetric).gpu_nvidia_memory ?? "N/A"}
+                  totalAmdMemory={(await data.latestMetric).gpu_amd_memory ?? "N/A"}
+          />
 
-      {#if chainMetricsError}
-        <ErrorCard title="Blockchain Metrics" error={chainMetricsError}/>
-      {:else}
+        {#snippet failed(error, reset)}
+          <ErrorCard title="AI" error={"An error occurred while fetching AI data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
+
+        {#snippet pending()}
+          <p>loading...</p>
+        {/snippet}
+      </svelte:boundary>
+
+      <svelte:boundary>
+          <TokenomicsCard
+                  tokenSupply={(await data.latestChainMetric).manifest_tokenomics_total_supply ?? "N/A"}
+                  totalMinted={(await data.latestChainMetric).total_mfx_minted ?? "N/A"}
+                  totalBurned={(await data.latestTokenMetric).burned_supply ?? "N/A"}
+                  pwrMfx={(await data.latestMetric).talib_mfx_power_conversion}
+                  marketCap={(await data.latestTokenMetric).market_cap ?? "N/A"}
+                  circulatingSupply={(await data.latestTokenMetric).circulating_supply ?? "N/A"}
+                  lockedTokens={(await data.latestChainMetric).locked_tokens ?? "N/A"}
+                  lockedFees={(await data.latestChainMetric).locked_fees ?? "N/A"}
+                  fdv={(await data.latestTokenMetric).fdv ?? "N/A"}
+          />
+
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Tokenomics" error={"An error occurred while fetching tokenomics data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
+
+        {#snippet pending()}
+          <p>loading...</p>
+        {/snippet}
+      </svelte:boundary>
+
+      <svelte:boundary>
         <BlockchainCard
-                totalUniqueUser={chainMetrics.total_unique_user ?? "N/A"}
-                totalDao={chainMetrics.total_unique_group ?? "N/A"}
-                totalTxCount={chainMetrics.total_tx_count ?? "N/A"}
-                tokenCount={chainMetrics.manifest_tokenomics_token_count ?? "N/A"}
-                blockchainHeight={chainMetrics.blockchain_height ?? "N/A"}
+                totalUniqueUser={(await data.latestChainMetric).total_unique_user ?? "N/A"}
+                totalDao={(await data.latestChainMetric).total_unique_group ?? "N/A"}
+                totalTxCount={(await data.latestChainMetric).total_tx_count ?? "N/A"}
+                tokenCount={(await data.latestChainMetric).manifest_tokenomics_token_count ?? "N/A"}
+                blockchainHeight={(await data.latestChainMetric).blockchain_height ?? "N/A"}
         />
-      {/if}
 
-      {#if metricsError}
-        <ErrorCard title="Web Services" error={metricsError}/>
-      {:else if cumsumMetricsError}
-        <ErrorCard title="Web Services" error={cumsumMetricsError}/>
-      {:else}
-        <WebServiceCard
-                totalWebServer={metrics.web_servers ?? "N/A"}
-                totalRequestPerSec={metrics.web_requests_per_sec ?? "N/A"}
-                totalRequests={cumsumMetrics.web_requests ?? "N/A"}
-        />
-      {/if}
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Blockchain Data" error={"An error occurred while fetching blockchain data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
 
-      {#if metricsError}
-        <ErrorCard title="Decentralized Web Hosting" error={metricsError}/>
-      {:else if cumsumMetricsError}
-        <ErrorCard title="Decentralized Web Hosting" error={cumsumMetricsError}/>
-      {:else}
-        <DecentralizedWebHosting
-                totalWebsites={metrics.web_sites ?? "N/A"}
-                totalRequests={cumsumMetrics.decentralized_web_requests ?? "N/A"}
-        />
-      {/if}
+        {#snippet pending()}
+          <p>loading...</p>
+        {/snippet}
+      </svelte:boundary>
 
-      {#if metricsError}
-        <ErrorCard title="Kubernetes Metrics" error={metricsError}
-        />
-      {:else}
-        <KubeCard
-                totalNodes={metrics.kube_nodes ?? "N/A"}
-                totalPods={metrics.kube_pods ?? "N/A"}
-                totalMemory={metrics.kube_memory ?? "N/A"}
-        />
-      {/if}
+      <svelte:boundary>
+          <WebServiceCard
+                  totalWebServer={(await data.latestMetric).web_servers ?? "N/A"}
+                  totalRequestPerSec={(await data.latestMetric).web_requests_per_sec ?? "N/A"}
+                  totalRequests={(await data.latestCumsumMetric).web_requests ?? "N/A"}
+          />
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Web Service" error={"An error occurred while fetching web service data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
 
-      {#if metricsError}
-        <ErrorCard title="Object Storage" error={metricsError} />
-      {:else}
-        <ObjectStorageCard
-                totalBuckets={metrics.minio_buckets ?? "N/A"}
-                totalObjects={metrics.minio_total ?? "N/A"}
-                usedStorage={metrics.minio_used ?? "N/A"}
-        />
-      {/if}
+        {#snippet pending()}
+          <p>loading...</p>
+        {/snippet}
+      </svelte:boundary>
 
-      {#if cumsumMetricsError}
-        <ErrorCard title="Network Metrics" error={cumsumMetricsError} />
-      {:else}
-        <NetworkCard
-                totalIpv4BandwidthReceived={cumsumMetrics.system_network_received ?? "N/A"}
-                totalIpv4BandwidthSent={cumsumMetrics.system_network_sent ?? "N/A"}
-                totalIpv4PacketReceived={cumsumMetrics.system_tcp_received ?? "N/A"}
-                totalIpv4PacketSent={cumsumMetrics.system_tcp_sent ?? "N/A"}
-        />
-      {/if}
+      <svelte:boundary>
+          <DecentralizedWebHosting
+                  totalWebsites={(await data.latestMetric).web_sites ?? "N/A"}
+                  totalRequests={(await data.latestCumsumMetric).decentralized_web_requests ?? "N/A"}
+          />
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Decentralized Web" error={"An error occurred while fetching decentralized web data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
+
+        {#snippet pending()}
+          <p>loading...</p>
+        {/snippet}
+      </svelte:boundary>
+
+      <svelte:boundary>
+          <KubeCard
+                  totalNodes={(await data.latestMetric).kube_nodes ?? "N/A"}
+                  totalPods={(await data.latestMetric).kube_pods ?? "N/A"}
+                  totalMemory={(await data.latestMetric).kube_memory ?? "N/A"}
+          />
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Kubernetes" error={"An error occurred while fetching Kubernetes data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
+
+        {#snippet pending()}
+          <p>loading...</p>
+        {/snippet}
+      </svelte:boundary>
+
+      <svelte:boundary>
+          <ObjectStorageCard
+                  totalBuckets={(await data.latestMetric).minio_buckets ?? "N/A"}
+                  totalObjects={(await data.latestMetric).minio_total ?? "N/A"}
+                  usedStorage={(await data.latestMetric).minio_used ?? "N/A"}
+          />
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Object Storage" error={"An error occurred while fetching object storage data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
+
+        {#snippet pending()}
+          <p>loading...</p>
+        {/snippet}
+      </svelte:boundary>
+
+      <svelte:boundary>
+          <NetworkCard
+                  totalIpv4BandwidthReceived={(await data.latestCumsumMetric).system_network_received ?? "N/A"}
+                  totalIpv4BandwidthSent={(await data.latestCumsumMetric).system_network_sent ?? "N/A"}
+                  totalIpv4PacketReceived={(await data.latestCumsumMetric).system_tcp_received ?? "N/A"}
+                  totalIpv4PacketSent={(await data.latestCumsumMetric).system_tcp_sent ?? "N/A"}
+          />
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Network" error={"An error occurred while fetching network data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
+
+        {#snippet pending()}
+          <p>loading...</p>
+        {/snippet}
+      </svelte:boundary>
     </div>
   </div>
 </main>

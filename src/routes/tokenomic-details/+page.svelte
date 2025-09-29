@@ -3,31 +3,12 @@
   import {readable} from "svelte/store";
   import {invalidateAll} from "$app/navigation";
   import {configs} from "./config";
-  import ChartCard from "$lib/components/ChartCard.svelte";
-  import ErrorCard from "$lib/components/ErrorCard.svelte";
+  import ChartGrid from "$lib/components/ChartGrid.svelte";
+  import {RELOAD_INTERVAL_MS} from "$lib/const";
 
   let {data}: PageProps = $props();
-
-  const tokenomics = $derived(configs.map((config) => ({
-    config,
-    metrics: [
-      {
-        data: data[`aggregateMetric_${config.id}`],
-        error: data[`aggregateMetric_${config.id}Error`]
-      },
-      {
-        data: data[`aggregateChainMetric_${config.id}`],
-        error: data[`aggregateChainMetric_${config.id}Error`]
-      },
-      {
-        data: data[`aggregateSupplyMetric_${config.id}`],
-        error: data[`aggregateSupplyMetric_${config.id}Error`]
-      }
-    ]
-  })));
-
   const tick = readable(Date.now(), (set) => {
-    const id = setInterval(() => set(Date.now()), 60000);
+    const id = setInterval(() => set(Date.now()), RELOAD_INTERVAL_MS);
     return () => clearInterval(id);
   });
 
@@ -38,18 +19,4 @@
   });
 </script>
 
-<main>
-  <div class="grid grid-cols-2">
-    {#each tokenomics as {config, metrics}}
-      {#each metrics as {data: mData, error: mError}}
-        {#if mError}
-          <ErrorCard title="Chart Failed" error={mError}/>
-        {:else if mData}
-          <div class="card w-full p-4 mb-4">
-            <ChartCard config={config} data={mData}/>
-          </div>
-        {/if}
-      {/each}
-    {/each}
-  </div>
-</main>
+<ChartGrid {configs} {data} />
