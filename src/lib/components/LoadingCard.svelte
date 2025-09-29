@@ -1,7 +1,6 @@
 <script lang="ts">
-  const {title, error} = $props<{
+  const {title} = $props<{
     title: string
-    error: string
   }>();
 </script>
 
@@ -9,7 +8,11 @@
   <div class="flex justify-between items-center mb-2">
     <h2 class="text-xl font-bold">{title}</h2>
   </div>
-  <div>
-    <p class="text-xl font-bold text-error-400-600">{error}</p>
+  <div class="flex flex-col items-center justify-center space-x-2">
+    <div
+      class="h-10 w-10 animate-spin rounded-full border-4 border-solid border-secondary-500 border-t-transparent"
+    >
+    </div>
+    <p class="text-muted-foreground">Loading...</p>
   </div>
 </div>

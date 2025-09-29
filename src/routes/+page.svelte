@@ -12,6 +12,7 @@
   import WebServiceCard from "$lib/components/WebServiceCard.svelte";
   import NetworkCard from "$lib/components/NetworkCard.svelte";
   import ErrorCard from "$lib/components/ErrorCard.svelte";
+  import LoadingCard from "$lib/components/LoadingCard.svelte";
 
   const {data}: PageProps = $props();
 
@@ -25,8 +26,6 @@
       invalidateAll();
     }
   });
-
-
 </script>
 
 <main>
@@ -54,7 +53,7 @@
         {/snippet}
 
         {#snippet pending()}
-          <p>loading...</p>
+          <LoadingCard title="Decentralized Network" />
         {/snippet}
       </svelte:boundary>
 
@@ -78,7 +77,7 @@
         {/snippet}
 
         {#snippet pending()}
-          <p>loading...</p>
+          <LoadingCard title="AI" />
         {/snippet}
       </svelte:boundary>
 
@@ -107,7 +106,7 @@
         {/snippet}
 
         {#snippet pending()}
-          <p>loading...</p>
+          <LoadingCard title="Tokenomics" />
         {/snippet}
       </svelte:boundary>
 
@@ -130,7 +129,7 @@
         {/snippet}
 
         {#snippet pending()}
-          <p>loading...</p>
+          <LoadingCard title="Blockchain Data" />
         {/snippet}
       </svelte:boundary>
 
@@ -150,7 +149,7 @@
         {/snippet}
 
         {#snippet pending()}
-          <p>loading...</p>
+          <LoadingCard title="Web Service" />
         {/snippet}
       </svelte:boundary>
 
@@ -169,7 +168,7 @@
         {/snippet}
 
         {#snippet pending()}
-          <p>loading...</p>
+          <LoadingCard title="Decentralized Web" />
         {/snippet}
       </svelte:boundary>
 
@@ -189,7 +188,7 @@
         {/snippet}
 
         {#snippet pending()}
-          <p>loading...</p>
+          <LoadingCard title="Kubernetes" />
         {/snippet}
       </svelte:boundary>
 
@@ -209,7 +208,7 @@
         {/snippet}
 
         {#snippet pending()}
-          <p>loading...</p>
+          <LoadingCard title="Object Storage" />
         {/snippet}
       </svelte:boundary>
 
@@ -230,7 +229,7 @@
         {/snippet}
 
         {#snippet pending()}
-          <p>loading...</p>
+          <LoadingCard title="Network" />
         {/snippet}
       </svelte:boundary>
     </div>
