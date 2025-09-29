@@ -2,7 +2,6 @@
 <script lang="ts">
   import ChartCard from "$lib/components/ChartCard.svelte";
   import ErrorCard from "$lib/components/ErrorCard.svelte";
-  import type {ChartDataPoint} from "$lib/schemas/charts";
   import {ERROR_RESET_INTERVAL_MS} from "$lib/const";
 
   const { configs, data }: { configs: ChartConfig[]; data: Record<string, Promise<any>> } = $props();

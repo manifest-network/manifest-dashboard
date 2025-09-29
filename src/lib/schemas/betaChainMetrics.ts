@@ -5,6 +5,9 @@ import {bigNumberLike} from "$lib/schemas/common";
 // Metrics common to the Manifest Ledger testnet and mainnet.
 export const BetaChainMetricSchema = z.object({
   total_mfx_minted: bigNumberLike.default("0"),
+  total_mfx_burned: bigNumberLike.default("0"),
+  total_pwr_minted: bigNumberLike.default("0"),
+  total_pwr_burned: bigNumberLike.default("0"),
   total_tx_count: bigNumberLike.default("0"),
   total_unique_user: bigNumberLike.default("0"),
   total_unique_group: bigNumberLike.default("0"),

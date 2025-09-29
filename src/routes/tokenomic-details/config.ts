@@ -33,17 +33,31 @@ export const configs: ChartConfig[] = [
   {
     id: 'total_mfx_minted',
     title: (latest) => `Total MFX Minted: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
-    yAxisTitle: 'Token Minted',
+    yAxisTitle: 'MFX Minted',
     category: 'tokenomic',
     type: "chain"
   },
-  // {
-  //   id: 'burned_supply',
-  //   title: (latest) => `Total MFX Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
-  //   yAxisTitle: 'Token Burned',
-  //   category: 'tokenomic',
-  //   type: "supply"
-  // },
+  {
+    id: 'total_mfx_burned',
+    title: (latest) => `Total MFX Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'MFX Burned',
+    category: 'tokenomic',
+    type: "chain"
+  },
+  {
+    id: 'total_pwr_burned',
+    title: (latest) => `Total PWR Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'PWR Burned',
+    category: 'tokenomic',
+    type: "chain"
+  },
+  {
+    id: 'total_pwr_minted',
+    title: (latest) => `Total PWR Minted: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'PWR Minted',
+    category: 'tokenomic',
+    type: "chain"
+  },
   {
     id: 'talib_mfx_power_conversion',
     title: (latest) => `MFX:PWR Conversion Rate: ${latest ? BigNumber(latest.value).div(10) : "N/A"}`,
@@ -54,14 +68,14 @@ export const configs: ChartConfig[] = [
   {
     id: 'locked_tokens',
     title: (latest) => `Locked MFX: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
-    yAxisTitle: 'Locked Tokens',
+    yAxisTitle: 'Locked Tokens (excl. fees)',
     category: 'tokenomic',
     type: "chain"
   },
   {
     id: 'locked_fees',
-    title: (latest) => `Burned Fees: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
-    yAxisTitle: 'Burned Fees',
+    title: (latest) => `Locked Fees: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'Locked Fees',
     category: 'tokenomic',
     type: "chain"
   },

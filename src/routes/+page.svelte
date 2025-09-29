@@ -86,7 +86,9 @@
           <TokenomicsCard
                   tokenSupply={(await data.latestChainMetric).manifest_tokenomics_total_supply ?? "N/A"}
                   totalMinted={(await data.latestChainMetric).total_mfx_minted ?? "N/A"}
-                  totalBurned={(await data.latestTokenMetric).burned_supply ?? "N/A"}
+                  totalBurned={(await data.latestChainMetric).total_mfx_burned ?? "N/A"}
+                  totalPwrMinted={(await data.latestChainMetric).total_pwr_minted ?? "N/A"}
+                  totalPwrBurned={(await data.latestChainMetric).total_pwr_burned ?? "N/A"}
                   pwrMfx={(await data.latestMetric).talib_mfx_power_conversion}
                   marketCap={(await data.latestTokenMetric).market_cap ?? "N/A"}
                   circulatingSupply={(await data.latestTokenMetric).circulating_supply ?? "N/A"}

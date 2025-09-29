@@ -1,4 +1,8 @@
-# manifest-dashboard
+<h1 align="center">Manifest Dashboard</h1>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/cosmos/chain-registry/00df6ff89abd382f9efe3d37306c353e2bd8d55c/manifest/images/manifest.png" alt="Manifest Network" width="100"/>
+</p>
 
 A modern dashboard featuring:
 

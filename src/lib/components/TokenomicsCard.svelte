@@ -7,6 +7,8 @@
     tokenSupply,
     totalMinted,
     totalBurned,
+    totalPwrMinted,
+    totalPwrBurned,
     pwrMfx,
     marketCap,
     circulatingSupply,
@@ -17,6 +19,8 @@
     tokenSupply: string,
     totalMinted: string,
     totalBurned: string,
+    totalPwrMinted: string,
+    totalPwrBurned: string,
     pwrMfx?: string,
     marketCap: string
     circulatingSupply: string
@@ -56,25 +60,34 @@
       </p>
       <p class="text-xs font-medium text-muted-foreground">Maximum MFX Supply</p>
     </div>
+    <br/>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalMinted)}</p>
       <p class="text-xs font-medium text-muted-foreground">Total MFX Minted</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalBurned)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total MFX Burned (incl. fees)</p>
+      <p class="text-xs font-medium text-muted-foreground">Total MFX Burned</p>
+    </div>
+    <div>
+      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalPwrMinted)}</p>
+      <p class="text-xs font-medium text-muted-foreground">Total PWR Minted</p>
+    </div>
+    <div>
+      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalPwrBurned)}</p>
+      <p class="text-xs font-medium text-muted-foreground">Total PWR Burned</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{pwrMfxValue}</p>
-      <p class="text-xs font-medium text-muted-foreground">PRW:MFX Conversion Rate</p>
+      <p class="text-xs font-medium text-muted-foreground">PWR:MFX Conversion Rate</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(lockedTokens)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Locked MFX</p>
+      <p class="text-xs font-medium text-muted-foreground">Locked MFX (excl. fees)</p>
     </div>
     <div>
       <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(lockedFees)}</p>
-      <p class="text-xs font-medium text-muted-foreground">MFX Fees Spent</p>
+      <p class="text-xs font-medium text-muted-foreground">Locked fees</p>
     </div>
   </div>
 </div>
