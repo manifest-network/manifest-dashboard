@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-const initial = (typeof window !== 'undefined' && window.localStorage.getItem('mode')) || 'light';
+const initial = (typeof window !== 'undefined' && window.localStorage.getItem('mode')) || 'dark';
 export const mode = writable(initial);
 
 mode.subscribe((value) => {
