@@ -25,19 +25,22 @@
 {#if ready}
   <div class="flex flex-col h-screen overflow-hidden">
     <AppBar>
-      {#snippet lead()}
-        <div class="relative">
-          <a href="/" class="inline-block">
-            <img src={isDark ? "/manifest_dark.svg" : "/manifest_light.svg"} alt="Logo" class="h-14"/>
-          </a>
-        </div>
-      {/snippet}
+      <AppBar.Toolbar class="grid-cols-[auto_auto_auto]">
+       <AppBar.Lead>
+          <div class="relative">
+            <a href="/" class="inline-block">
+              <img src={isDark ? "/manifest_dark.svg" : "/manifest_light.svg"} alt="Logo" class="h-14"/>
+            </a>
+          </div>
+       </AppBar.Lead>
 
-      <TimeIntervalSegment display={isDetailPage()} />
-
-      {#snippet trail()}
-        <LightSwitch/>
-      {/snippet}
+        <AppBar.Headline>
+          <TimeIntervalSegment display={isDetailPage()} />
+        </AppBar.Headline>
+        <AppBar.Trail>
+          <LightSwitch/>
+        </AppBar.Trail>
+      </AppBar.Toolbar>
     </AppBar>
 
     <div class="overflow-y-auto">

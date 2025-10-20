@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {Switch, Tooltip} from '@skeletonlabs/skeleton-svelte';
+  import {Switch, Tooltip, Portal} from '@skeletonlabs/skeleton-svelte';
   import Light from 'carbon-icons-svelte/lib/Light.svelte';
   import AsleepFilled from 'carbon-icons-svelte/lib/AsleepFilled.svelte';
   import {mode} from '$lib/stores/theme';
@@ -23,16 +23,31 @@
 </script>
 
 {#if ready}
-  <Tooltip
-           triggerBase="underline"
-           contentBase="card preset-filled-primary-100-900 p-4"
-  >
-    {#snippet trigger()}
+  <Tooltip>
+    <Tooltip.Trigger>
       <Switch checked={!isDark} onCheckedChange={(e) => (isDark = !e.checked)}>
-        {#snippet inactiveChild()}<AsleepFilled />{/snippet}
-        {#snippet activeChild()}<Light />{/snippet}
+        <Switch.Control>
+          <Switch.Thumb>
+            <Switch.Context>
+              {#snippet children(switch_)}
+                {#if switch_().checked}
+                  <Light />
+                {:else}
+                  <AsleepFilled />
+                {/if}
+              {/snippet}
+            </Switch.Context>
+          </Switch.Thumb>
+        </Switch.Control>
+        <Switch.HiddenInput />
       </Switch>
-    {/snippet}
-    {#snippet content()}Toggle {isDark ? "light" : "dark"} mode{/snippet}
+    </Tooltip.Trigger>
+    <Portal>
+      <Tooltip.Positioner>
+        <Tooltip.Content class="card preset-filled-primary-100-900 p-4">
+          Toggle {isDark ? "light" : "dark"} mode
+        </Tooltip.Content>
+      </Tooltip.Positioner>
+    </Portal>
   </Tooltip>
 {/if}
