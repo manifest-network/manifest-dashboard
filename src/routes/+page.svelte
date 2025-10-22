@@ -12,12 +12,13 @@
   import WebServiceCard from "$lib/components/WebServiceCard.svelte";
   import NetworkCard from "$lib/components/NetworkCard.svelte";
   import ErrorCard from "$lib/components/ErrorCard.svelte";
+  import Section from "$lib/components/Section.svelte";
   import LoadingCard from "$lib/components/LoadingCard.svelte";
 
   const {data}: PageProps = $props();
 
   const tick = readable(Date.now(), (set) => {
-    const id = setInterval(() => set(Date.now()), 10000);
+    const id = setInterval(() => set(Date.now()), 60000);
     return () => clearInterval(id);
   });
 
@@ -28,10 +29,12 @@
   });
 </script>
 
+
 <main>
   <div class="max-w-screen mx-auto p-4">
-    <div class="grid md:grid-cols-3 xl:grid-cols-4 gap-4">
-
+    <Section title="Infrastructure" cols="grid-cols-12">
+    <!-- Decentralized Network -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
       <svelte:boundary>
         <DecentralizedNetworkCard
                 totalUniqueCountries={new Set((await data.worldMap).map(item => item?.country_name).filter(Boolean)).size.toFixed() ?? "N/A"}
@@ -56,7 +59,9 @@
           <LoadingCard title="Decentralized Network" />
         {/snippet}
       </svelte:boundary>
+      </div>
 
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
       <svelte:boundary>
           <GpuCard
                   totalGpu={(await data.latestMetric).gpu_total ?? "N/A"}
@@ -80,7 +85,127 @@
           <LoadingCard title="AI" />
         {/snippet}
       </svelte:boundary>
+      </div>
+ 
+      <!-- Web Services -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
+      <svelte:boundary>
+          <WebServiceCard
+                  totalWebServer={(await data.latestMetric).web_servers ?? "N/A"}
+                  totalRequestPerSec={(await data.latestMetric).web_requests_per_sec ?? "N/A"}
+                  totalRequests={(await data.latestCumsumMetric).web_requests ?? "N/A"}
+          />
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Web Service" error={"An error occurred while fetching web service data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
 
+        {#snippet pending()}
+          <LoadingCard title="Web Service" />
+        {/snippet}
+      </svelte:boundary>
+      </div>
+
+      <!-- Decentralized Websites -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
+      <svelte:boundary>
+          <DecentralizedWebHosting
+                  totalWebsites={(await data.latestMetric).web_sites ?? "N/A"}
+                  totalRequests={(await data.latestCumsumMetric).decentralized_web_requests ?? "N/A"}
+          />
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Decentralized Web" error={"An error occurred while fetching decentralized web data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
+
+        {#snippet pending()}
+          <LoadingCard title="Decentralized Web" />
+        {/snippet}
+      </svelte:boundary>
+      </div>
+
+      <!-- Kubernetes -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
+      <svelte:boundary>
+          <KubeCard
+                  totalNodes={(await data.latestMetric).kube_nodes ?? "N/A"}
+                  totalPods={(await data.latestMetric).kube_pods ?? "N/A"}
+                  totalMemory={(await data.latestMetric).kube_memory ?? "N/A"}
+          />
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Kubernetes" error={"An error occurred while fetching Kubernetes data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
+
+        {#snippet pending()}
+          <LoadingCard title="Kubernetes" />
+        {/snippet}
+      </svelte:boundary>
+      </div>
+
+      <!-- Object Storage -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
+      <svelte:boundary>
+          <ObjectStorageCard
+                  totalBuckets={(await data.latestMetric).minio_buckets ?? "N/A"}
+                  totalObjects={(await data.latestMetric).minio_total ?? "N/A"}
+                  usedStorage={(await data.latestMetric).minio_used ?? "N/A"}
+          />
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Object Storage" error={"An error occurred while fetching object storage data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
+
+        {#snippet pending()}
+          <LoadingCard title="Object Storage" />
+        {/snippet}
+      </svelte:boundary>
+      </div>
+
+      <!-- Network -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-6 h-full">
+      <svelte:boundary>
+          <NetworkCard
+                  totalIpv4BandwidthReceived={(await data.latestCumsumMetric).system_network_received ?? "N/A"}
+                  totalIpv4BandwidthSent={(await data.latestCumsumMetric).system_network_sent ?? "N/A"}
+                  totalIpv4PacketReceived={(await data.latestCumsumMetric).system_tcp_received ?? "N/A"}
+                  totalIpv4PacketSent={(await data.latestCumsumMetric).system_tcp_sent ?? "N/A"}
+          />
+        {#snippet failed(error, reset)}
+          <ErrorCard title="Network" error={"An error occurred while fetching network data."} />
+          {@html (() => {
+              console.error(error);
+              setTimeout(() => reset(), 1000);
+              return "";
+          })()}
+        {/snippet}
+
+        {#snippet pending()}
+          <LoadingCard title="Network" />
+        {/snippet}
+      </svelte:boundary>
+      </div>
+    </Section>
+
+    <Section title="Economy" cols="grid-cols-12">
+      <!-- Tokenomics -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-6 h-full">
       <svelte:boundary>
           <TokenomicsCard
                   tokenSupply={(await data.latestChainMetric).manifest_tokenomics_total_supply ?? "N/A"}
@@ -109,7 +234,10 @@
           <LoadingCard title="Tokenomics" />
         {/snippet}
       </svelte:boundary>
+      </div>
 
+      <!-- Blockchain -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-6 h-full">
       <svelte:boundary>
         <BlockchainCard
                 totalUniqueUser={(await data.latestChainMetric).total_unique_user ?? "N/A"}
@@ -132,106 +260,7 @@
           <LoadingCard title="Blockchain Data" />
         {/snippet}
       </svelte:boundary>
-
-      <svelte:boundary>
-          <WebServiceCard
-                  totalWebServer={(await data.latestMetric).web_servers ?? "N/A"}
-                  totalRequestPerSec={(await data.latestMetric).web_requests_per_sec ?? "N/A"}
-                  totalRequests={(await data.latestCumsumMetric).web_requests ?? "N/A"}
-          />
-        {#snippet failed(error, reset)}
-          <ErrorCard title="Web Service" error={"An error occurred while fetching web service data."} />
-          {@html (() => {
-              console.error(error);
-              setTimeout(() => reset(), 1000);
-              return "";
-          })()}
-        {/snippet}
-
-        {#snippet pending()}
-          <LoadingCard title="Web Service" />
-        {/snippet}
-      </svelte:boundary>
-
-      <svelte:boundary>
-          <DecentralizedWebHosting
-                  totalWebsites={(await data.latestMetric).web_sites ?? "N/A"}
-                  totalRequests={(await data.latestCumsumMetric).decentralized_web_requests ?? "N/A"}
-          />
-        {#snippet failed(error, reset)}
-          <ErrorCard title="Decentralized Web" error={"An error occurred while fetching decentralized web data."} />
-          {@html (() => {
-              console.error(error);
-              setTimeout(() => reset(), 1000);
-              return "";
-          })()}
-        {/snippet}
-
-        {#snippet pending()}
-          <LoadingCard title="Decentralized Web" />
-        {/snippet}
-      </svelte:boundary>
-
-      <svelte:boundary>
-          <KubeCard
-                  totalNodes={(await data.latestMetric).kube_nodes ?? "N/A"}
-                  totalPods={(await data.latestMetric).kube_pods ?? "N/A"}
-                  totalMemory={(await data.latestMetric).kube_memory ?? "N/A"}
-          />
-        {#snippet failed(error, reset)}
-          <ErrorCard title="Kubernetes" error={"An error occurred while fetching Kubernetes data."} />
-          {@html (() => {
-              console.error(error);
-              setTimeout(() => reset(), 1000);
-              return "";
-          })()}
-        {/snippet}
-
-        {#snippet pending()}
-          <LoadingCard title="Kubernetes" />
-        {/snippet}
-      </svelte:boundary>
-
-      <svelte:boundary>
-          <ObjectStorageCard
-                  totalBuckets={(await data.latestMetric).minio_buckets ?? "N/A"}
-                  totalObjects={(await data.latestMetric).minio_total ?? "N/A"}
-                  usedStorage={(await data.latestMetric).minio_used ?? "N/A"}
-          />
-        {#snippet failed(error, reset)}
-          <ErrorCard title="Object Storage" error={"An error occurred while fetching object storage data."} />
-          {@html (() => {
-              console.error(error);
-              setTimeout(() => reset(), 1000);
-              return "";
-          })()}
-        {/snippet}
-
-        {#snippet pending()}
-          <LoadingCard title="Object Storage" />
-        {/snippet}
-      </svelte:boundary>
-
-      <svelte:boundary>
-          <NetworkCard
-                  totalIpv4BandwidthReceived={(await data.latestCumsumMetric).system_network_received ?? "N/A"}
-                  totalIpv4BandwidthSent={(await data.latestCumsumMetric).system_network_sent ?? "N/A"}
-                  totalIpv4PacketReceived={(await data.latestCumsumMetric).system_tcp_received ?? "N/A"}
-                  totalIpv4PacketSent={(await data.latestCumsumMetric).system_tcp_sent ?? "N/A"}
-          />
-        {#snippet failed(error, reset)}
-          <ErrorCard title="Network" error={"An error occurred while fetching network data."} />
-          {@html (() => {
-              console.error(error);
-              setTimeout(() => reset(), 1000);
-              return "";
-          })()}
-        {/snippet}
-
-        {#snippet pending()}
-          <LoadingCard title="Network" />
-        {/snippet}
-      </svelte:boundary>
-    </div>
+      </div>
+    </Section>
   </div>
 </main>

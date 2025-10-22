@@ -1,7 +1,7 @@
 <script lang="ts">
   import {page} from "$app/state";
   import {goto} from "$app/navigation";
-  import {Segment} from "@skeletonlabs/skeleton-svelte";
+  import {SegmentedControl} from "@skeletonlabs/skeleton-svelte";
 
   const intervalOptions: { label: string; value: TimeScale }[] = [
     {label: '1 Year', value: '1 year'},
@@ -11,7 +11,7 @@
     {label: '1 Day', value: '1 day'},
   ];
 
-  const defaultInterval: TimeSpan = '1 day'
+  const defaultInterval: TimeSpan = '1 year'
   let selectedInterval: TimeSpan | null = $state(null)
 
   // Get the display prop from the parent component
@@ -46,13 +46,18 @@
 </script>
 
 {#if display && selectedInterval}
-  <Segment value={selectedInterval}
-           name="interval"
-           onValueChange={(e) => onIntervalChange(e.value as TimeSpan)}
-           indicatorBg="bg-primary-300-700"
-           indicatorText="text-surface-900-100">
-    {#each intervalOptions as option (option.value)}
-      <Segment.Item value={option.value}>{option.label}</Segment.Item>
-    {/each}
-  </Segment>
+  <SegmentedControl value={selectedInterval}
+         name="interval"
+         orientation="horizontal"
+         onValueChange={(e) => onIntervalChange(e.value as TimeSpan)}>
+    <SegmentedControl.Control>
+      <SegmentedControl.Indicator />
+      {#each intervalOptions as option (option.value)}
+        <SegmentedControl.Item value={option.value}>
+          <SegmentedControl.ItemText>{option.value}</SegmentedControl.ItemText>
+          <SegmentedControl.ItemHiddenInput />
+        </SegmentedControl.Item>
+      {/each}
+    </SegmentedControl.Control>
+  </SegmentedControl>
 {/if}

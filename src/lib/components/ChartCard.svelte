@@ -1,56 +1,57 @@
-<!-- AreaChart with theme context support -->
 <script lang="ts">
-  import '@carbon/charts-svelte/styles.css';
-  import { AreaChart } from '@carbon/charts-svelte';
-  import { ScaleTypes, TickRotations } from '@carbon/charts-svelte';
-  import { mode } from '$lib/stores/theme';
-  import { getColorFromCSS } from '$lib/utils/colors';
-  import type { ChartDataPoint } from '$lib/schemas/charts';
+  import type { ChartDataPoint } from "$lib/schemas/charts";
+  import { AreaChart, LinearGradient, Area, ChartClipPath } from "layerchart";
+  import { formatLargeNumber } from "$lib/utils/format";
+  import {cubicInOut} from "svelte/easing";
 
   const { config, data }: { config: ChartConfig; data: ChartDataPoint[] } = $props();
 
-  let themeColor = getColorFromCSS('--color-secondary-600-400');
-  let isDark = $derived($mode === 'dark');
-
-  const chartOptions = $derived({
-    animations: false,
-    axes: {
-      bottom: {
-        mapsTo: 'date',
-        scaleType: ScaleTypes.TIME,
-        title: 'Timestamp',
-        ticks: { number: 3, values: [], rotation: TickRotations.AUTO }
-      },
-      left: {
-        mapsTo: 'value',
-        scaleType: ScaleTypes.LINEAR,
-        title: config.yAxisTitle,
-        ticks: { values: [] }
-      }
-    },
-    includeZero: false,
-    width: '100%',
-    height: '100%',
-    color: { gradient: { enabled: true }, scale: { [config.id]: themeColor } },
-    points: { enabled: false },
-    legend: { enabled: false },
-    toolbar: { enabled: false },
-    grid: { x: { enabled: false }, y: { enabled: false } },
-    theme: isDark ? 'g90' : 'g10',
-    resizable: true
-  });
-
-  const safeData = $derived(data ?? []);
   const title = $derived(
-    typeof config.title === 'function'
-      ? config.title(safeData?.[0])
-      : `${config.title}: ${safeData?.[0]?.value ?? 'N/A'}`
+    typeof config.title === "function"
+      ? config.title(data?.[0])
+      : `${config.title}: ${data?.[0]?.value ?? "N/A"}`
   );
 </script>
 
 <main>
-  <div class="w-full h-32 lg:h-32 2xl:h-64">
-    <h2 class="text font-bold">{title}</h2>
-    <AreaChart data={safeData} options={chartOptions} />
+  <div class="relative h-[300px] p-4 rounded-sm">
+    <h3 class="absolute top-2 left-4 card-title">
+      {title}
+    </h3>
+    <AreaChart
+      data={data}
+      x="date"
+      y="value"
+      yNice={true}
+      yDomain={[0, Math.ceil(Math.max(...data.map((p) => Number(p.value))) * 1.1)]}
+      padding={{ left: 50, bottom: 50, top: 28 }}
+      props={{
+        xAxis: {
+          label: "Timestamp",
+        },
+        yAxis: {
+          label: config.yAxisTitle,
+          format: (v) => formatLargeNumber(v, 0),
+        },
+        highlight: { points: { r: 3, class: "stroke-2 stroke-surface-100" } }
+      }}
+    >
+      {#snippet marks()}
+        {#key `${data?.[0]?.date}-${data?.[data.length-1]?.date}-${data.length}`}
+          <ChartClipPath
+                initialWidth={0}
+                motion={{
+                  width: { type: "tween", duration: 1000, easing: cubicInOut },
+                }}
+          >
+            <LinearGradient class="from-primary/50 to-primary/1" vertical>
+              {#snippet children({ gradient })}
+                <Area line={{ class: "stroke-primary" }} fill={gradient} />
+              {/snippet}
+            </LinearGradient>
+          </ChartClipPath>
+        {/key}
+      {/snippet}
+    </AreaChart>
   </div>
 </main>

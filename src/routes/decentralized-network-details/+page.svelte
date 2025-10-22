@@ -1,5 +1,4 @@
 <script lang="ts">
-  import '@carbon/charts-svelte/styles.css';
   import type {PageProps} from "./$types";
   import {configs} from "./config";
   import {readable} from 'svelte/store';
@@ -22,6 +21,7 @@
       invalidateAll();
     }
   });
+
 </script>
 
 
