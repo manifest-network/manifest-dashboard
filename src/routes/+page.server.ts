@@ -26,13 +26,10 @@ export const load: PageServerLoad = async ({fetch}) => {
   const network = NETWORK as NetworkType;
 
   return {
-    // latestMetric: fetchAndParse(fetch, '/rpc/get_all_latest_common_metrics', CommonMetricsByKeySchema),
-    latestMetric: fetchAndParse(fetch, `/api/slow`, CommonMetricsByKeySchema),
+    latestMetric: fetchAndParse(fetch, '/rpc/get_all_latest_common_metrics', CommonMetricsByKeySchema),
     latestChainMetric: fetchAndParse(fetch, `/rpc/get_all_latest_${network}_metrics`, BetaChainMetricsByKeySchema),
-    // latestCumsumMetric: fetchAndParse(fetch, '/rpc/get_all_latest_cumsum_metrics', CumsumMetricsByKeySchema),
-    latestCumsumMetric: fetchAndParse(fetch, '/api/average', CumsumMetricsByKeySchema),
+    latestCumsumMetric: fetchAndParse(fetch, '/rpc/get_all_latest_cumsum_metrics', CumsumMetricsByKeySchema),
     latestTokenMetric: fetchAndParse(fetch, `/rpc/get_all_latest_token_metrics?p_schema=${network}`, TokenomicMetricsByKeySchema),
-    // worldMap: fetchAndParse(fetch, '/rpc/get_latest_geo_coordinates', GeoRecordArraySchema),
-    worldMap: fetchAndParse(fetch, '/api/fast', GeoRecordArraySchema),
+    worldMap: fetchAndParse(fetch, '/rpc/get_latest_geo_coordinates', GeoRecordArraySchema),
   };
 };
