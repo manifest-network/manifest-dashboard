@@ -30,7 +30,6 @@
 		"vite": "7.1.11"
 	},
 	"dependencies": {
-		"@carbon/charts-svelte": "1.27.0",
 		"@fontsource/inter": "^5.2.8",
 		"@fontsource/poppins": "^5.2.7",
 		"@fontsource/source-sans-pro": "^5.2.5",
@@ -43,6 +42,7 @@
 		"d3": "7.9.0",
 		"d3-geo": "3.1.1",
 		"d3-quadtree": "3.0.1",
+		"layerchart": "^2.0.0-next.42",
 		"lodash": "4.17.21",
 		"svelte-canvas": "2.0.2",
 		"topojson-server": "3.0.1",

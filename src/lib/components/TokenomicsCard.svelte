@@ -1,5 +1,4 @@
 <script lang="ts">
-  import {Infinity} from "carbon-icons-svelte";
   import {formatBaseDenom} from "$lib/utils/format";
   import Card from "$lib/components/Card.svelte";
   import Metric from "$lib/components/Metric.svelte";

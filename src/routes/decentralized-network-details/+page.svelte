@@ -1,5 +1,4 @@
 <script lang="ts">
-  import '@carbon/charts-svelte/styles.css';
   import type {PageProps} from "./$types";
   import {configs} from "./config";
   import {readable} from 'svelte/store';
@@ -30,6 +29,7 @@
       invalidateAll();
     }
   });
+
 </script>
 
 
@@ -48,7 +48,7 @@
           {#if mError}
             <ErrorCard title="Chart Failed" error={mError}/>
           {:else if mData}
-            <div class="card w-full p-4 mb-4">
+            <div class="card w-full">
               <ChartCard config={config} data={mData}/>
             </div>
           {/if}
