@@ -8,7 +8,7 @@
   import type {ChartDataPoint} from "$lib/schemas/charts";
   import memoize from "lodash/memoize";
 
-  let themeColor = getColorFromCSS('--color-secondary-600-400')
+  let themeColor = getColorFromCSS('--color-primary-600-400')
   let w = $state<number>(0);
   let h = $state<number>(0);
 

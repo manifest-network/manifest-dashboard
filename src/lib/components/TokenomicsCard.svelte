@@ -1,6 +1,8 @@
 <script lang="ts">
   import {Infinity} from "carbon-icons-svelte";
   import {formatBaseDenom} from "$lib/utils/format";
+  import Card from "$lib/components/Card.svelte";
+  import Metric from "$lib/components/Metric.svelte";
 
   const {
     tokenSupply,
@@ -30,62 +32,19 @@
 
 </script>
 
-<div class="card border-l-2 border-primary-200-800 pl-3 hover:shadow-md hover:border-secondary-500 transition preset-filled-surface-100-900 p-4">
-  <div class="flex justify-between items-center mb-2">
-    <h2 class="text-2xl font-bold">Tokenomics</h2>
-    <a href="/tokenomic-details?interval=1 day" class="text-xs text-primary-500 hover:underline">View Details</a>
+<Card title="Tokenomics" href="/tokenomic-details?interval=1 year">
+  <div class="grid grid-cols-3 gap-x-4 gap-y-2">
+    <Metric value={formatBaseDenom(fdv)} label="(Estimated) Fully Diluted Valuation" />
+    <Metric value={formatBaseDenom(marketCap)} label="(Estimated) Market Cap." />
+    <Metric value={formatBaseDenom(circulatingSupply)} label="(Estimated) Circulating MFX Supply" />
+    <Metric value={formatBaseDenom(tokenSupply)} label="Total MFX Supply" />
+    <Metric value="2 B" label="Maximum MFX Supply" />
+    <Metric value={formatBaseDenom(totalMinted)} label="Total MFX Minted" />
+    <Metric value={formatBaseDenom(totalBurned)} label="Total MFX Burned" />
+    <Metric value={formatBaseDenom(totalPwrMinted)} label="Total PWR Minted" />
+    <Metric value={formatBaseDenom(totalPwrBurned)} label="Total PWR Burned" />
+    <Metric value={pwrMfx} label="PWR:MFX Conversion Rate" />
+    <Metric value={formatBaseDenom(lockedTokens)} label="Locked MFX (excl. fees)" />
+    <Metric value={formatBaseDenom(lockedFees)} label="Locked MFX (fees)" />
   </div>
-  <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">${formatBaseDenom(fdv)}</p>
-      <p class="text-xs font-medium text-muted-foreground">(Estimated) Fully Diluted Valuation</p>
-    </div>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">${formatBaseDenom(marketCap)}</p>
-      <p class="text-xs font-medium text-muted-foreground">(Estimated) Market Cap.</p>
-    </div>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(circulatingSupply)}</p>
-      <p class="text-xs font-medium text-muted-foreground">(Estimated) Circulating MFX Supply</p>
-    </div>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(tokenSupply)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total MFX Supply</p>
-    </div>
-    <div>
-      <p class="text-secondary-400-600">
-        <Infinity class="w-12 h-12"/>
-      </p>
-      <p class="text-xs font-medium text-muted-foreground">Maximum MFX Supply</p>
-    </div>
-    <br/>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalMinted)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total MFX Minted</p>
-    </div>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalBurned)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total MFX Burned</p>
-    </div>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalPwrMinted)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total PWR Minted</p>
-    </div>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(totalPwrBurned)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total PWR Burned</p>
-    </div>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{pwrMfx}</p>
-      <p class="text-xs font-medium text-muted-foreground">PWR:MFX Conversion Rate</p>
-    </div>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(lockedTokens)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Locked MFX (excl. fees)</p>
-    </div>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatBaseDenom(lockedFees)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Locked fees</p>
-    </div>
-  </div>
-</div>
+</Card>

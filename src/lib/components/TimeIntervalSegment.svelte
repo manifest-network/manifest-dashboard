@@ -11,7 +11,7 @@
     {label: '1 Day', value: '1 day'},
   ];
 
-  const defaultInterval: TimeSpan = '1 day'
+  const defaultInterval: TimeSpan = '1 year'
   let selectedInterval: TimeSpan | null = $state(null)
 
   // Get the display prop from the parent component

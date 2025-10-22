@@ -31,6 +31,9 @@
 	},
 	"dependencies": {
 		"@carbon/charts-svelte": "1.27.0",
+		"@fontsource/inter": "^5.2.8",
+		"@fontsource/poppins": "^5.2.7",
+		"@fontsource/source-sans-pro": "^5.2.5",
 		"@skeletonlabs/skeleton": "4.1.0",
 		"@skeletonlabs/skeleton-svelte": "4.1.0",
 		"@sveltejs/kit": "2.47.2",

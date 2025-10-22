@@ -20,7 +20,7 @@
 
   let fillColor = $state(computedColor(getColorFromCSS('--color-surface-600-400')));
   let strokeColor = $state(computedColor(getColorFromCSS('--color-primary-100-900')));
-  let pointColor = $state(computedColor(getColorFromCSS('--color-secondary-500')));
+  let pointColor = $state(computedColor(getColorFromCSS('--color-tertiary-500')));
 
   let cityCount = $state<Record<string, number>>({});
   let countriesWithData = $state<Set<string>>(new Set());
@@ -279,7 +279,7 @@
     // Update colors
     fillColor = computedColor(getColorFromCSS('--color-surface-600-400'));
     strokeColor = computedColor(getColorFromCSS('--color-primary-100-900'));
-    pointColor = computedColor(getColorFromCSS('--color-secondary-500'));
+    pointColor = computedColor(getColorFromCSS('--color-tertiary-500'));
   });
 
   function handleGlobeRotation() {
@@ -304,11 +304,12 @@
     <Layer
             render={({ context }) => {
         path.context(context);
+        context.lineWidth = 0.5;
         context.strokeStyle = strokeColor;
 
         backCountries.forEach(country => {
           context.fillStyle = countriesWithData.has(country.properties?.name)
-            ? computedColor(getColorFromCSS('--color-primary-900-100'))
+            ? computedColor(getColorFromCSS('--color-primary-600-400'))
             : fillColor;
           context.beginPath();
           path(country);
@@ -322,11 +323,12 @@
     <Layer
             render={({ context }) => {
         path.context(context);
+        context.lineWidth = 0.5;
         context.strokeStyle = strokeColor;
 
         frontCountries.forEach(country => {
           context.fillStyle = countriesWithData.has(country.properties?.name)
-            ? computedColor(getColorFromCSS('--color-primary-900-100'))
+            ? computedColor(getColorFromCSS('--color-primary-600-400'))
             : fillColor;
           context.beginPath();
           path(country);
@@ -351,7 +353,7 @@
 
             context.beginPath();
             context.arc(c.coords[0], c.coords[1], radius, 0, 2*Math.PI);
-            context.fillStyle = isCluster ? computedColor(getColorFromCSS('--color-secondary-900')) : pointColor;
+            context.fillStyle = isCluster ? computedColor(getColorFromCSS('--color-tertiary-500')) : pointColor;
             context.fill();
             context.lineWidth = 1;
             context.stroke();

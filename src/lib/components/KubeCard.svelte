@@ -1,5 +1,7 @@
 <script lang="ts">
   import {formatNumber, formatBinaryUnit} from "$lib/utils/format";
+  import Card from "$lib/components/Card.svelte";
+  import Metric from "$lib/components/Metric.svelte";
 
   const {totalPods, totalNodes, totalMemory} = $props<{
     totalPods: string,
@@ -8,24 +10,10 @@
   }>();
 </script>
 
-<div class="card border-l-2 border-primary-200-800 pl-3 hover:shadow-md hover:border-secondary-500 transition preset-filled-surface-100-900 p-4">
-  <div class="flex justify-between items-center mb-2">
-    <h2 class="text-2xl font-bold">Kubernetes</h2>
-    <a href="/kube-details?interval=1 day" class="text-xs text-primary-500 hover:underline">View
-      Details</a>
-  </div>
+<Card title="Kubernetes" href="/kube-details?interval=1 year">
   <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatNumber(totalNodes)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total K8 Nodes</p>
-    </div>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatBinaryUnit(totalMemory, 'MB')}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total K8 Memory</p>
-    </div>
-    <div>
-      <p class="text-xl font-bold text-secondary-400-600">{formatNumber(totalPods)}</p>
-      <p class="text-xs font-medium text-muted-foreground">Total K8 Pods</p>
-    </div>
+    <Metric value={formatNumber(totalNodes)} label="Total K8 Nodes" />
+    <Metric value={formatBinaryUnit(totalMemory, 'MB')} label="Total K8 Memory" />
+    <Metric value={formatNumber(totalPods)} label="Total K8 Pods" />
   </div>
-</div>
+</Card>
