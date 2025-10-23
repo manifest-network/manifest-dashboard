@@ -37,9 +37,9 @@
         <AppBar.Headline>
           <TimeIntervalSegment display={isDetailPage()} />
         </AppBar.Headline>
-        <AppBar.Trail>
-          <LightSwitch/>
-        </AppBar.Trail>
+<!--        <AppBar.Trail>-->
+<!--          <LightSwitch/>-->
+<!--        </AppBar.Trail>-->
       </AppBar.Toolbar>
     </AppBar>
 

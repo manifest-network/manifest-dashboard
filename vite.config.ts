@@ -7,8 +7,11 @@ const proxyTarget = process.env.VITE_RPC_PROXY_TARGET || 'http://localhost:3000'
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	ssr: {
-			noExternal: process.env.NODE_ENV === 'production' ? ['@carbon/charts', 'svelte-canvas'] : []
+			noExternal: process.env.NODE_ENV === 'production' ? ['@carbon/charts', 'svelte-canvas', 'layerchart'] : []
 	},
+  optimizeDeps: {
+    include: ['@carbon/charts', 'svelte-canvas', 'layerchart']
+  },
 	server: {
     proxy: {
       '/rpc': proxyTarget

@@ -67,15 +67,15 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'locked_tokens',
-    title: (latest) => `Locked MFX: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
-    yAxisTitle: 'Locked Tokens (excl. fees)',
+    title: (latest) => `Locked MFX (excl. fees): ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'Locked MFX (excl. fees)',
     category: 'tokenomic',
     type: "chain"
   },
   {
     id: 'locked_fees',
-    title: (latest) => `Locked Fees: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
-    yAxisTitle: 'Locked Fees',
+    title: (latest) => `Locked MFX (fees): ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    yAxisTitle: 'Locked MFX (fees)',
     category: 'tokenomic',
     type: "chain"
   },
