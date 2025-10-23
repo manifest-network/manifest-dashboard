@@ -50,6 +50,7 @@ export function loadAggregateMetrics(f: typeof fetch, url: URL, configs: ChartCo
       }
 
       params.set('p_schema', v.type === "chain" || v.type === "supply" ? network : v.type);
+      console.log("AAAA",`${apiUrl}?${params.toString()}`)
       const promise = f(`${apiUrl}?${params.toString()}`)
         .then(r => r.json())
         .then(data => {

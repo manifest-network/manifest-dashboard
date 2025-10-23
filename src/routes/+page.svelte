@@ -105,7 +105,7 @@
         {/snippet}
 
         {#snippet pending()}
-          <LoadingCard title="Web Service" />
+          <LoadingCard title="Web Services" />
         {/snippet}
       </svelte:boundary>
       </div>
@@ -127,7 +127,7 @@
         {/snippet}
 
         {#snippet pending()}
-          <LoadingCard title="Decentralized Web" />
+          <LoadingCard title="Decentralized Websites" />
         {/snippet}
       </svelte:boundary>
       </div>

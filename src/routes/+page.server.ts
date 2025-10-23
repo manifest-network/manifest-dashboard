@@ -5,22 +5,7 @@ import {CommonMetricsByKeySchema} from "$lib/schemas/commonMetrics";
 import {CumsumMetricsByKeySchema} from "$lib/schemas/cumsumMetrics";
 import {GeoRecordArraySchema} from "$lib/schemas/geo";
 import {TokenomicMetricsByKeySchema} from "$lib/schemas/tokenomicMetrics";
-import type {ZodType} from "zod/v4";
-
-async function fetchAndParse<T>(
-  f: typeof fetch,
-  url: string,
-  schema: ZodType<T, any>
-): Promise<T> {
-  return f(url).then(r => r.json()).then(data => {
-    const parsed = schema.safeParse(data);
-    if (!parsed.success) {
-      console.error(`Failed to parse ${url}:`, parsed.error);
-      throw new Error(`Failed to parse data from ${url}`);
-    }
-    return parsed.data;
-  })
-}
+import {fetchAndParse} from "$lib/utils/fetchAndParse";
 
 export const load: PageServerLoad = async ({fetch}) => {
   const network = NETWORK as NetworkType;
