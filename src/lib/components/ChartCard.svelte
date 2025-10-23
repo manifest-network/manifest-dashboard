@@ -13,6 +13,8 @@
   );
 </script>
 
+<!-- TODO -->
+<!-- The values need to be represented as `Number` -->
 <main>
   <div class="relative h-[300px] p-4 rounded-sm">
     <h3 class="absolute top-2 left-4 card-title">
@@ -21,9 +23,8 @@
     <AreaChart
       data={data}
       x="date"
-      y="value"
+      y={(v) => Number(v.value)}
       yNice={true}
-      yDomain={[0, Math.ceil(Math.max(...data.map((p) => Number(p.value))) * 1.1)]}
       padding={{ left: 50, bottom: 50, top: 28 }}
       props={{
         xAxis: {
@@ -37,6 +38,7 @@
       }}
     >
       {#snippet marks()}
+        <!-- The key is used so the animation is re-rendered when the time interval changed -->
         {#key `${data?.[0]?.date}-${data?.[data.length-1]?.date}-${data.length}`}
           <ChartClipPath
                 initialWidth={0}
