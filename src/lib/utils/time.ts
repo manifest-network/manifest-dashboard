@@ -3,7 +3,7 @@ export const IntervalMap: Record<TimeSpan, TimeScale> = {
   "1 day": "1 minute",
   "1 week": "1 hour",
   "1 month": "5 hours",
-  "3 months": "1 hour",
+  "3 months": "5 hours",
   "1 year": "12 hours",
 }
 
