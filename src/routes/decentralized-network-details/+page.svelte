@@ -12,6 +12,7 @@
   import ChartCard from "$lib/components/ChartCard.svelte";
 
   const {data}: PageProps = $props();
+  const d = await data.metrics;
   // const tick = readable(Date.now(), (set) => {
   //   const id = setInterval(() => set(Date.now()), RELOAD_INTERVAL_MS);
   //   return () => clearInterval(id);
