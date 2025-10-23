@@ -29,8 +29,7 @@ export function loadAggregateMetrics(f: typeof fetch, url: URL, configs: ChartCo
     params.set(key, value);
   }
 
-  return Object.fromEntries(
-    configs.map(v => {
+  return configs.map(v => {
       let apiUrl = '';
       switch (v.type) {
         case "chain":
@@ -50,8 +49,7 @@ export function loadAggregateMetrics(f: typeof fetch, url: URL, configs: ChartCo
       }
 
       params.set('p_schema', v.type === "chain" || v.type === "supply" ? network : v.type);
-      console.log("AAAA",`${apiUrl}?${params.toString()}`)
-      const promise = f(`${apiUrl}?${params.toString()}`)
+    return f(`${apiUrl}?${params.toString()}`)
         .then(r => r.json())
         .then(data => {
           const parsed = ChartDataPointArraySchema(v.id).safeParse(data);
@@ -61,7 +59,6 @@ export function loadAggregateMetrics(f: typeof fetch, url: URL, configs: ChartCo
           }
           return parsed.data;
         });
-      return [v.id, promise];
-    })
+    }
   )
 }

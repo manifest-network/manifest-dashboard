@@ -3,6 +3,7 @@
   import { AreaChart, LinearGradient, Area, ChartClipPath } from "layerchart";
   import { formatLargeNumber } from "$lib/utils/format";
   import {cubicInOut} from "svelte/easing";
+  import BigInt from "bignumber.js";
 
   const { config, data }: { config: ChartConfig; data: ChartDataPoint[] } = $props();
 
@@ -21,7 +22,7 @@
     <AreaChart
       data={data}
       x="date"
-      y="value"
+      y={(p) => BigInt(p.value)}
       yNice={true}
       yDomain={[0, Math.ceil(Math.max(...data.map((p) => Number(p.value))) * 1.1)]}
       padding={{ left: 50, bottom: 50, top: 28 }}

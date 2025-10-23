@@ -4,15 +4,14 @@
   import {ERROR_RESET_INTERVAL_MS} from "$lib/const";
   import type {ChartDataPoint} from "$lib/schemas/charts";
 
-  const { configs, data }: { configs: ChartConfig[]; data: Record<string, Promise<ChartDataPoint[]>> } = $props();
-  const entries = $derived(Object.entries(data));
+  const { configs, data }: { configs: ChartConfig[]; data: ChartDataPoint[][] } = $props();
 </script>
 
 <div class="grid grid-cols-2">
-  {#each entries as [id, promise], i}
+  {#each data as d, i}
     <svelte:boundary>
       <div class="card w-full">
-        <ChartCard config={configs[i]} data={await promise} />
+        <ChartCard config={configs[i]} data={d} />
       </div>
 
       {#snippet failed(error, reset)}
