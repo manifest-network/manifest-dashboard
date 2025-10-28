@@ -4,7 +4,7 @@
   import Paused from 'carbon-icons-svelte/lib/Pause.svelte';
   import Play from 'carbon-icons-svelte/lib/Play.svelte';
   import { worldGeoJson as countries } from "$lib/utils/worldTopology";
-  import type {GeoRecord, GeoRecordArray} from "$lib/schemas/geo";
+  import type {GeoRecordArray} from "$lib/schemas/geo";
   import {clusterGeoPoints} from "$lib/utils/clustering";
   import { AnimationFrames } from "runed";
 
@@ -131,7 +131,11 @@
     </Chart>
 
     <div class="absolute bottom-4 left-4 z-10 pointer-events-auto group">
-      <button type="button" class="btn preset-outlined-primary-800-200" aria-label="Toggle globe rotation" onclick={animation.toggle}>
+      <button type="button"
+              class="btn preset-outlined-primary-800-200"
+              aria-label="Toggle globe rotation"
+              title={animation.running ? "Pause rotation" : "Play rotation"}
+              onclick={animation.toggle}>
         {#if animation.running}
           <Paused size={24}/>
         {:else}

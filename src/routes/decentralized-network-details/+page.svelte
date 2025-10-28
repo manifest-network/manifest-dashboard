@@ -3,7 +3,6 @@
   import {configs} from "./config";
   import {readable} from 'svelte/store';
   import {invalidateAll} from '$app/navigation';
-  import GlobeMapSVG from "$lib/components/GlobeMapSVG.svelte";
   import ChartCard from "$lib/components/ChartCard.svelte";
   import ErrorCard from "$lib/components/ErrorCard.svelte";
   import Globe from "$lib/components/Globe.svelte";
@@ -44,7 +43,6 @@
       <ErrorCard title="Globe Error" error="Failed to load world map data."/>
     {:else if data.worldMap}
       <div class="gap-4">
-<!--        <GlobeMapSVG data={data.worldMap}/>-->
         <Globe data={data.worldMap} />
       </div>
     {/if}
