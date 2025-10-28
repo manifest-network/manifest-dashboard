@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { Chart, type ChartContextValue, Layer, GeoPath, GeoContext, GeoCircle, GeoVisible } from "layerchart"
+  import { Chart, type ChartContextValue, Layer, GeoPath, GeoContext, GeoCircle, GeoVisible, Tooltip } from "layerchart"
   import {geoOrthographic} from "d3-geo"
   import Paused from 'carbon-icons-svelte/lib/Pause.svelte';
   import Play from 'carbon-icons-svelte/lib/Play.svelte';
   import { worldGeoJson as countries } from "$lib/utils/worldTopology";
-  import type {GeoRecordArray} from "$lib/schemas/geo";
+  import type {GeoRecord, GeoRecordArray} from "$lib/schemas/geo";
   import {clusterGeoPoints} from "$lib/utils/clustering";
+  import { AnimationFrames } from "runed";
 
   const {data} = $props<{ data: GeoRecordArray }>();
   let context = $state<ChartContextValue>();
@@ -15,22 +16,52 @@
     return clusterGeoPoints(data, context.geo.projection, 8);
   });
 
-  // TODO: FIX TIMER AND DRAGGING INTERACTIONS
-  // const velocity = 0.2;
-  // let animationFrame = $state<number | null>(null);
-  //
-  // function animateGlobe() {
-  //   if (autoRotating && !dragging) {
-  //     rotation = [rotation[0] + rotationSpeed, rotation[1]];
-  //   }
-  //   animationFrame = requestAnimationFrame(animateGlobe);
-  // }
-  //
-  // // Start animation when component initializes
-  // $effect(() => {
-  //   animationFrame = requestAnimationFrame(animateGlobe);
-  // });
+  let velocity = $state(0.5);
+  let frames = $state(0);
+	let fpsLimit = $state(60);
+	const animation = new AnimationFrames(
+		() => {
+      if (!context) return;
 
+      const curr = context.transform.translate;
+
+      context.transform.translate = {
+        x: (curr.x += velocity),
+        y: curr.y,
+      };
+
+      frames++;
+		},
+		{ fpsLimit: () => fpsLimit }
+	);
+
+  const countriesWithData = $derived.by(() => {
+    const s = new Set<string>();
+
+    for (const item of data) {
+      let name = item.country_name;
+      if (name === 'United States') name = 'United States of America';
+      s.add(name);
+    }
+
+    return s;
+  });
+
+  const cityCount = $derived.by(() => {
+    const counts: Record<string, number> = {};
+
+    for (const d of data) {
+      const key = `${d.city},${d.country_name}`;
+      counts[key] = (counts[key] || 0) + 1;
+    }
+
+    return counts;
+  })
+
+  const getCityCount = (city: string, country: string) => {
+    const key = `${city},${country}`;
+    return cityCount[key] || 1;
+  };
 </script>
 
 <main>
@@ -41,6 +72,7 @@
         fitGeojson: countries,
         applyTransform: ["rotate"],
       }}
+      ondragstart={animation.stop}
       bind:context
     >
       {#snippet children({ context })}
@@ -67,41 +99,45 @@
           {#each countries.features as country}
             <GeoPath
               geojson={country}
-              class="stroke-surface-100/30 fill-primary-content cursor-pointer hover:fill-primary"
-              tooltipContext={context.tooltip}
-            />
+              class={countriesWithData.has(country.properties?.name)
+                  ? "stroke-surface-100/30 fill-primary cursor-pointer"
+                  : "stroke-surface-100/30 fill-primary-content cursor-pointer"}
+              />
           {/each}
 
           <!-- City clusters -->
           {#each clusters as cluster}
             <GeoVisible lat={cluster.latitude} long={cluster.longitude}>
               <GeoCircle
-                      center={[cluster.longitude, cluster.latitude]}
+                center={[cluster.longitude, cluster.latitude]}
                 radius={0.7}
-                class="fill-secondary/100"
+                class="fill-tertiary-500/100"
+                onpointermove={(e) => context.tooltip.show(e, cluster)}
+                onpointerleave={() => context.tooltip.hide()}
               />
             </GeoVisible>
           {/each}
         </Layer>
+
+        <Tooltip.Root>
+          {@const points: readonly GeoRecord[] = (context.tooltip.data?.points ?? [])}
+          <Tooltip.List>
+            {#each points as p}
+              <Tooltip.Item label={p.city} value={getCityCount(p.city, p.country_name)} />
+            {/each}
+          </Tooltip.List>
+        </Tooltip.Root>
       {/snippet}
     </Chart>
 
-<!--    <div class="absolute bottom-4 left-4 z-10 pointer-events-auto group">-->
-<!--    <button type="button" class="btn preset-outlined-primary-800-200" onclick={timer.running ? timer.stop : timer.start}-->
-<!--            aria-label="Toggle globe rotation">-->
-<!--      {#if timer.running}-->
-<!--        <Paused size={24}/>-->
-<!--      {:else}-->
-<!--        <Play size={24}/>-->
-<!--      {/if}-->
-<!--    </button>-->
-
-    <!-- Pure CSS tooltip on Canvas -->
-    <div class="tooltip absolute top-full opacity-0 group-hover:opacity-100 group-hover:delay-1000 transition-opacity pointer-events-none delay-0 z-20"
-         style:left="{60}px" style:top="{10}px">
-      <div class="tooltip-content">
-        Toggle globe rotation
-      </div>
+    <div class="absolute bottom-4 left-4 z-10 pointer-events-auto group">
+      <button type="button" class="btn preset-outlined-primary-800-200" aria-label="Toggle globe rotation" onclick={animation.toggle}>
+        {#if animation.running}
+          <Paused size={24}/>
+        {:else}
+          <Play size={24}/>
+        {/if}
+      </button>
     </div>
   </div>
 </main>

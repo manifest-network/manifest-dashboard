@@ -49,6 +49,7 @@
 		"d3-quadtree": "3.0.1",
 		"layerchart": "2.0.0-next.42",
 		"lodash": "4.17.21",
+		"runed": "^0.35.1",
 		"svelte-canvas": "2.0.2",
 		"topojson-server": "3.0.1",
 		"topojson-simplify": "3.0.3",
