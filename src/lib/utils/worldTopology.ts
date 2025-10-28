@@ -10,9 +10,14 @@ type TopologyType = Topology<ObjectsType>
 export const worldTopoJson: TopologyType = worldTopoRaw as unknown as TopologyType;
 export const worldTopoJsonSimplified: TopologyType = simplify<ObjectsType>(presimplify<ObjectsType>(worldTopoJson), 0.5)
 
-export const worldGeoJson: FeatureCollection = feature(
+export const worldGeoJsonSimplified: FeatureCollection = feature(
   worldTopoJsonSimplified,
   worldTopoJsonSimplified.objects.countries
+) as FeatureCollection;
+
+export const worldGeoJson: FeatureCollection = feature(
+  worldTopoJson,
+  worldTopoJson.objects.countries
 ) as FeatureCollection;
 
 export const worldFeatures = (worldGeoJson as FeatureCollection).features;
