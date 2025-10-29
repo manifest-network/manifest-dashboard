@@ -56,108 +56,6 @@
 
 <main>
   <div class="max-w-screen mx-auto p-4">
-    <!-- INFRASTRUCTURE -->
-    <Section title="Infrastructure" cols="grid-cols-12">
-      <!-- Decentralized Network -->
-      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
-        {#if metricsError || geoDataError}
-          <ErrorCard title="Decentralized Network" error={metricsError ?? geoDataError}/>
-        {:else}
-          <DecentralizedNetworkCard
-            totalUniqueCountries={uniqueCountries.toFixed() ?? "N/A"}
-            totalNodeCount={metrics.node_count ?? "N/A"}
-            totalCpuCores={metrics.system_cpu_cores ?? "N/A"}
-            totalSystemMemory={metrics.system_memory ?? "N/A"}
-            totalDiskSpace={metrics.disk_space_total ?? "N/A"}
-            totalProcess={metrics.total_process ?? "N/A"}
-            usedDiskSpace={metrics.disk_space_used ?? "N/A"}
-            usedSystemMemory={metrics.system_memory_used ?? "N/A"}
-          />
-        {/if}
-      </div>
-
-      <!-- AI (GPU) -->
-      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
-        {#if metricsError}
-          <ErrorCard title="AI" error={metricsError}/>
-        {:else}
-          <GpuCard
-            totalGpu={metrics.gpu_total ?? "N/A"}
-            totalMemory={metrics.gpu_memory ?? "N/A"}
-            totalNvidiaGpu={metrics.gpu_nvidia_total ?? "N/A"}
-            totalAmdGpu={metrics.gpu_amd_total ?? "N/A"}
-            totalNvidiaMemory={metrics.gpu_nvidia_memory ?? "N/A"}
-            totalAmdMemory={metrics.gpu_amd_memory ?? "N/A"}
-          />
-        {/if}
-      </div>
-
-      <!-- Web Services -->
-      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
-        {#if metricsError || cumsumMetricsError}
-          <ErrorCard title="Web Services" error={metricsError ?? cumsumMetricsError}/>
-        {:else}
-          <WebServiceCard
-            totalWebServer={metrics.web_servers ?? "N/A"}
-            totalRequestPerSec={metrics.web_requests_per_sec ?? "N/A"}
-            totalRequests={cumsumMetrics.web_requests ?? "N/A"}
-          />
-        {/if}
-      </div>
-
-      <!-- Decentralized Websites -->
-      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
-        {#if metricsError || cumsumMetricsError}
-          <ErrorCard title="Decentralized Web Hosting" error={metricsError ?? cumsumMetricsError}/>
-        {:else}
-          <DecentralizedWebHosting
-            totalWebsites={metrics.web_sites ?? "N/A"}
-            totalRequests={cumsumMetrics.decentralized_web_requests ?? "N/A"}
-          />
-        {/if}
-      </div>
-
-      <!-- Kubernetes -->
-      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
-        {#if metricsError}
-          <ErrorCard title="Kubernetes Metrics" error={metricsError}/>
-        {:else}
-          <KubeCard
-            totalNodes={metrics.kube_nodes ?? "N/A"}
-            totalPods={metrics.kube_pods ?? "N/A"}
-            totalMemory={metrics.kube_memory ?? "N/A"}
-          />
-        {/if}
-      </div>
-
-      <!-- Object Storage -->
-      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
-        {#if metricsError}
-          <ErrorCard title="Object Storage" error={metricsError}/>
-        {:else}
-          <ObjectStorageCard
-            totalBuckets={metrics.minio_buckets ?? "N/A"}
-            totalObjects={metrics.minio_total ?? "N/A"}
-            usedStorage={metrics.minio_used ?? "N/A"}
-          />
-        {/if}
-      </div>
-
-      <!-- Network -->
-      <div class="col-span-12 md:col-span-6 xl:col-span-6 h-full">
-        {#if cumsumMetricsError}
-          <ErrorCard title="Network Metrics" error={cumsumMetricsError}/>
-        {:else}
-          <NetworkCard
-            totalIpv4BandwidthReceived={cumsumMetrics.system_network_received ?? "N/A"}
-            totalIpv4BandwidthSent={cumsumMetrics.system_network_sent ?? "N/A"}
-            totalIpv4PacketReceived={cumsumMetrics.system_tcp_received ?? "N/A"}
-            totalIpv4PacketSent={cumsumMetrics.system_tcp_sent ?? "N/A"}
-          />
-        {/if}
-      </div>
-    </Section>
-
     <!-- ECONOMY -->
     <Section title="Economy" cols="grid-cols-12">
       <!-- Tokenomics -->
@@ -196,5 +94,108 @@
         {/if}
       </div>
     </Section>
+
+    <!-- INFRASTRUCTURE -->
+    <Section title="Infrastructure" cols="grid-cols-12">
+      <!-- Decentralized Network -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
+        {#if metricsError || geoDataError}
+          <ErrorCard title="Decentralized Network" error={metricsError ?? geoDataError}/>
+        {:else}
+          <DecentralizedNetworkCard
+                  totalUniqueCountries={uniqueCountries.toFixed() ?? "N/A"}
+                  totalNodeCount={metrics.node_count ?? "N/A"}
+                  totalCpuCores={metrics.system_cpu_cores ?? "N/A"}
+                  totalSystemMemory={metrics.system_memory ?? "N/A"}
+                  totalDiskSpace={metrics.disk_space_total ?? "N/A"}
+                  totalProcess={metrics.total_process ?? "N/A"}
+                  usedDiskSpace={metrics.disk_space_used ?? "N/A"}
+                  usedSystemMemory={metrics.system_memory_used ?? "N/A"}
+          />
+        {/if}
+      </div>
+
+      <!-- AI (GPU) -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
+        {#if metricsError}
+          <ErrorCard title="AI" error={metricsError}/>
+        {:else}
+          <GpuCard
+                  totalGpu={metrics.gpu_total ?? "N/A"}
+                  totalMemory={metrics.gpu_memory ?? "N/A"}
+                  totalNvidiaGpu={metrics.gpu_nvidia_total ?? "N/A"}
+                  totalAmdGpu={metrics.gpu_amd_total ?? "N/A"}
+                  totalNvidiaMemory={metrics.gpu_nvidia_memory ?? "N/A"}
+                  totalAmdMemory={metrics.gpu_amd_memory ?? "N/A"}
+          />
+        {/if}
+      </div>
+
+      <!-- Web Services -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
+        {#if metricsError || cumsumMetricsError}
+          <ErrorCard title="Web Services" error={metricsError ?? cumsumMetricsError}/>
+        {:else}
+          <WebServiceCard
+                  totalWebServer={metrics.web_servers ?? "N/A"}
+                  totalRequestPerSec={metrics.web_requests_per_sec ?? "N/A"}
+                  totalRequests={cumsumMetrics.web_requests ?? "N/A"}
+          />
+        {/if}
+      </div>
+
+      <!-- Decentralized Websites -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
+        {#if metricsError || cumsumMetricsError}
+          <ErrorCard title="Decentralized Web Hosting" error={metricsError ?? cumsumMetricsError}/>
+        {:else}
+          <DecentralizedWebHosting
+                  totalWebsites={metrics.web_sites ?? "N/A"}
+                  totalRequests={cumsumMetrics.decentralized_web_requests ?? "N/A"}
+          />
+        {/if}
+      </div>
+
+      <!-- Kubernetes -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
+        {#if metricsError}
+          <ErrorCard title="Kubernetes Metrics" error={metricsError}/>
+        {:else}
+          <KubeCard
+                  totalNodes={metrics.kube_nodes ?? "N/A"}
+                  totalPods={metrics.kube_pods ?? "N/A"}
+                  totalMemory={metrics.kube_memory ?? "N/A"}
+          />
+        {/if}
+      </div>
+
+      <!-- Object Storage -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
+        {#if metricsError}
+          <ErrorCard title="Object Storage" error={metricsError}/>
+        {:else}
+          <ObjectStorageCard
+                  totalBuckets={metrics.minio_buckets ?? "N/A"}
+                  totalObjects={metrics.minio_total ?? "N/A"}
+                  usedStorage={metrics.minio_used ?? "N/A"}
+          />
+        {/if}
+      </div>
+
+      <!-- Network -->
+      <div class="col-span-12 md:col-span-6 xl:col-span-6 h-full">
+        {#if cumsumMetricsError}
+          <ErrorCard title="Network Metrics" error={cumsumMetricsError}/>
+        {:else}
+          <NetworkCard
+                  totalIpv4BandwidthReceived={cumsumMetrics.system_network_received ?? "N/A"}
+                  totalIpv4BandwidthSent={cumsumMetrics.system_network_sent ?? "N/A"}
+                  totalIpv4PacketReceived={cumsumMetrics.system_tcp_received ?? "N/A"}
+                  totalIpv4PacketSent={cumsumMetrics.system_tcp_sent ?? "N/A"}
+          />
+        {/if}
+      </div>
+    </Section>
+
   </div>
 </main>
