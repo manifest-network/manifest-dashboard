@@ -12,9 +12,14 @@
     return () => clearInterval(id);
   });
 
+  let hasTicked = false;
+
   $effect(() => {
-    if ($tick) {
+    $tick;
+    if (hasTicked) {
       invalidateAll();
+    } else {
+      hasTicked = true; // skip the very first run (initial page load)
     }
   });
 </script>

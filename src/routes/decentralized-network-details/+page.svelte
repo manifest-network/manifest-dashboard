@@ -7,10 +7,14 @@
   import {ERROR_RESET_INTERVAL_MS, RELOAD_INTERVAL_MS} from "$lib/const";
   // TODO: Issue with set_context_after_init triggered by svelte-canvas
   // TODO: https://github.com/sveltejs/svelte/issues/16629
-  import GlobeMapSVG from "$lib/components/GlobeMapSVG.svelte";
   import ErrorCard from "$lib/components/ErrorCard.svelte";
+  import Globe from "$lib/components/Globe.svelte";
 
   const {data}: PageProps = $props();
+  const tick = readable(Date.now(), (set) => {
+    const id = setInterval(() => set(Date.now()), RELOAD_INTERVAL_MS);
+    return () => clearInterval(id);
+  });
 
   // TODO: Issue with set_context_after_init triggered by svelte-canvas
   // TODO: https://github.com/sveltejs/svelte/issues/16629
@@ -18,16 +22,16 @@
   const metrics = $derived(await Promise.all(data.metrics));
   const world = $derived(await data.world);
 
-  // const tick = readable(Date.now(), (set) => {
-  //   const id = setInterval(() => set(Date.now()), RELOAD_INTERVAL_MS);
-  //   return () => clearInterval(id);
-  // });
-  //
-  // $effect(() => {
-  //   if ($tick) {
-  //     invalidateAll();
-  //   }
-  // });
+  let hasTicked = false;
+
+  $effect(() => {
+    $tick;
+    if (hasTicked) {
+      invalidateAll();
+    } else {
+      hasTicked = true; // skip the very first run (initial page load)
+    }
+  });
 </script>
 
 
@@ -36,7 +40,7 @@
     <svelte:boundary>
 <!--&lt;!&ndash; TODO: Issue with set_context_after_init triggered by svelte-canvas  &ndash;&gt;-->
 <!--&lt;!&ndash; TODO: https://github.com/sveltejs/svelte/issues/16629 &ndash;&gt;-->
-      <GlobeMapSVG data={world} />
+      <Globe data={world} />
       {#snippet failed(error, reset)}
         <div class="card w-full p-4 mb-6">
           <ErrorCard title="World" error={"An error occurred while fetching world data."} />
