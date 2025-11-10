@@ -2,7 +2,7 @@
   import '../app.css';
   import {mode} from '$lib/stores/theme';
   import {AppBar} from '@skeletonlabs/skeleton-svelte';
-  import LightSwitch from "$lib/components/LightSwitch.svelte";
+  // import LightSwitch from "$lib/components/LightSwitch.svelte";
   import TimeIntervalSegment from "$lib/components/TimeIntervalSegment.svelte";
   import {page} from "$app/state";
 
@@ -29,7 +29,7 @@
        <AppBar.Lead>
           <div class="relative">
             <a href="/" class="inline-block">
-              <img src={isDark ? "/manifest_dark.svg" : "/manifest_light.svg"} alt="Logo" class="h-14"/>
+              <img src={isDark ? "/manifest_dark.svg" : "/manifest_light.svg"} alt="Logo" fetchpriority="high" />
             </a>
           </div>
        </AppBar.Lead>
