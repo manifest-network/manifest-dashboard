@@ -46,6 +46,7 @@ jobs:
           context: .
           push: true
           tags: lifted/manifest-dashboard:${{ env.GIT_TAG }}
+          no-cache: true
 
       - name: Build and push Docker image
         if: github.ref == 'refs/heads/main'
@@ -54,3 +55,4 @@ jobs:
           context: .
           push: true
           tags: lifted/manifest-dashboard:${{ matrix.environment }}
+          no-cache: true
