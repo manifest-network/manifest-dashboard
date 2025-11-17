@@ -20,34 +20,45 @@ export const configs: ChartConfig[] = [
     title: (latest) => `Total Processes: ${latest ? formatLargeNumber(latest.value) : "N/A"}`,
     yAxisTitle: '# of Processes',
     category: 'dn',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => formatLargeNumber(value),
+    yAxisFormatter: (value: string) => formatLargeNumber(value, 0),
   },
   {
     id: 'system_memory',
     title: (latest) => `Total Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
-    yAxisTitle: 'Memory (MB)',
+    yAxisTitle: 'Memory',
     category: 'dn',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => formatBinaryUnit(value, "MB"),
+    yAxisFormatter: (value: string) => formatBinaryUnit(value, "MB", 0),
   },
   {
     id: 'system_memory_used',
     title: (latest) => `Used Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
-    yAxisTitle: 'Memory (MB)',
+    yAxisTitle: 'Memory',
     category: 'dn',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => formatBinaryUnit(value, "MB"),
+    yAxisFormatter: (value: string) => formatBinaryUnit(value, "MB", 0),
+
   },
   {
     id: 'disk_space_total',
     title: (latest) => `Total Disk Space: ${latest ? formatBinaryUnit(latest.value, "GB") : "N/A"}`,
-    yAxisTitle: 'Disk Space (GB)',
+    yAxisTitle: 'Disk Space',
     category: 'dn',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => formatBinaryUnit(value, "GB"),
+    yAxisFormatter: (value: string) => formatBinaryUnit(value, "GB", 0),
   },
   {
     id: 'disk_space_used',
     title: (latest) => `Used Disk Space: ${latest ? formatBinaryUnit(latest.value, "GB") : "N/A"}`,
-    yAxisTitle: 'Disk Space (GB)',
+    yAxisTitle: 'Disk Space',
     category: 'dn',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => formatBinaryUnit(value, "GB"),
+    yAxisFormatter: (value: string) => formatBinaryUnit(value, "GB", 0),
   },
 ]

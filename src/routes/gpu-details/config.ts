@@ -11,9 +11,11 @@ export const configs: ChartConfig[] = [
   {
     id: 'gpu_memory',
     title: (latest) => `Total GPU Memory: ${latest ? formatBinaryUnit(latest.value, "B") : "N/A"}`,
-    yAxisTitle: 'Total Memory (B)',
+    yAxisTitle: 'Total Memory',
     category: 'ai',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => formatBinaryUnit(value, "B"),
+    yAxisFormatter: (value: string) => formatBinaryUnit(value, "B", 0),
   },
   {
     id: 'gpu_nvidia_total',
@@ -25,9 +27,11 @@ export const configs: ChartConfig[] = [
   {
     id: 'gpu_nvidia_memory',
     title: (latest) => `Total NVIDIA Memory: ${latest ? formatBinaryUnit(latest.value, "B") : "N/A"}`,
-    yAxisTitle: 'Total Memory (B)',
+    yAxisTitle: 'Total Memory',
     category: 'ai',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => formatBinaryUnit(value, "B"),
+    yAxisFormatter: (value: string) => formatBinaryUnit(value, "B", 0),
   },
   {
     id: 'gpu_amd_total',
@@ -39,8 +43,10 @@ export const configs: ChartConfig[] = [
   {
     id: 'gpu_amd_memory',
     title: (latest) => `Total AMD Memory: ${latest ? formatBinaryUnit(latest.value, "B") : "N/A"}`,
-    yAxisTitle: 'Total Memory (B)',
+    yAxisTitle: 'Total Memory',
     category: 'ai',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => formatBinaryUnit(value, "B"),
+    yAxisFormatter: (value: string) => formatBinaryUnit(value, "B", 0),
   },
 ]
