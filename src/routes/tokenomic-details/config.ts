@@ -4,79 +4,101 @@ import {BigNumber} from "bignumber.js";
 export const configs: ChartConfig[] = [
   {
     id: 'fdv',
-    title: (latest) => `Estimated FDV.: $${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    title: (latest) => `Estimated FDV.: $${latest ? formatBaseDenom(latest.value, 8) : "N/A"}`,
     yAxisTitle: 'Estimated FDV.',
     category: 'tokenomic',
-    type: "supply"
+    type: "supply",
+    tooltipValueFormatter: (value: string) => `$${formatBaseDenom(value, 8)}`,
+    yAxisFormatter: (value: string) => `$${formatBaseDenom(value, 0)}`,
   },
   {
     id: 'market_cap',
-    title: (latest) => `Estimated Market Cap.: $${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    title: (latest) => `Estimated Market Cap.: $${latest ? formatBaseDenom(latest.value, 8) : "N/A"}`,
     yAxisTitle: 'Estimated Market Cap.',
     category: 'tokenomic',
-    type: "supply"
+    type: "supply",
+    tooltipValueFormatter: (value: string) => `$${formatBaseDenom(value, 8)}`,
+    yAxisFormatter: (value: string) => `$${formatBaseDenom(value, 0)}`,
   },
   {
     id: 'circulating_supply',
-    title: (latest) => `Circulating Supply: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    title: (latest) => `Circulating Supply: ${latest ? formatBaseDenom(latest.value, 8) : "N/A"}`,
     yAxisTitle: 'Circulating Supply',
     category: 'tokenomic',
-    type: "supply"
+    type: "supply",
+    tooltipValueFormatter: (value: string) => `${formatBaseDenom(value, 8)} MFX`,
+    yAxisFormatter: (value: string) => `${formatBaseDenom(value, 0)}`,
   },
   {
     id: 'manifest_tokenomics_total_supply',
-    title: (latest) => `Total MFX Supply: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    title: (latest) => `Total MFX Supply: ${latest ? formatBaseDenom(latest.value, 8) : "N/A"}`,
     yAxisTitle: 'Token Supply',
     category: 'tokenomic',
-    type: "chain"
+    type: "chain",
+    tooltipValueFormatter: (value: string) => `${formatBaseDenom(value, 8)} MFX`,
+    yAxisFormatter: (value: string) => `${formatBaseDenom(value, 0)}`,
   },
   {
     id: 'total_mfx_minted',
-    title: (latest) => `Total MFX Minted: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    title: (latest) => `Total MFX Minted: ${latest ? formatBaseDenom(latest.value, 4) : "N/A"}`,
     yAxisTitle: 'MFX Minted',
     category: 'tokenomic',
-    type: "chain"
+    type: "chain",
+    tooltipValueFormatter: (value: string) => `${formatBaseDenom(value, 4)} MFX`,
+    yAxisFormatter: (value: string) => `${formatBaseDenom(value, 1)}`,
   },
   {
     id: 'total_mfx_burned',
-    title: (latest) => `Total MFX Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    title: (latest) => `Total MFX Burned: ${latest ? formatBaseDenom(latest.value, 4) : "N/A"}`,
     yAxisTitle: 'MFX Burned',
     category: 'tokenomic',
-    type: "chain"
+    type: "chain",
+    tooltipValueFormatter: (value: string) => `${formatBaseDenom(value, 4)} MFX`,
+    yAxisFormatter: (value: string) => `${formatBaseDenom(value, 1)}`,
   },
   {
     id: 'total_pwr_burned',
-    title: (latest) => `Total PWR Burned: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    title: (latest) => `Total PWR Burned: ${latest ? formatBaseDenom(latest.value, 4) : "N/A"}`,
     yAxisTitle: 'PWR Burned',
     category: 'tokenomic',
-    type: "chain"
+    type: "chain",
+    tooltipValueFormatter: (value: string) => `${formatBaseDenom(value, 4)} PWR`,
+    yAxisFormatter: (value: string) => `${formatBaseDenom(value, 1)}`,
   },
   {
     id: 'total_pwr_minted',
-    title: (latest) => `Total PWR Minted: ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
+    title: (latest) => `Total PWR Minted: ${latest ? formatBaseDenom(latest.value, 4) : "N/A"}`,
     yAxisTitle: 'PWR Minted',
     category: 'tokenomic',
-    type: "chain"
+    type: "chain",
+    tooltipValueFormatter: (value: string) => `${formatBaseDenom(value, 4)} PWR`,
+    yAxisFormatter: (value: string) => `${formatBaseDenom(value, 1)}`,
   },
   {
     id: 'talib_mfx_power_conversion',
     title: (latest) => `MFX:PWR Conversion Rate: ${latest ? BigNumber(latest.value).div(10) : "N/A"}`,
-    yAxisTitle: 'MFX:PWR (10x)',
+    yAxisTitle: 'MFX:PWR',
     category: 'tokenomic',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => `${BigNumber(value).div(10).toFixed()}`,
+    yAxisFormatter: (value: string) => `${BigNumber(value).div(10).toFixed()}`,
   },
   {
     id: 'locked_tokens',
     title: (latest) => `Locked MFX (excl. fees): ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
     yAxisTitle: 'Locked MFX (excl. fees)',
     category: 'tokenomic',
-    type: "chain"
+    type: "chain",
+    tooltipValueFormatter: (value: string) => `${formatBaseDenom(value, 4)} MFX`,
+    yAxisFormatter: (value: string) => `${formatBaseDenom(value, 1)}`,
   },
   {
     id: 'locked_fees',
     title: (latest) => `Locked MFX (fees): ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
     yAxisTitle: 'Locked MFX (fees)',
     category: 'tokenomic',
-    type: "chain"
+    type: "chain",
+    tooltipValueFormatter: (value: string) => `${formatBaseDenom(value, 4)} MFX`,
+    yAxisFormatter: (value: string) => `${formatBaseDenom(value, 1)}`,
   },
 ]

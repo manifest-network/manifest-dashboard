@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { ChartDataPoint } from "$lib/schemas/charts";
-  import { AreaChart, LinearGradient, Area, ChartClipPath } from "layerchart";
+  import { AreaChart, LinearGradient, Area, ChartClipPath, Tooltip } from "layerchart";
   import { formatLargeNumber } from "$lib/utils/format";
   import {cubicInOut} from "svelte/easing";
 
@@ -32,11 +32,20 @@
         },
         yAxis: {
           label: config.yAxisTitle,
-          format: (v) => formatLargeNumber(v, 0),
+          format: (v) => config.yAxisFormatter ? config.yAxisFormatter(v) : formatLargeNumber(v, 0),
         },
         highlight: { points: { r: 3, class: "stroke-2 stroke-surface-100" } }
       }}
     >
+      {#snippet tooltip({context})}
+        <Tooltip.Root>
+          <Tooltip.Item
+              label={config.yAxisTitle}
+              value={context.tooltip.data?.value}
+              format={config.tooltipValueFormatter ?? ((v) => v)}
+            />
+        </Tooltip.Root>
+      {/snippet}
       {#snippet marks()}
         <!-- The key is used so the animation is re-rendered when the time interval changed -->
         {#key `${data?.[0]?.date}-${data?.[data.length-1]?.date}-${data.length}`}

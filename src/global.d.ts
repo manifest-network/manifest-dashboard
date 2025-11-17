@@ -11,5 +11,7 @@ interface ChartConfig {
   yAxisTitle: string;
   category: ChartCategory;
   type: ChartType
+  tooltipValueFormatter?: (value: string) => string;
+  yAxisFormatter?: (value: string) => string;
 }
 

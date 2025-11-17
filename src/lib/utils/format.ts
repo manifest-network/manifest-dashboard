@@ -35,14 +35,14 @@ export function formatCurrency(value: string, currencySymbol: string = '$', deci
   return `${currencySymbol}${bigNum}`;
 }
 
-export function formatBaseDenom(val: string){
+export function formatBaseDenom(val: string, decimalPlaces: number = 1): string {
   const bigNum = BigNumber(val);
 
   // Divide by 1e6 to convert to base denomination
   const converted = bigNum.dividedBy(1e6);
   if (converted.isNaN()) return 'NaN';
 
-  return formatLargeNumber(converted.toFixed(1), 1);
+  return formatLargeNumber(converted.toFixed(decimalPlaces), decimalPlaces);
 }
 
 export function formatLargeNumber(val: string, decimalPlaces: number = 2): string {
