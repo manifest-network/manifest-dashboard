@@ -41,7 +41,6 @@ export const configs: ChartConfig[] = [
     type: "common",
     tooltipValueFormatter: (value: string) => formatBinaryUnit(value, "MB"),
     yAxisFormatter: (value: string) => formatBinaryUnit(value, "MB", 0),
-
   },
   {
     id: 'disk_space_total',
