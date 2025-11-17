@@ -6,7 +6,9 @@ export const configs: ChartConfig[] = [
     title: (latest) => `Total Objects: ${latest ? formatLargeNumber(latest.value) : "N/A"}`,
     yAxisTitle: '# of Objects',
     category: 'minio',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => formatLargeNumber(value),
+    yAxisFormatter: (value: string) => formatLargeNumber(value, 0),
   },
   {
     id: 'minio_buckets',
@@ -18,8 +20,10 @@ export const configs: ChartConfig[] = [
   {
     id: 'minio_used',
     title: (latest) => `Used Storage: ${latest ? formatBinaryUnit(latest.value, "B") : "N/A"}`,
-    yAxisTitle: 'Storage (B)',
+    yAxisTitle: 'Storage',
     category: 'minio',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => formatBinaryUnit(value, "B"),
+    yAxisFormatter: (value: string) => formatBinaryUnit(value, "B", 0),
   },
 ]

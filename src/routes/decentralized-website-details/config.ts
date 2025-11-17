@@ -13,6 +13,8 @@ export const configs: ChartConfig[] = [
     title: (latest) => `Total Web Requests: ${latest ? formatLargeNumber(latest.value) : "N/A"}`,
     yAxisTitle: 'Web Requests',
     category: 'gc',
-    type: "cumsum"
+    type: "cumsum",
+    tooltipValueFormatter: (value: string) => formatLargeNumber(value),
+    yAxisFormatter: (value: string) => formatLargeNumber(value, 0),
   }
 ]

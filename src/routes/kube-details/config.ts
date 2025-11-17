@@ -13,7 +13,9 @@ export const configs: ChartConfig[] = [
     title: (latest) => `Total K8 Memory: ${latest ? formatBinaryUnit(latest.value, "MB") : "N/A"}`,
     yAxisTitle: 'Total Memory (MB)',
     category: 'kube',
-    type: "common"
+    type: "common",
+    tooltipValueFormatter: (value: string) => formatBinaryUnit(value, "MB"),
+    yAxisFormatter: (value: string) => formatBinaryUnit(value, "MB", 0),
   },
   {
     id: 'kube_pods',
