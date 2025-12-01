@@ -40,6 +40,19 @@
       {#snippet tooltip({context})}
         <Tooltip.Root>
           <Tooltip.Item
+            label="Date"
+            value={context.tooltip.data?.date}
+            format={(v) => v ? new Date(v).toLocaleString('en-US', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false,
+              timeZoneName: 'short'
+            }) : "N/A"}
+          />
+          <Tooltip.Item
               label={config.yAxisTitle}
               value={context.tooltip.data?.value}
               format={config.tooltipValueFormatter ?? ((v) => v)}
