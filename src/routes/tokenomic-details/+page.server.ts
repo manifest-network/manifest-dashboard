@@ -1,17 +1,19 @@
-import type {PageServerLoad} from "./$types";
+import {error} from "@sveltejs/kit";
+import type {PageServerLoad, PageServerLoadEvent} from "./$types";
 import {configs} from "./config";
 import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
-import {NETWORK} from '$env/static/private';
 import {loadAggregateSupplyMetric} from "$lib/loaders/loadAggregateSupplyMetrics";
-import type {PageServerLoadEvent} from "./$types";
+import {loadStaticMetric} from "$lib/loaders/loadStaticMetric";
 import {runTasks} from "$lib/utils/runTasks";
 
 export const load: PageServerLoad = async (event) => {
-  const network = NETWORK as NetworkType
-
-  const tasks = configs.reduce((acc, {id, type}) => {
+  const tasks = configs.reduce((acc, {id, type, staticValue}) => {
     if (type === 'common' || type === 'chain') acc[`aggregateMetric_${id}`] = loadAggregateMetric(id, type)
     else if (type === 'supply') acc[`aggregateSupplyMetric_${id}`] = loadAggregateSupplyMetric(id);
+    else if (type === 'static') {
+      if (staticValue === undefined) error(500, `Static chart "${id}" must have a staticValue`);
+      acc[`aggregateMetric_${id}`] = loadStaticMetric(id, staticValue);
+    }
     return acc;
   }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
 
