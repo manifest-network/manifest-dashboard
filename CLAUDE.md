@@ -93,7 +93,12 @@ src/
   - `id`: Unique identifier matching the API metric ID
   - `title`: String or function (receives latest data point)
   - `yAxisTitle`: Y-axis label
-  - `type`: "common", "cumsum", or "chain" - determines which loader to use
+  - `type`: Determines which loader to use:
+    - `"common"` / `"chain"` - Uses `loadAggregateMetric()` for API data
+    - `"supply"` - Uses `loadAggregateSupplyMetric()` for supply metrics
+    - `"cumsum"` - Uses `loadCumsumMetric()` for cumulative metrics
+    - `"static"` - Uses `loadStaticMetric()` for hardcoded constant values
+  - `staticValue`: Required when `type: "static"` - the constant number to display
   - `tooltipValueFormatter`: Optional function to format values in chart tooltips
   - `yAxisFormatter`: Optional function to format values on Y-axis
 
@@ -134,18 +139,42 @@ src/
 4. Add `+page.svelte` to render the charts using `<ChartCard>` components
 5. Loaders will fetch data from the API using the metric IDs in config
 
-### Adding a New Metric/Chart
+### Adding a New Metric/Chart (API-backed)
 
 1. Add the metric ID to `config.ts` in the appropriate route's config array
-2. Define the loader in the `load` function (the wrapper function like `loadAggregateMetric()` handles the heavy lifting)
+2. The server loader automatically creates tasks based on `type` - no manual wiring needed
 3. Update the Zod schema in `src/lib/schemas/` if the response format is new
 4. The `<ChartCard>` component will automatically render it using the config
 
+### Adding a Static Chart (hardcoded value)
+
+For charts that display a constant value without API calls:
+
+```typescript
+// In config.ts
+{
+  id: 'my_static_metric',
+  title: (latest) => `My Metric: ${latest ? latest.value : "N/A"}`,
+  yAxisTitle: 'Value',
+  category: 'tokenomic',
+  type: "static",
+  staticValue: 42,  // The constant value to display
+}
+```
+
+The `loadStaticMetric()` loader generates time-series data points at the same intervals as API-backed charts, rendering as a flat line.
+
 ### Handling Time Intervals
 
-- Users can select intervals via URL parameter: `?interval=7d`, `?interval=1y`, etc.
-- Valid intervals: defined in `src/lib/utils/time.ts`
-- `extractAndPrepareTimeParams()` converts human-friendly intervals to API parameters (`p_interval`, `p_from`, `p_to`)
+- Users select intervals via URL parameter: `?interval=1 week`, `?interval=1 year`, etc.
+- Valid intervals (defined in `src/lib/utils/time.ts`):
+  - `1 hour`, `1 day`, `1 week`, `1 month`, `3 months`, `1 year`
+- Each interval maps to a data aggregation scale via `IntervalMap`:
+  - `1 hour` / `1 day` → `1 minute` buckets
+  - `1 week` → `1 hour` buckets
+  - `1 month` / `3 months` → `5 hours` buckets
+  - `1 year` → `12 hours` buckets
+- `extractAndPrepareTimeParams()` converts intervals to API parameters (`p_interval`, `p_from`, `p_to`)
 
 ## Building & Deployment
 
