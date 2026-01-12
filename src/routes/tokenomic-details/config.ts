@@ -110,3 +110,30 @@ export const configs: ChartConfig[] = [
     yAxisFormatter: (value: string) => `${formatBaseDenom(value, 1)}`,
   },
 ]
+
+export const rateConfigs: RateChartConfig[] = [
+  {
+    id: 'mfx_burn_rate',
+    sourceMetricId: 'total_mfx_burned',
+    title: 'MFX Burn Rate',
+    yAxisTitle: 'Burn Rate',
+    category: 'tokenomic',
+    type: 'chain',
+    unitSuffix: 'MFX',
+    insertAfter: 'total_mfx_burned',
+    tooltipValueFormatter: (value: string) => `${formatBaseDenom(value, 4)} MFX`,
+    yAxisFormatter: (value: string) => `${formatBaseDenom(value, 1)}`,
+  },
+  {
+    id: 'pwr_burn_rate',
+    sourceMetricId: 'total_pwr_burned',
+    title: 'PWR Burn Rate',
+    yAxisTitle: 'Burn Rate',
+    category: 'tokenomic',
+    type: 'chain',
+    unitSuffix: 'PWR',
+    insertAfter: 'total_pwr_minted',
+    tooltipValueFormatter: (value: string) => `${formatBaseDenom(value, 4)} PWR`,
+    yAxisFormatter: (value: string) => `${formatBaseDenom(value, 1)}`,
+  },
+]
