@@ -90,7 +90,7 @@
           },
           yAxis: {
             label: config.yAxisTitle,
-            format: (v) => config.yAxisFormatter ? config.yAxisFormatter(v) : formatLargeNumber(v, 0),
+            format: (v) => config.yAxisFormatter ? config.yAxisFormatter(String(v)) : formatLargeNumber(v, 0),
           },
           highlight: {points: {r: 3, class: "stroke-2 stroke-surface-100"}}
         }}
