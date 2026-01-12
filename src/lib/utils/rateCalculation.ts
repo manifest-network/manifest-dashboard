@@ -1,13 +1,17 @@
 import {BigNumber} from "bignumber.js";
 import type {ChartDataPoint} from "$lib/schemas/charts";
 
+// Average number of days in a month (365.25 days per year / 12 months).
+// Kept as a literal (30.44) to preserve existing behavior.
+const AVERAGE_DAYS_PER_MONTH = 30.44;
+
 export const MS_PER_UNIT: Record<RateUnit, number> = {
   per_5min: 5 * 60 * 1000,
   per_15min: 15 * 60 * 1000,
   per_hour: 60 * 60 * 1000,
   per_day: 24 * 60 * 60 * 1000,
   per_week: 7 * 24 * 60 * 60 * 1000,
-  per_month: 30.44 * 24 * 60 * 60 * 1000,
+  per_month: AVERAGE_DAYS_PER_MONTH * 24 * 60 * 60 * 1000,
 };
 
 export const RATE_UNIT_LABELS: Record<RateUnit, string> = {
