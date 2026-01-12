@@ -1,9 +1,11 @@
 <script lang="ts">
   import type {PageProps} from "./$types";
+  import type {ChartDataPoint} from "$lib/schemas/charts";
   import {readable} from "svelte/store";
   import {invalidateAll} from "$app/navigation";
-  import {configs} from "./config";
+  import {configs, rateConfigs} from "./config";
   import ChartCard from "$lib/components/ChartCard.svelte";
+  import RateChartCard from "$lib/components/RateChartCard.svelte";
   import ErrorCard from "$lib/components/ErrorCard.svelte";
 
   let {data}: PageProps = $props();
@@ -25,6 +27,20 @@
       }
     ]
   })));
+
+  // Map rate configs to their source metric data, keyed by insertAfter for positioning
+  const rateChartsByInsertAfter = $derived(
+    rateConfigs.reduce((acc, config) => {
+      const key = config.insertAfter;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push({
+        config,
+        data: data[`aggregateMetric_${config.sourceMetricId}`] as ChartDataPoint[] | undefined,
+        error: data[`aggregateMetric_${config.sourceMetricId}Error`] as string | undefined
+      });
+      return acc;
+    }, {} as Record<string, Array<{config: RateChartConfig, data: ChartDataPoint[] | undefined, error: string | undefined}>>)
+  );
 
   const tick = readable(Date.now(), (set) => {
     const id = setInterval(() => set(Date.now()), 60000);
@@ -55,6 +71,18 @@
           </div>
         {/if}
       {/each}
+      <!-- Insert rate charts configured to appear after this chart -->
+      {#if rateChartsByInsertAfter[config.id]}
+        {#each rateChartsByInsertAfter[config.id] as rateChart}
+          {#if rateChart.error}
+            <ErrorCard title="Chart Failed" error={rateChart.error}/>
+          {:else if rateChart.data}
+            <div class="card w-full p-4 mb-4">
+              <RateChartCard config={rateChart.config} data={rateChart.data}/>
+            </div>
+          {/if}
+        {/each}
+      {/if}
     {/each}
   </div>
 </main>
