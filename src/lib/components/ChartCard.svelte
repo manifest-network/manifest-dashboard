@@ -15,7 +15,7 @@
 
 <!-- TODO -->
 <!-- The values need to be represented as `Number` -->
-<main>
+<section>
   <div class="relative h-[300px] p-4 rounded-sm">
     <h3 class="absolute top-2 left-4 card-title">
       {title}
@@ -32,7 +32,7 @@
         },
         yAxis: {
           label: config.yAxisTitle,
-          format: (v) => config.yAxisFormatter ? config.yAxisFormatter(v) : formatLargeNumber(v, 0),
+          format: (v) => config.yAxisFormatter ? config.yAxisFormatter(String(v)) : formatLargeNumber(String(v), 0),
         },
         highlight: { points: { r: 3, class: "stroke-2 stroke-surface-100" } }
       }}
@@ -78,4 +78,4 @@
       {/snippet}
     </AreaChart>
   </div>
-</main>
+</section>

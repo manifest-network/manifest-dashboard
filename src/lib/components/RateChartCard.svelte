@@ -59,7 +59,7 @@
   }
 </script>
 
-<main>
+<section>
   <div class="relative h-[300px] p-4 rounded-sm">
     <div class="absolute top-2 left-4 right-4 flex items-center justify-between z-10">
       <h3 class="card-title">
@@ -140,4 +140,4 @@
       </div>
     {/if}
   </div>
-</main>
+</section>

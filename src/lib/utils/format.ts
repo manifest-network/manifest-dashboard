@@ -66,8 +66,9 @@ export function formatLargeNumber(val: string, decimalPlaces: number = 2): strin
   else if (absolute.isLessThan(1e27)) ret = `${absolute.dividedBy(1e24).toFixed(decimalPlaces)} Y`;
   else if (absolute.isLessThan(1e30)) ret = `${absolute.dividedBy(1e27).toFixed(decimalPlaces)} X`;
   else if (absolute.isLessThan(1e33)) ret = `${absolute.dividedBy(1e30).toFixed(decimalPlaces)} W`;
+  else ret = absolute.toExponential(decimalPlaces);
 
-  return isNegative ? `-${ret}` : ret
+  return isNegative ? `-${ret}` : ret;
 }
 
 export function formatId(id: string): string {

@@ -8,7 +8,7 @@ export async function runTasks<T>(
     Object.entries(tasks).map(([key, loader]) =>
       loader(event)
         .then(res => ({ key, data: res.data, error: null }))
-        .catch(err => ({ key, data: null, error: (err as HttpError).body.message || 'Unknown error' }))
+        .catch(err => ({ key, data: null, error: (err as HttpError)?.body?.message ?? 'Unknown error' }))
     )
   );
 

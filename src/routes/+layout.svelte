@@ -2,7 +2,6 @@
   import '../app.css';
   import {mode} from '$lib/stores/theme';
   import {AppBar} from '@skeletonlabs/skeleton-svelte';
-  // import LightSwitch from "$lib/components/LightSwitch.svelte";
   import TimeIntervalSegment from "$lib/components/TimeIntervalSegment.svelte";
   import {page} from "$app/state";
 
@@ -15,9 +14,9 @@
   });
 
   // Only display the TimeIntervalSegment on detail pages
-  const isDetailPage = $derived(() => {
-    return page.url.pathname.endsWith('details') || page.url.pathname.includes('details/');
-  })
+  const isDetailPage = $derived(
+    page.url.pathname.endsWith('details') || page.url.pathname.includes('details/')
+  );
 
   let {children} = $props();
 </script>
@@ -35,11 +34,8 @@
        </AppBar.Lead>
 
         <AppBar.Headline>
-          <TimeIntervalSegment display={isDetailPage()} />
+          <TimeIntervalSegment display={isDetailPage} />
         </AppBar.Headline>
-<!--        <AppBar.Trail>-->
-<!--          <LightSwitch/>-->
-<!--        </AppBar.Trail>-->
       </AppBar.Toolbar>
     </AppBar>
 

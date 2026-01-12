@@ -15,7 +15,7 @@
   let selectedInterval: TimeSpan | null = $state(null)
 
   // Get the display prop from the parent component
-  const {display} = $props<boolean>();
+  const {display}: {display: boolean} = $props();
 
   const urlFor = (interval: TimeSpan) => {
     const params = new URLSearchParams(page.url.searchParams);
