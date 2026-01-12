@@ -84,6 +84,14 @@ export const configs: ChartConfig[] = [
     yAxisFormatter: (value: string) => `${BigNumber(value).div(10).toFixed()}`,
   },
   {
+    id: 'alpha_beta_conversion_rate',
+    title: (latest) => `Alpha:Beta MFX Conversion Rate: ${latest ? latest.value : "N/A"}`,
+    yAxisTitle: 'Alpha:Beta',
+    category: 'tokenomic',
+    type: "static",
+    staticValue: 10,
+  },
+  {
     id: 'locked_tokens',
     title: (latest) => `Locked MFX (excl. fees): ${latest ? formatBaseDenom(latest.value) : "N/A"}`,
     yAxisTitle: 'Locked MFX (excl. fees)',

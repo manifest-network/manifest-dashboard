@@ -43,6 +43,7 @@
     <Metric value={formatBaseDenom(totalPwrMinted)} label="Total PWR Minted" />
     <Metric value={formatBaseDenom(totalPwrBurned)} label="Total PWR Burned" />
     <Metric value={pwrMfx} label="PWR:MFX Conversion Rate" />
+    <Metric value="10" label="Alpha:Beta MFX Conversion Rate" />
     <Metric value={formatBaseDenom(lockedTokens)} label="Locked MFX (excl. fees)" />
     <Metric value={formatBaseDenom(lockedFees)} label="Locked MFX (fees)" />
   </div>
