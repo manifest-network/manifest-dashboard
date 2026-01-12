@@ -45,16 +45,24 @@ export function isValidTimeSpan(span: string | null): span is TimeSpan {
 }
 
 /**
- * Calculates moving average burn rate from cumulative data points.
+ * Calculates burn rate per time unit from cumulative data points.
  *
- * For each data point, looks back by the window size (matching rate unit)
- * and calculates the amount burned in that window.
+ * For each data point, finds the cumulative value at (current time - window size)
+ * and returns the difference. This represents the amount burned in that time window,
+ * i.e., the burn rate per selected time unit.
+ *
+ * Example: with "per_day", if cumulative burn is 1000 now and was 900 yesterday,
+ * the rate is 100 (burned 100 in the last day).
  *
  * Data arrives sorted DESC (newest first) from API.
  *
+ * Uses two-pointer technique for O(n) complexity: since data is sorted DESC,
+ * as i advances to older dates, the required j (window start) can only move
+ * forward, never backward.
+ *
  * @param data - Cumulative ChartDataPoint[] sorted by date DESC
  * @param rateUnit - The target rate unit (determines window size)
- * @returns ChartDataPoint[] with calculated rates
+ * @returns ChartDataPoint[] with burn rate per time unit
  */
 export function calculateRates(
   data: ChartDataPoint[],
@@ -67,26 +75,27 @@ export function calculateRates(
   const windowMs = MS_PER_UNIT[rateUnit];
   const rates: ChartDataPoint[] = [];
 
-  // Data is DESC sorted (newest first)
+  // Two-pointer: j tracks window start position and only advances forward
+  let j = 0;
+
   for (let i = 0; i < data.length; i++) {
     const current = data[i];
     const windowStartTime = current.date.getTime() - windowMs;
 
-    // Find point at or before window start
-    let windowStartPoint: ChartDataPoint | null = null;
-    for (let j = i + 1; j < data.length; j++) {
-      if (data[j].date.getTime() <= windowStartTime) {
-        windowStartPoint = data[j];
-        break;
-      }
+    // Ensure j is always ahead of i (window start must be before current point)
+    j = Math.max(j, i + 1);
+
+    // Advance j to find first point at or before windowStartTime
+    while (j < data.length && data[j].date.getTime() > windowStartTime) {
+      j++;
     }
 
-    // Skip if no data point exists before the window start
-    if (!windowStartPoint) {
+    // Skip if no data point exists at or before window start
+    if (j >= data.length) {
       continue;
     }
 
-    const valueDiff = new BigNumber(current.value).minus(windowStartPoint.value);
+    const valueDiff = new BigNumber(current.value).minus(data[j].value);
 
     // Clamp negative to zero (could indicate data correction)
     const rate = valueDiff.isNegative() ? new BigNumber(0) : valueDiff;
