@@ -25,6 +25,7 @@
 		"@types/d3-geo": "3.1.0",
 		"@types/d3-quadtree": "3.0.6",
 		"@types/lodash": "4.17.21",
+		"@types/node": "^25.0.7",
 		"@types/topojson-client": "3.1.5",
 		"@types/topojson-simplify": "3.0.3",
 		"@types/topojson-specification": "1.0.5",

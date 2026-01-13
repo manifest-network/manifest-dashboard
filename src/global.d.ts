@@ -23,3 +23,8 @@ interface RateChartConfig extends ChartConfig {
   insertAfter: string;
 }
 
+interface ChartResult<T = unknown> {
+  data: T | null;
+  error: string | null;
+}
+

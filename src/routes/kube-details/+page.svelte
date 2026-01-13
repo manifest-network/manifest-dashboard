@@ -1,51 +1,18 @@
 <script lang="ts">
   import type {PageProps} from "./$types";
-  import {readable} from "svelte/store";
-  import {invalidateAll} from "$app/navigation";
+  import {useAutoRefresh} from "$lib/utils/useAutoRefresh.svelte";
+  import ChartCardAsync from "$lib/components/ChartCardAsync.svelte";
   import {configs} from "./config";
-  import ChartCard from "$lib/components/ChartCard.svelte";
-  import ErrorCard from "$lib/components/ErrorCard.svelte";
 
   let {data}: PageProps = $props();
-  const aggMetrics = $derived(configs.map((config) => ({
-    config,
-    metrics: [
-      {
-        data: data[`aggregateMetric_${config.id}`],
-        error: data[`aggregateMetric_${config.id}Error`]
-      },
-    ]
-  })));
 
-  const tick = readable(Date.now(), (set) => {
-    const id = setInterval(() => set(Date.now()), 60000);
-    return () => clearInterval(id);
-  });
-
-  let hasTicked = false;
-
-  $effect(() => {
-    $tick;
-    if (hasTicked) {
-      invalidateAll();
-    } else {
-      hasTicked = true; // skip the very first run (initial page load)
-    }
-  });
+  useAutoRefresh();
 </script>
 
 <main>
   <div class="grid grid-cols-2">
-    {#each aggMetrics as {config, metrics}}
-      {#each metrics as {data: mData, error: mError}}
-        {#if mError}
-          <ErrorCard title="Chart Failed" error={mError}/>
-        {:else if mData}
-          <div class="card w-full p-4 mb-6">
-            <ChartCard config={config} data={mData}/>
-          </div>
-        {/if}
-      {/each}
+    {#each configs as config (config.id)}
+      <ChartCardAsync {config} promise={data.charts[config.id]} />
     {/each}
   </div>
 </main>

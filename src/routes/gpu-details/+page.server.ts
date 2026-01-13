@@ -1,13 +1,12 @@
-import type {PageServerLoad, PageServerLoadEvent} from "./$types";
-import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
+import type {PageServerLoad} from "./$types";
 import {configs} from "./config";
-import {runTasks} from "$lib/utils/runTasks";
+import {buildStreamingTasks} from "$lib/loaders/createStreamingLoader";
+import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
 
 export const load: PageServerLoad = async (event) => {
-  const metricTasks = configs.reduce((acc, { id, type }) => {
-    acc[`aggregateMetric_${id}`] = loadAggregateMetric(id, type);
-    return acc;
-  }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
+  const charts = buildStreamingTasks(event, configs, (config) =>
+    loadAggregateMetric(config.id, config.type)
+  );
 
-  return runTasks(event, metricTasks)
+  return {charts};
 };

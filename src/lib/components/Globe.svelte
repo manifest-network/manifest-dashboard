@@ -4,7 +4,7 @@
   import Paused from 'carbon-icons-svelte/lib/Pause.svelte';
   import Play from 'carbon-icons-svelte/lib/Play.svelte';
   import { worldGeoJson as countries } from "$lib/utils/worldTopology";
-  import type {GeoRecordArray} from "$lib/schemas/geo";
+  import type {GeoRecordArray, GeoRecord} from "$lib/schemas/geo";
   import {clusterGeoPoints} from "$lib/utils/clustering";
   import { AnimationFrames } from "runed";
 

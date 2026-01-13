@@ -1,7 +1,7 @@
 import {error, type RequestEvent} from "@sveltejs/kit";
 import {extractAndPrepareTimeParams} from "$lib/loaders/aggregateUtils";
 import {type ChartDataPoint, ChartDataPointArraySchema} from "$lib/schemas/charts";
-import type {ZodType} from "zod/v4";
+import {type z} from "zod/v4";
 import {formatId} from "$lib/utils/format";
 
 export function createDataLoader(
@@ -37,7 +37,7 @@ export function createDataLoader(
 
 export function createSingleLoader<T>(
   baseUrl: string,
-  schema: ZodType<T, any>
+  schema: z.Schema<T>
 ) {
   return async ({fetch}: RequestEvent) => {
     try {

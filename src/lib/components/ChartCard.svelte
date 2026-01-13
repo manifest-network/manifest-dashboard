@@ -13,8 +13,6 @@
   );
 </script>
 
-<!-- TODO -->
-<!-- The values need to be represented as `Number` -->
 <section>
   <div class="relative h-[300px] p-4 rounded-sm">
     <h3 class="absolute top-2 left-4 card-title">

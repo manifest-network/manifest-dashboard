@@ -1,62 +1,40 @@
 <script lang="ts">
   import type {PageProps} from "./$types";
-  import {configs} from "./config";
-  import {readable} from 'svelte/store';
-  import {invalidateAll} from '$app/navigation';
-  import ChartCard from "$lib/components/ChartCard.svelte";
+  import type {GeoRecordArray} from "$lib/schemas/geo";
+  import {useAutoRefresh} from "$lib/utils/useAutoRefresh.svelte";
+  import {useStreamingData} from "$lib/utils/useStreamingData.svelte";
+  import ChartCardAsync from "$lib/components/ChartCardAsync.svelte";
   import ErrorCard from "$lib/components/ErrorCard.svelte";
   import Globe from "$lib/components/Globe.svelte";
-  // import GlobeMap from "$lib/components/GlobeMap.svelte";
+  import {configs} from "./config";
 
   const {data}: PageProps = $props();
-  const aggMetrics = $derived(configs.map((config) => ({
-    config,
-    metrics: [
-      {
-        data: data[`aggregateMetric_${config.id}`],
-        error: data[`aggregateMetric_${config.id}Error`]
-      },
-    ]
-  })));
 
-  const tick = readable(Date.now(), (set) => {
-    const id = setInterval(() => set(Date.now()), 60000);
-    return () => clearInterval(id);
-  });
+  // Stale-while-revalidate for worldMap
+  const worldMapState = useStreamingData<GeoRecordArray>(() => data.worldMap);
 
-  let hasTicked = false;
-
-  $effect(() => {
-    $tick;
-    if (hasTicked) {
-      invalidateAll();
-    } else {
-      hasTicked = true; // skip the very first run (initial page load)
-    }
-  });
+  useAutoRefresh();
 </script>
-
 
 <main>
   <div class="grid grid-cols-1 md:grid-cols-2 overflow-hidden p-4">
-    {#if data.worldMapError}
-      <ErrorCard title="Globe Error" error="Failed to load world map data."/>
-    {:else if data.worldMap}
-      <div class="gap-4">
-        <Globe data={data.worldMap} />
+    {#if worldMapState.isInitialLoad}
+      <div class="animate-pulse flex items-center justify-center h-[400px]">
+        <div class="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    {:else if worldMapState.error}
+      <ErrorCard title="Globe Error" error={worldMapState.error} />
+    {:else if worldMapState.data}
+      <div class="gap-4 relative">
+        {#if worldMapState.isRefreshing}
+          <div class="absolute top-2 right-2 w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin z-10"></div>
+        {/if}
+        <Globe data={worldMapState.data} />
       </div>
     {/if}
     <div class="grid grid-cols-1 md:grid-cols-2">
-      {#each aggMetrics as {config, metrics}}
-        {#each metrics as {data: mData, error: mError}}
-          {#if mError}
-            <ErrorCard title="Chart Failed" error={mError}/>
-          {:else if mData}
-            <div class="card w-full">
-              <ChartCard config={config} data={mData}/>
-            </div>
-          {/if}
-        {/each}
+      {#each configs as config (config.id)}
+        <ChartCardAsync {config} promise={data.charts[config.id]} />
       {/each}
     </div>
   </div>

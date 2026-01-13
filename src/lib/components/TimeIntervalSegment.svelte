@@ -52,6 +52,14 @@
     if (selectedInterval !== urlInterval) {
       selectedInterval = urlInterval as TimeSpan;
     }
+
+    // Cleanup: clear any pending hover timer when component unmounts
+    return () => {
+      if (hoverTimer) {
+        clearTimeout(hoverTimer);
+        hoverTimer = null;
+      }
+    };
   });
 
   function onIntervalChange(newInterval: TimeSpan) {
