@@ -1,6 +1,8 @@
 /**
  * A Svelte 5 runes-based helper for handling streamed data with stale-while-revalidate pattern.
  * Keeps old data visible during refresh, shows loading state only on initial load.
+ *
+ * @remarks Uses global `ChartResult<T>` type from `src/global.d.ts`
  */
 export function useStreamingData<T>(getPromise: () => Promise<ChartResult<T>>) {
   let result = $state<ChartResult<T> | null>(null);

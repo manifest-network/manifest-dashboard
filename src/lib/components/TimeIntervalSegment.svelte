@@ -24,6 +24,7 @@
   };
 
   let hoverTimer: number | null = null;
+
   // Preload data for the given interval after a short delay
   const preloadInterval = (interval: TimeSpan) => {
     if (!display) return;
@@ -31,9 +32,23 @@
     // Skip if we're already on it
     if (href === `${page.url.pathname}?${page.url.searchParams.toString()}`) return;
     if (hoverTimer) clearTimeout(hoverTimer);
-    hoverTimer = window.setTimeout(() => preloadData(href), 80);
+    hoverTimer = window.setTimeout(() => {
+      preloadData(href);
+      hoverTimer = null;
+    }, 80);
   };
 
+  // Cleanup hover timer on component unmount
+  $effect(() => {
+    return () => {
+      if (hoverTimer) {
+        clearTimeout(hoverTimer);
+        hoverTimer = null;
+      }
+    };
+  });
+
+  // URL parameter sync effect
   $effect(() => {
     // Only apply the interval change if we are on a detail page
     if (!display) {
@@ -52,14 +67,6 @@
     if (selectedInterval !== urlInterval) {
       selectedInterval = urlInterval as TimeSpan;
     }
-
-    // Cleanup: clear any pending hover timer when component unmounts
-    return () => {
-      if (hoverTimer) {
-        clearTimeout(hoverTimer);
-        hoverTimer = null;
-      }
-    };
   });
 
   function onIntervalChange(newInterval: TimeSpan) {
