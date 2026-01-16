@@ -34,13 +34,13 @@ bun dev
 Create a `.env` file in the root directory and add your environment variables. For example:
 
 ```env
-RPC_PROXY_TARGET=http://your-api-server:3000
+VITE_RPC_PROXY_TARGET=http://your-api-server:3000
 NETWORK=testnet
 LAUNCH_DATE=2024-01-01T00:00:00Z
 SITE_DOMAIN=https://metrics.liftedinit.tech
 ```
 
-The `RPC_PROXY_TARGET` variable is used to set the target for the RPC proxy. This is the URL of your API server that the application will communicate with.
+The `VITE_RPC_PROXY_TARGET` variable is used to set the target for the RPC proxy. This is the URL of your API server that the application will communicate with.
 
 The `NETWORK` variable specifies the network you are working with (e.g., `mainnet`, `testnet`, etc.). 
 
@@ -66,10 +66,10 @@ bun run preview
 
 ## Production
 
-Set the `RPC_PROXY_TARGET` environment variable to the API server URL in a `.env` file. This is required for the application to function correctly in production.
+Set the `VITE_RPC_PROXY_TARGET` environment variable to the API server URL in a `.env` file. This is required for the application to function correctly in production.
 
 ```env
-RPC_PROXY_TARGET=http://your-api-server:3000
+VITE_RPC_PROXY_TARGET=http://your-api-server:3000
 ```
 
 The API server address should be an internal address as the data is retrieved server-side.

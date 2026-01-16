@@ -74,7 +74,7 @@ src/
    - All loaders use `createDataLoader` or `createSingleLoader` internally
    - Loaders handle:
      - Time parameter extraction and validation from URL (interval, start date, end date)
-     - API requests to `RPC_PROXY_TARGET`
+     - API requests to `VITE_RPC_PROXY_TARGET`
      - Zod schema validation of responses
      - Error handling via SvelteKit's `error()` function
 
@@ -104,9 +104,9 @@ src/
 
 ### API Integration
 
-- **Proxy Setup:** Development proxies `/rpc` requests to `RPC_PROXY_TARGET` (configured in `vite.config.ts`)
+- **Proxy Setup:** Development proxies `/rpc` requests to `VITE_RPC_PROXY_TARGET` (configured in `vite.config.ts`)
 - **Environment Variables:**
-  - `RPC_PROXY_TARGET`: API server URL (default: `http://localhost:3000`)
+  - `VITE_RPC_PROXY_TARGET`: API server URL (default: `http://localhost:3000`)
   - `NETWORK`: Network type (testnet/mainnet) - affects which data is fetched
   - `LAUNCH_DATE`: Mainnet launch date (ISO format) - pre-launch data is filtered
   - `SITE_DOMAIN`: Domain for sitemap generation
@@ -179,7 +179,7 @@ The `loadStaticMetric()` loader generates time-series data points at the same in
 ## Building & Deployment
 
 - **Build Output:** Creates optimized bundle in `build/` directory
-- **Docker:** Multi-stage Dockerfile provided. Requires `.env` file with `RPC_PROXY_TARGET`
+- **Docker:** Multi-stage Dockerfile provided. Requires `.env` file with `VITE_RPC_PROXY_TARGET`
 - **SEO:** Sitemap and robots.txt are auto-generated during build (scripts: `generate_sitemap.js`, `generate_robots.js`)
 - **Production Server:** Use `node build` with environment variables set
 
