@@ -5,8 +5,10 @@
   import {useStreamingData} from "$lib/utils/useStreamingData.svelte";
   import ChartCardAsync from "$lib/components/ChartCardAsync.svelte";
   import ErrorCard from "$lib/components/ErrorCard.svelte";
-  import Globe from "$lib/components/Globe.svelte";
   import {configs} from "./config";
+
+  // Lazy-load Globe component (saves ~40-50KB from main bundle)
+  const Globe = import("$lib/components/Globe.svelte");
 
   const {data}: PageProps = $props();
 
@@ -29,7 +31,9 @@
         {#if worldMapState.isRefreshing}
           <div class="absolute top-2 right-2 w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin z-10"></div>
         {/if}
-        <Globe data={worldMapState.data} />
+        {#await Globe then module}
+          <module.default data={worldMapState.data} />
+        {/await}
       </div>
     {/if}
     <div class="grid grid-cols-1 md:grid-cols-2">

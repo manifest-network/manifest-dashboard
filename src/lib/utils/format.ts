@@ -45,7 +45,15 @@ export function formatBaseDenom(val: string, decimalPlaces: number = 1): string 
   return formatLargeNumber(converted.toFixed(decimalPlaces), decimalPlaces);
 }
 
+// Memoization cache for formatLargeNumber (limited size to prevent memory leaks)
+const formatCache = new Map<string, string>();
+const FORMAT_CACHE_MAX_SIZE = 1000;
+
 export function formatLargeNumber(val: string, decimalPlaces: number = 2): string {
+  const cacheKey = `${val}:${decimalPlaces}`;
+  const cached = formatCache.get(cacheKey);
+  if (cached !== undefined) return cached;
+
   const bigNum = BigNumber(val);
   if (bigNum.isNaN()) return 'NaN';
 
@@ -68,7 +76,16 @@ export function formatLargeNumber(val: string, decimalPlaces: number = 2): strin
   else if (absolute.isLessThan(1e33)) ret = `${absolute.dividedBy(1e30).toFixed(decimalPlaces)} W`;
   else ret = absolute.toExponential(decimalPlaces);
 
-  return isNegative ? `-${ret}` : ret;
+  const result = isNegative ? `-${ret}` : ret;
+
+  // Limit cache size to prevent memory leaks
+  if (formatCache.size >= FORMAT_CACHE_MAX_SIZE) {
+    const firstKey = formatCache.keys().next().value;
+    if (firstKey) formatCache.delete(firstKey);
+  }
+  formatCache.set(cacheKey, result);
+
+  return result;
 }
 
 export function formatId(id: string): string {
