@@ -25,8 +25,14 @@ export function useStreamingData<T>(getPromise: () => Promise<ChartResult<T>>) {
       })
       .catch((err) => {
         if (!isActive) return; // Ignore stale errors
-        const errorMessage =
-          err instanceof Error ? err.message : "An unexpected error occurred";
+        let errorMessage: string;
+        if (err instanceof Error) {
+          errorMessage = err.message;
+        } else if (typeof err === "string") {
+          errorMessage = err;
+        } else {
+          errorMessage = "Failed to load data. Please try again later.";
+        }
         if (import.meta.env.DEV) {
           console.error("Unexpected error resolving streamed data:", err);
         }

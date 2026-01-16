@@ -37,8 +37,8 @@
     }
   });
 
-  const GLOBE_VELOCITY = 0.5;
-  const GLOBE_FPS_LIMIT = 60;
+  const globeVelocity = 0.5;
+  const globeFpsLimit = 60;
 
   const animation = new AnimationFrames(
     () => {
@@ -47,11 +47,11 @@
       const curr = context.transform.translate;
 
       context.transform.translate = {
-        x: (curr.x += GLOBE_VELOCITY),
+        x: (curr.x += globeVelocity),
         y: curr.y,
       };
     },
-    { fpsLimit: GLOBE_FPS_LIMIT }
+    { fpsLimit: globeFpsLimit }
   );
 
   // Cleanup animation on component unmount

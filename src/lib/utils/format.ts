@@ -74,6 +74,9 @@ export function formatLargeNumber(val: string, decimalPlaces: number = 2): strin
   else if (absolute.isLessThan(1e27)) ret = `${absolute.dividedBy(1e24).toFixed(decimalPlaces)} Y`;
   else if (absolute.isLessThan(1e30)) ret = `${absolute.dividedBy(1e27).toFixed(decimalPlaces)} X`;
   else if (absolute.isLessThan(1e33)) ret = `${absolute.dividedBy(1e30).toFixed(decimalPlaces)} W`;
+  // For values >= 1e33, use exponential notation. Beyond W (1e30), there are no
+  // widely-recognized SI prefixes, and invented suffixes would be confusing.
+  // Exponential notation clearly communicates magnitude for these extreme values.
   else ret = absolute.toExponential(decimalPlaces);
 
   const result = isNegative ? `-${ret}` : ret;

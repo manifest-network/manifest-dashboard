@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {formatBinaryUnit, formatRoundNumber} from "$lib/utils/format";
+  import {formatBinaryUnit, formatNumber} from "$lib/utils/format";
   import Card from "$lib/components/Card.svelte";
   import Metric from "$lib/components/Metric.svelte";
 
@@ -17,11 +17,11 @@
 
 <Card title="AI" href="/gpu-details?interval=1 year">
   <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-    <Metric value={formatRoundNumber(data.totalGpu)} label="Total GPU" />
+    <Metric value={formatNumber(Number(data.totalGpu))} label="Total GPU" />
     <Metric value={formatBinaryUnit(data.totalMemory, "B")} label="Total GPU Memory" />
-    <Metric value={formatRoundNumber(data.totalNvidiaGpu)} label="Total NVIDIA GPU" />
+    <Metric value={formatNumber(Number(data.totalNvidiaGpu))} label="Total NVIDIA GPU" />
     <Metric value={formatBinaryUnit(data.totalNvidiaMemory, "B")} label="Total NVIDIA Memory" />
-    <Metric value={formatRoundNumber(data.totalAmdGpu)} label="Total AMD GPU" />
+    <Metric value={formatNumber(Number(data.totalAmdGpu))} label="Total AMD GPU" />
     <Metric value={formatBinaryUnit(data.totalAmdMemory, "B")} label="Total AMD Memory" />
   </div>
 </Card>

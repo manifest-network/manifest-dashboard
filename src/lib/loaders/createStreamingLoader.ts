@@ -2,6 +2,24 @@ import type {RequestEvent} from "@sveltejs/kit";
 import type {ChartDataPoint} from "$lib/schemas/charts";
 
 /**
+ * Extracts a human-readable error message from an unknown error.
+ * Handles SvelteKit HttpError (with body.message), standard Error, and unknown types.
+ */
+function extractErrorMessage(err: unknown): string {
+  if (err && typeof err === "object") {
+    // SvelteKit HttpError has a body.message structure
+    if ("body" in err && err.body && typeof err.body === "object" && "message" in err.body) {
+      return String((err.body as {message: unknown}).message);
+    }
+    // Standard Error
+    if (err instanceof Error) {
+      return err.message;
+    }
+  }
+  return "Unknown error";
+}
+
+/**
  * Wraps a loader function to return a Promise<ChartResult> that never throws.
  * Errors are captured and returned as { data: null, error: message }.
  * This enables SvelteKit streaming without breaking on individual failures.
@@ -14,15 +32,7 @@ export function createStreamingLoader<T, E extends RequestEvent = RequestEvent>(
       const result = await loader(event);
       return {data: result.data, error: null};
     } catch (err) {
-      let message = "Unknown error";
-      if (err && typeof err === "object") {
-        if ("body" in err && err.body && typeof err.body === "object" && "message" in err.body) {
-          message = String((err.body as {message: unknown}).message);
-        } else if (err instanceof Error) {
-          message = err.message;
-        }
-      }
-      return {data: null, error: message};
+      return {data: null, error: extractErrorMessage(err)};
     }
   };
 }
