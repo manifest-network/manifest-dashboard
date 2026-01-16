@@ -15,44 +15,44 @@
 		"gen-robots": "bun generate_robots.js"
 	},
 	"resolutions": {
-		"zod": "4.1.13"
+		"zod": "4.3.5"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "7.0.0",
-		"@sveltejs/adapter-node": "5.4.0",
-		"@sveltejs/vite-plugin-svelte": "6.2.1",
-		"@tailwindcss/vite": "4.1.17",
+		"@sveltejs/adapter-node": "5.5.1",
+		"@sveltejs/vite-plugin-svelte": "6.2.4",
+		"@tailwindcss/vite": "4.1.18",
 		"@types/d3-geo": "3.1.0",
 		"@types/d3-quadtree": "3.0.6",
-		"@types/lodash-es": "^4.17.12",
-		"@types/node": "^25.0.7",
+		"@types/lodash-es": "4.17.12",
+		"@types/node": "25.0.9",
 		"@types/topojson-client": "3.1.5",
 		"@types/topojson-simplify": "3.0.3",
 		"@types/topojson-specification": "1.0.5",
-		"svelte": "5.43.14",
-		"svelte-check": "4.3.4",
-		"tailwindcss": "4.1.17",
+		"svelte": "5.46.4",
+		"svelte-check": "4.3.5",
+		"tailwindcss": "4.1.18",
 		"typescript": "5.8.3",
-		"vite": "7.2.4"
+		"vite": "7.3.1"
 	},
 	"dependencies": {
 		"@fontsource/poppins": "5.2.7",
 		"@fontsource/source-sans-pro": "5.2.5",
-		"@skeletonlabs/skeleton": "4.5.1",
-		"@skeletonlabs/skeleton-svelte": "4.5.1",
-		"@sveltejs/kit": "2.49.0",
+		"@skeletonlabs/skeleton": "4.10.0",
+		"@skeletonlabs/skeleton-svelte": "4.10.0",
+		"@sveltejs/kit": "2.49.5",
 		"bignumber.js": "9.3.1",
-		"carbon-icons-svelte": "13.6.0",
-		"colorjs.io": "0.5.2",
+		"carbon-icons-svelte": "13.8.0",
+		"colorjs.io": "0.6.1",
 		"d3": "7.9.0",
 		"d3-geo": "3.1.1",
 		"d3-quadtree": "3.0.1",
-		"layerchart": "2.0.0-next.43",
-		"lodash-es": "^4.17.22",
-		"lru-cache": "^11.2.4",
-		"runed": "0.36.0",
+		"layerchart": "2.0.0-next.44",
+		"lodash-es": "4.17.22",
+		"lru-cache": "11.2.4",
+		"runed": "0.37.1",
 		"topojson-server": "3.0.1",
 		"topojson-simplify": "3.0.3",
-		"zod": "4.1.13"
+		"zod": "4.3.5"
 	}
 }
