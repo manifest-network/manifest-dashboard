@@ -55,7 +55,7 @@
       worldMapState.isRefreshing
   );
 
-  useAutoRefresh();
+  useAutoRefresh({key: 'data:dashboard'});
 </script>
 
 <main>
@@ -73,21 +73,21 @@
         {:else if chainMetricsError || metricsError || tokenMetricsError}
           <ErrorCard title="Tokenomics" error={chainMetricsError ?? metricsError ?? tokenMetricsError ?? ""} />
         {:else if chainMetrics && metrics && tokenMetrics}
-          <TokenomicsCard
-            tokenSupply={chainMetrics.manifest_tokenomics_total_supply ?? "N/A"}
-            totalMinted={chainMetrics.total_mfx_minted ?? "N/A"}
-            totalBurned={chainMetrics.total_mfx_burned ?? "N/A"}
-            totalPwrMinted={chainMetrics.total_pwr_minted ?? "N/A"}
-            totalPwrBurned={chainMetrics.total_pwr_burned ?? "N/A"}
-            pwrMfx={metrics.talib_mfx_power_conversion
+          <TokenomicsCard data={{
+            tokenSupply: chainMetrics.manifest_tokenomics_total_supply ?? "N/A",
+            totalMinted: chainMetrics.total_mfx_minted ?? "N/A",
+            totalBurned: chainMetrics.total_mfx_burned ?? "N/A",
+            totalPwrMinted: chainMetrics.total_pwr_minted ?? "N/A",
+            totalPwrBurned: chainMetrics.total_pwr_burned ?? "N/A",
+            pwrMfx: metrics.talib_mfx_power_conversion
               ? BigNumber(metrics.talib_mfx_power_conversion).div(10).toFixed()
-              : "N/A"}
-            marketCap={tokenMetrics.market_cap ?? "N/A"}
-            circulatingSupply={tokenMetrics.circulating_supply ?? "N/A"}
-            lockedTokens={chainMetrics.locked_tokens ?? "N/A"}
-            lockedFees={chainMetrics.locked_fees ?? "N/A"}
-            fdv={tokenMetrics.fdv ?? "N/A"}
-          />
+              : "N/A",
+            marketCap: tokenMetrics.market_cap ?? "N/A",
+            circulatingSupply: tokenMetrics.circulating_supply ?? "N/A",
+            lockedTokens: chainMetrics.locked_tokens ?? "N/A",
+            lockedFees: chainMetrics.locked_fees ?? "N/A",
+            fdv: tokenMetrics.fdv ?? "N/A",
+          }} />
         {/if}
       </div>
 
@@ -118,16 +118,16 @@
         {:else if metricsError || geoDataError}
           <ErrorCard title="Decentralized Network" error={metricsError ?? geoDataError ?? ""} />
         {:else if metrics && geoData}
-          <DecentralizedNetworkCard
-            totalUniqueCountries={uniqueCountries.toFixed() ?? "N/A"}
-            totalNodeCount={metrics.node_count ?? "N/A"}
-            totalCpuCores={metrics.system_cpu_cores ?? "N/A"}
-            totalSystemMemory={metrics.system_memory ?? "N/A"}
-            totalDiskSpace={metrics.disk_space_total ?? "N/A"}
-            totalProcess={metrics.total_process ?? "N/A"}
-            usedDiskSpace={metrics.disk_space_used ?? "N/A"}
-            usedSystemMemory={metrics.system_memory_used ?? "N/A"}
-          />
+          <DecentralizedNetworkCard data={{
+            totalUniqueCountries: uniqueCountries.toFixed() ?? "N/A",
+            totalNodeCount: metrics.node_count ?? "N/A",
+            totalCpuCores: metrics.system_cpu_cores ?? "N/A",
+            totalSystemMemory: metrics.system_memory ?? "N/A",
+            totalDiskSpace: metrics.disk_space_total ?? "N/A",
+            totalProcess: metrics.total_process ?? "N/A",
+            usedDiskSpace: metrics.disk_space_used ?? "N/A",
+            usedSystemMemory: metrics.system_memory_used ?? "N/A",
+          }} />
         {/if}
       </div>
 
@@ -138,14 +138,14 @@
         {:else if metricsError}
           <ErrorCard title="AI" error={metricsError} />
         {:else if metrics}
-          <GpuCard
-            totalGpu={metrics.gpu_total ?? "N/A"}
-            totalMemory={metrics.gpu_memory ?? "N/A"}
-            totalNvidiaGpu={metrics.gpu_nvidia_total ?? "N/A"}
-            totalAmdGpu={metrics.gpu_amd_total ?? "N/A"}
-            totalNvidiaMemory={metrics.gpu_nvidia_memory ?? "N/A"}
-            totalAmdMemory={metrics.gpu_amd_memory ?? "N/A"}
-          />
+          <GpuCard data={{
+            totalGpu: metrics.gpu_total ?? "N/A",
+            totalMemory: metrics.gpu_memory ?? "N/A",
+            totalNvidiaGpu: metrics.gpu_nvidia_total ?? "N/A",
+            totalAmdGpu: metrics.gpu_amd_total ?? "N/A",
+            totalNvidiaMemory: metrics.gpu_nvidia_memory ?? "N/A",
+            totalAmdMemory: metrics.gpu_amd_memory ?? "N/A",
+          }} />
         {/if}
       </div>
 

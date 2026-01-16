@@ -19,7 +19,7 @@
     )
   );
 
-  useAutoRefresh();
+  useAutoRefresh({key: 'data:tokenomic-details'});
 </script>
 
 <main>

@@ -13,7 +13,7 @@
   // Stale-while-revalidate for worldMap
   const worldMapState = useStreamingData<GeoRecordArray>(() => data.worldMap);
 
-  useAutoRefresh();
+  useAutoRefresh({key: 'data:decentralized-network-details'});
 </script>
 
 <main>

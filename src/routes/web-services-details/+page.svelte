@@ -6,7 +6,7 @@
 
   let {data}: PageProps = $props();
 
-  useAutoRefresh();
+  useAutoRefresh({key: 'data:web-services-details'});
 </script>
 
 <main>

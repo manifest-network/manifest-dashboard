@@ -6,7 +6,7 @@
 
   let {data}: PageProps = $props();
 
-  useAutoRefresh();
+  useAutoRefresh({key: 'data:blockchain-details'});
 </script>
 
 <main>

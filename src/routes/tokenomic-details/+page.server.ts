@@ -8,6 +8,8 @@ import {loadAggregateSupplyMetric} from "$lib/loaders/loadAggregateSupplyMetrics
 import {loadStaticMetric} from "$lib/loaders/loadStaticMetric";
 
 export const load: PageServerLoad = async (event) => {
+  event.depends('data:tokenomic-details');
+
   const charts = buildStreamingTasks(event, configs, (config) => {
     if (config.type === "common" || config.type === "chain") {
       return loadAggregateMetric(config.id, config.type);

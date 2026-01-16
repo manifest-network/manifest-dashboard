@@ -8,6 +8,8 @@ import {loadLatestTokenomicMetric} from "$lib/loaders/loadLatestTokenomicMetrics
 import {network} from "$lib/config/network";
 
 export const load: PageServerLoad = async (event) => {
+  event.depends('data:dashboard');
+
   return {
     latestMetric: createStreamingLoader(loadLatestMetric())(event),
     latestChainMetric: createStreamingLoader(loadLatestChainMetric(network))(event),

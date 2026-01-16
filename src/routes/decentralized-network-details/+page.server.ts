@@ -5,6 +5,8 @@ import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
 import {loadWorldMapData} from "$lib/loaders/loadWorldMapData";
 
 export const load: PageServerLoad = async (event) => {
+  event.depends('data:decentralized-network-details');
+
   const charts = buildStreamingTasks(event, configs, (config) =>
     loadAggregateMetric(config.id, config.type)
   );

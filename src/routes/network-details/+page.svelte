@@ -6,7 +6,7 @@
 
   let {data}: PageProps = $props();
 
-  useAutoRefresh();
+  useAutoRefresh({key: 'data:network-details'});
 </script>
 
 <main>

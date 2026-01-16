@@ -1,9 +1,9 @@
 <script lang="ts">
   import '../app.css';
   import {theme} from '$lib/stores/theme.svelte';
-  import {AppBar} from '@skeletonlabs/skeleton-svelte';
+  import {AppBar, Progress} from '@skeletonlabs/skeleton-svelte';
   import TimeIntervalSegment from "$lib/components/TimeIntervalSegment.svelte";
-  import {page} from "$app/state";
+  import {page, navigating} from "$app/state";
 
   // Initialize theme on client mount
   $effect(() => {
@@ -19,6 +19,17 @@
 </script>
 
 {#if theme.initialized}
+  <!-- Navigation progress bar -->
+  {#if navigating.to}
+    <div class="fixed top-0 left-0 right-0 z-50">
+      <Progress value={null} class="h-1">
+        <Progress.Track>
+          <Progress.Range />
+        </Progress.Track>
+      </Progress>
+    </div>
+  {/if}
+
   <div class="flex flex-col h-screen overflow-hidden">
     <AppBar>
       <AppBar.Toolbar class="grid-cols-[auto_auto_auto]">
