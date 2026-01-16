@@ -30,19 +30,8 @@
     cityCount = counts;
   });
 
-  // Compute clusters when data or projection changes (but projection only matters for initial calc)
-  let clustersInitialized = $state(false);
+  // Compute clusters when data changes (requires projection to be available)
   $effect(() => {
-    if (context?.geo?.projection && !clustersInitialized) {
-      clusters = clusterGeoPoints(data, context.geo.projection, 8);
-      clustersInitialized = true;
-    }
-  });
-
-  // Re-cluster when data changes
-  $effect(() => {
-    // This effect depends on `data`, so it runs when data changes
-    const _ = data;
     if (context?.geo?.projection) {
       clusters = clusterGeoPoints(data, context.geo.projection, 8);
     }
@@ -64,6 +53,13 @@
     },
     { fpsLimit: GLOBE_FPS_LIMIT }
   );
+
+  // Cleanup animation on component unmount
+  $effect(() => {
+    return () => {
+      animation.stop();
+    };
+  });
 
   const getCityCount = (city: string, country: string) => {
     const key = `${city},${country}`;

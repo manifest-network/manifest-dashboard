@@ -1,4 +1,4 @@
-import type {HttpError, RequestEvent} from "@sveltejs/kit";
+import type {RequestEvent} from "@sveltejs/kit";
 import type {ChartDataPoint} from "$lib/schemas/charts";
 
 /**
@@ -14,10 +14,14 @@ export function createStreamingLoader<T, E extends RequestEvent = RequestEvent>(
       const result = await loader(event);
       return {data: result.data, error: null};
     } catch (err) {
-      const message =
-        (err as HttpError)?.body?.message ??
-        (err as Error)?.message ??
-        "Unknown error";
+      let message = "Unknown error";
+      if (err && typeof err === "object") {
+        if ("body" in err && err.body && typeof err.body === "object" && "message" in err.body) {
+          message = String((err.body as {message: unknown}).message);
+        } else if (err instanceof Error) {
+          message = err.message;
+        }
+      }
       return {data: null, error: message};
     }
   };

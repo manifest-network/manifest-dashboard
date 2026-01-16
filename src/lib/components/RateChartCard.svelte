@@ -2,7 +2,6 @@
   import type {ChartDataPoint} from "$lib/schemas/charts";
   import {AreaChart, LinearGradient, Area, ChartClipPath, Tooltip} from "layerchart";
   import {formatLargeNumber, formatBaseDenom, formatChartDate} from "$lib/utils/format";
-  import {BigNumber} from "bignumber.js";
   import {cubicInOut} from "svelte/easing";
   import {page} from "$app/state";
   import {goto} from "$app/navigation";
@@ -31,16 +30,11 @@
     return availableUnits.default;
   });
 
-  // Memoized rate calculations - recomputed when data or rateUnit changes
-  let rateData = $state<ChartDataPoint[]>([]);
-  let averageValue = $state<BigNumber>(new BigNumber(0));
+  // Calculate rates based on selected unit
+  const rateData = $derived(calculateRates(data, rateUnit));
 
-  // Recompute rates when data or rateUnit changes
-  $effect(() => {
-    const computed = calculateRates(data, rateUnit);
-    rateData = computed;
-    averageValue = calculateAverage(computed);
-  });
+  // Calculate average for title
+  const averageValue = $derived(calculateAverage(rateData));
 
   // Format rate unit label for title (e.g., "Per Day" -> "day")
   const unitLabel = $derived(RATE_UNIT_LABELS[rateUnit].replace('Per ', '').toLowerCase());
