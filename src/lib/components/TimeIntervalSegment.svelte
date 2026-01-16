@@ -4,6 +4,9 @@
   import {SegmentedControl} from "@skeletonlabs/skeleton-svelte";
   import {isValidTimeInterval} from "$lib/utils/time";
 
+  /** Delay before preloading data on hover (ms) */
+  const PRELOAD_DEBOUNCE_MS = 80;
+
   const intervalOptions: { label: string; value: TimeScale }[] = [
     {label: '1 Year', value: '1 year'},
     {label: '3 Months', value: '3 months'},
@@ -36,7 +39,7 @@
     hoverTimer = window.setTimeout(() => {
       preloadData(href);
       hoverTimer = undefined;
-    }, 80);
+    }, PRELOAD_DEBOUNCE_MS);
   };
 
   // Cleanup hover timer on component unmount

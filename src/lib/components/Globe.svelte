@@ -16,36 +16,25 @@
     return clusterGeoPoints(data, context.geo.projection, 8);
   });
 
-  let velocity = $state(0.5);
-  let frames = $state(0);
-	let fpsLimit = $state(60);
-	const animation = new AnimationFrames(
-		() => {
+  const GLOBE_VELOCITY = 0.5;
+  const GLOBE_FPS_LIMIT = 60;
+
+  const animation = new AnimationFrames(
+    () => {
       if (!context) return;
 
       const curr = context.transform.translate;
 
       context.transform.translate = {
-        x: (curr.x += velocity),
+        x: (curr.x += GLOBE_VELOCITY),
         y: curr.y,
       };
+    },
+    { fpsLimit: GLOBE_FPS_LIMIT }
+  );
 
-      frames++;
-		},
-		{ fpsLimit: () => fpsLimit }
-	);
-
-  const countriesWithData = $derived.by(() => {
-    const s = new Set<string>();
-
-    for (const item of data) {
-      let name = item.country_name;
-      if (name === 'United States') name = 'United States of America';
-      s.add(name);
-    }
-
-    return s;
-  });
+  // Country names are normalized at data load time (see GeoRecordArraySchema)
+  const countriesWithData = $derived(new Set(data.map((item: GeoRecord) => item.country_name)));
 
   const cityCount = $derived.by(() => {
     const counts: Record<string, number> = {};

@@ -26,10 +26,12 @@ export function createDataLoader(
       if (!res.ok) throw new Error(`API request failed: ${res.status}`);
       const raw = await res.json();
       const parsed = ChartDataPointArraySchema(id).safeParse(raw);
-      if (!parsed.success) throw new Error(`Invalid response format`);
+      if (!parsed.success) throw new Error(`Invalid response format: ${parsed.error.message}`);
       return {data: parsed.data as ChartDataPoint[]};
     } catch (e) {
-      console.error(`Error fetching ${id}:`, e);
+      if (import.meta.env.DEV) {
+        console.error(`Error fetching ${id}:`, e);
+      }
       error(500, `Error fetching data for "${formatId(id)}"`);
     }
   };
@@ -48,7 +50,9 @@ export function createSingleLoader<T>(
       if (!parsed.success) throw new Error(`Invalid response format: ${parsed.error}`);
       return {data: parsed.data};
     } catch (e) {
-      console.error(`Error fetching data:`, e);
+      if (import.meta.env.DEV) {
+        console.error(`Error fetching data:`, e);
+      }
       error(500, `Error fetching metrics data`);
     }
   };
