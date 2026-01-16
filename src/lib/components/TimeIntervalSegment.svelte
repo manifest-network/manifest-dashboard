@@ -40,12 +40,7 @@
 
   // Cleanup hover timer on component unmount
   $effect(() => {
-    return () => {
-      if (hoverTimer) {
-        clearTimeout(hoverTimer);
-        hoverTimer = null;
-      }
-    };
+    return () => clearTimeout(hoverTimer);
   });
 
   // URL parameter sync effect
