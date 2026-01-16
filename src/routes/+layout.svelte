@@ -22,9 +22,9 @@
   <!-- Navigation progress bar -->
   {#if navigating.to}
     <div class="fixed top-0 left-0 right-0 z-50">
-      <Progress value={null} class="h-1">
-        <Progress.Track>
-          <Progress.Range />
+      <Progress value={null}>
+        <Progress.Track class="h-0.5 bg-transparent">
+          <Progress.Range class="nav-progress-bar" />
         </Progress.Track>
       </Progress>
     </div>
