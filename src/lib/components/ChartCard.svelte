@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ChartDataPoint } from "$lib/schemas/charts";
   import { AreaChart, LinearGradient, Area, ChartClipPath, Tooltip } from "layerchart";
-  import { formatLargeNumber } from "$lib/utils/format";
+  import { formatLargeNumber, formatChartDate } from "$lib/utils/format";
   import {cubicInOut} from "svelte/easing";
 
   const { config, data }: { config: ChartConfig; data: ChartDataPoint[] } = $props();
@@ -40,15 +40,7 @@
           <Tooltip.Item
             label="Date"
             value={context.tooltip.data?.date}
-            format={(v) => v ? new Date(v).toLocaleString('en-US', {
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: false,
-              timeZoneName: 'short'
-            }) : "N/A"}
+            format={formatChartDate}
           />
           <Tooltip.Item
               label={config.yAxisTitle}

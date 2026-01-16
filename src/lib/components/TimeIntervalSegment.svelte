@@ -2,6 +2,7 @@
   import {page} from "$app/state";
   import {goto, preloadData} from "$app/navigation";
   import {SegmentedControl} from "@skeletonlabs/skeleton-svelte";
+  import {isValidTimeInterval} from "$lib/utils/time";
 
   const intervalOptions: { label: string; value: TimeScale }[] = [
     {label: '1 Year', value: '1 year'},
@@ -50,9 +51,9 @@
       return;
     }
 
-    // Make sure the interval is set to a default value if not provided
+    // Make sure the interval is set to a valid value
     const urlInterval = page.url.searchParams.get('interval');
-    if (!urlInterval) {
+    if (!isValidTimeInterval(urlInterval)) {
       const params = new URLSearchParams(page.url.searchParams);
       params.set('interval', defaultInterval);
       goto(`${page.url.pathname}?${params.toString()}`, {replaceState: true});
@@ -60,7 +61,7 @@
     }
 
     if (selectedInterval !== urlInterval) {
-      selectedInterval = urlInterval as TimeSpan;
+      selectedInterval = urlInterval;
     }
   });
 

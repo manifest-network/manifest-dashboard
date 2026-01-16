@@ -78,3 +78,20 @@ export function formatId(id: string): string {
     .join(' ');
 }
 
+/**
+ * Formats a date for chart tooltips in a consistent, readable format.
+ * Example output: "16 Jan 2026, 14:30 UTC"
+ */
+export function formatChartDate(value: unknown): string {
+  if (!value) return "N/A";
+  return new Date(value as string | number | Date).toLocaleString('en-US', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZoneName: 'short'
+  });
+}
+
