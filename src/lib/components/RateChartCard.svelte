@@ -10,7 +10,7 @@
   const {config, data}: {config: RateChartConfig; data: ChartDataPoint[]} = $props();
 
   // URL parameter name based on config id (e.g., "pwr_burn_rate" -> "pwr_burn_rateUnit")
-  const urlParamName = `${config.id}Unit`;
+  const urlParamName = $derived(`${config.id}Unit`);
 
   // Get interval from URL to determine available rate units (with validation)
   const interval = $derived.by(() => {
