@@ -1,4 +1,5 @@
 import {BigNumber} from "bignumber.js";
+import {LRUCache} from "lru-cache";
 
 export function formatNumber(num: bigint | number): string {
   if (typeof num === 'bigint') {
@@ -45,9 +46,8 @@ export function formatBaseDenom(val: string, decimalPlaces: number = 1): string 
   return formatLargeNumber(converted.toFixed(decimalPlaces), decimalPlaces);
 }
 
-// Memoization cache for formatLargeNumber (limited size to prevent memory leaks)
-const formatCache = new Map<string, string>();
-const FORMAT_CACHE_MAX_SIZE = 1000;
+// LRU cache for formatLargeNumber (limited size to prevent memory leaks)
+const formatCache = new LRUCache<string, string>({max: 1000});
 
 export function formatLargeNumber(val: string, decimalPlaces: number = 2): string {
   const cacheKey = `${val}:${decimalPlaces}`;
@@ -77,12 +77,6 @@ export function formatLargeNumber(val: string, decimalPlaces: number = 2): strin
   else ret = absolute.toExponential(decimalPlaces);
 
   const result = isNegative ? `-${ret}` : ret;
-
-  // Limit cache size to prevent memory leaks
-  if (formatCache.size >= FORMAT_CACHE_MAX_SIZE) {
-    const firstKey = formatCache.keys().next().value;
-    if (firstKey) formatCache.delete(firstKey);
-  }
   formatCache.set(cacheKey, result);
 
   return result;
