@@ -1,17 +1,18 @@
-import {configs} from './config'
+import type {PageServerLoad} from "./$types";
+import {configs} from "./config";
+import {buildStreamingTasks, createStreamingLoader} from "$lib/loaders/createStreamingLoader";
 import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
 import {loadWorldMapData} from "$lib/loaders/loadWorldMapData";
-import type {PageServerLoad, PageServerLoadEvent} from "./$types";
-import {runTasks} from "$lib/utils/runTasks";
 
 export const load: PageServerLoad = async (event) => {
-  const metricTasks = configs.reduce((acc, { id, type }) => {
-    acc[`aggregateMetric_${id}`] = loadAggregateMetric(id, type);
-    return acc;
-  }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
+  event.depends('data:decentralized-network-details');
 
-  return runTasks(event, {
-    ...metricTasks,
-    worldMap: loadWorldMapData()
-  });
+  const charts = buildStreamingTasks(event, configs, (config) =>
+    loadAggregateMetric(config.id, config.type)
+  );
+
+  // Stream worldMap data separately
+  const worldMap = createStreamingLoader(loadWorldMapData())(event);
+
+  return {charts, worldMap};
 };

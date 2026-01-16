@@ -1,22 +1,40 @@
 import {error} from "@sveltejs/kit";
-import type {PageServerLoad, PageServerLoadEvent} from "./$types";
-import {configs} from "./config";
+import type {PageServerLoad} from "./$types";
+import type {ChartDataPoint} from "$lib/schemas/charts";
+import {configs, rateConfigs} from "./config";
+import {buildStreamingTasks} from "$lib/loaders/createStreamingLoader";
 import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
 import {loadAggregateSupplyMetric} from "$lib/loaders/loadAggregateSupplyMetrics";
 import {loadStaticMetric} from "$lib/loaders/loadStaticMetric";
-import {runTasks} from "$lib/utils/runTasks";
 
 export const load: PageServerLoad = async (event) => {
-  const tasks = configs.reduce((acc, {id, type, staticValue}) => {
-    if (type === 'common' || type === 'chain') acc[`aggregateMetric_${id}`] = loadAggregateMetric(id, type)
-    else if (type === 'supply') acc[`aggregateSupplyMetric_${id}`] = loadAggregateSupplyMetric(id);
-    else if (type === 'static') {
-      if (staticValue === undefined) error(500, `Static chart "${id}" must have a staticValue`);
-      acc[`aggregateMetric_${id}`] = loadStaticMetric(id, staticValue);
+  event.depends('data:tokenomic-details');
+
+  const charts = buildStreamingTasks(event, configs, (config) => {
+    if (config.type === "common" || config.type === "chain") {
+      return loadAggregateMetric(config.id, config.type);
+    } else if (config.type === "supply") {
+      return loadAggregateSupplyMetric(config.id);
+    } else if (config.type === "static") {
+      if (config.staticValue === undefined) {
+        error(500, `Static chart "${config.id}" must have a staticValue`);
+      }
+      return loadStaticMetric(config.id, config.staticValue);
     }
-    return acc;
-  }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
+    return loadAggregateMetric(config.id, config.type);
+  });
 
+  // Rate charts reuse the same promise as their source metrics (no duplicate API calls)
+  const rateCharts = rateConfigs.reduce(
+    (acc, config) => {
+      const sourcePromise = charts[config.sourceMetricId];
+      if (sourcePromise) {
+        acc[config.id] = sourcePromise;
+      }
+      return acc;
+    },
+    {} as Record<string, Promise<ChartResult<ChartDataPoint[]>>>
+  );
 
-  return runTasks(event, tasks);
+  return {charts, rateCharts};
 };

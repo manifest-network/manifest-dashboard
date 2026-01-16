@@ -2,30 +2,13 @@
   import {Switch, Tooltip, Portal} from '@skeletonlabs/skeleton-svelte';
   import Light from 'carbon-icons-svelte/lib/Light.svelte';
   import AsleepFilled from 'carbon-icons-svelte/lib/AsleepFilled.svelte';
-  import {mode} from '$lib/stores/theme';
-
-  let isDark = $derived($mode === 'dark');
-  let ready = $state(false);
-
-  $effect(() => {
-    return mode.subscribe(() => {
-      ready = true;
-    });
-  });
-
-  $effect(() => {
-    if (ready) {
-      mode.set(isDark ? 'dark' : 'light');
-    }
-  });
-
-
+  import {theme} from '$lib/stores/theme.svelte';
 </script>
 
-{#if ready}
+{#if theme.initialized}
   <Tooltip>
     <Tooltip.Trigger>
-      <Switch checked={!isDark} onCheckedChange={(e) => (isDark = !e.checked)}>
+      <Switch checked={!theme.isDark} onCheckedChange={() => theme.toggle()}>
         <Switch.Control>
           <Switch.Thumb>
             <Switch.Context>
@@ -45,7 +28,7 @@
     <Portal>
       <Tooltip.Positioner>
         <Tooltip.Content class="card preset-filled-primary-100-900 p-4">
-          Toggle {isDark ? "light" : "dark"} mode
+          Toggle {theme.isDark ? "light" : "dark"} mode
         </Tooltip.Content>
       </Tooltip.Positioner>
     </Portal>

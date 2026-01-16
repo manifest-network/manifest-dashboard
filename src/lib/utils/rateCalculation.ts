@@ -119,11 +119,15 @@ export function calculateRates(
  * Calculates the average value from chart data points.
  *
  * @param data - ChartDataPoint[] to average
- * @returns BigNumber representing the average value
+ * @returns BigNumber representing the average value, or 0 if data is empty or contains invalid values
  */
 export function calculateAverage(data: ChartDataPoint[]): BigNumber {
   if (!data || data.length === 0) {
     return new BigNumber(0);
   }
-  return BigNumber.sum(...data.map(d => d.value)).dividedBy(data.length);
+  const sum = BigNumber.sum(...data.map(d => d.value));
+  if (sum.isNaN()) {
+    return new BigNumber(0);
+  }
+  return sum.dividedBy(data.length);
 }

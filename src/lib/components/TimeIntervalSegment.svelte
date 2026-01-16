@@ -2,6 +2,10 @@
   import {page} from "$app/state";
   import {goto, preloadData} from "$app/navigation";
   import {SegmentedControl} from "@skeletonlabs/skeleton-svelte";
+  import {isValidTimeInterval} from "$lib/utils/time";
+
+  /** Delay before preloading data on hover (ms) */
+  const PRELOAD_DEBOUNCE_MS = 80;
 
   const intervalOptions: { label: string; value: TimeScale }[] = [
     {label: '1 Year', value: '1 year'},
@@ -15,7 +19,7 @@
   let selectedInterval: TimeSpan | null = $state(null)
 
   // Get the display prop from the parent component
-  const {display} = $props<boolean>();
+  const {display}: {display: boolean} = $props();
 
   const urlFor = (interval: TimeSpan) => {
     const params = new URLSearchParams(page.url.searchParams);
@@ -23,26 +27,36 @@
     return `${page.url.pathname}?${params.toString()}`;
   };
 
-  let hoverTimer: number | null = null;
+  let hoverTimer: number | undefined;
+
   // Preload data for the given interval after a short delay
   const preloadInterval = (interval: TimeSpan) => {
     if (!display) return;
     const href = urlFor(interval);
     // Skip if we're already on it
     if (href === `${page.url.pathname}?${page.url.searchParams.toString()}`) return;
-    if (hoverTimer) clearTimeout(hoverTimer);
-    hoverTimer = window.setTimeout(() => preloadData(href), 80);
+    clearTimeout(hoverTimer);
+    hoverTimer = window.setTimeout(() => {
+      preloadData(href);
+      hoverTimer = undefined;
+    }, PRELOAD_DEBOUNCE_MS);
   };
 
+  // Cleanup hover timer on component unmount
+  $effect(() => {
+    return () => clearTimeout(hoverTimer);
+  });
+
+  // URL parameter sync effect
   $effect(() => {
     // Only apply the interval change if we are on a detail page
     if (!display) {
       return;
     }
 
-    // Make sure the interval is set to a default value if not provided
+    // Make sure the interval is set to a valid value
     const urlInterval = page.url.searchParams.get('interval');
-    if (!urlInterval) {
+    if (!isValidTimeInterval(urlInterval)) {
       const params = new URLSearchParams(page.url.searchParams);
       params.set('interval', defaultInterval);
       goto(`${page.url.pathname}?${params.toString()}`, {replaceState: true});
@@ -50,7 +64,7 @@
     }
 
     if (selectedInterval !== urlInterval) {
-      selectedInterval = urlInterval as TimeSpan;
+      selectedInterval = urlInterval;
     }
   });
 

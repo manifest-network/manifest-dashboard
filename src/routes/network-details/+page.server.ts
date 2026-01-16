@@ -1,14 +1,14 @@
 import type {PageServerLoad} from "./$types";
 import {configs} from "./config";
+import {buildStreamingTasks} from "$lib/loaders/createStreamingLoader";
 import {loadCumsumMetric} from "$lib/loaders/loadCumsumMetric";
-import type {PageServerLoadEvent} from "./$types";
-import {runTasks} from "$lib/utils/runTasks";
 
 export const load: PageServerLoad = async (event) => {
-  const metricTasks = configs.reduce((acc, { id, type }) => {
-    acc[`cumsumMetric_${id}`] = loadCumsumMetric(id, type);
-    return acc;
-  }, {} as Record<string, (e: PageServerLoadEvent) => Promise<{ data: any }>>);
+  event.depends('data:network-details');
 
-  return runTasks(event, metricTasks)
+  const charts = buildStreamingTasks(event, configs, (config) =>
+    loadCumsumMetric(config.id)
+  );
+
+  return {charts};
 };

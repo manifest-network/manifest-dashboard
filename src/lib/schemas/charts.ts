@@ -1,7 +1,7 @@
 import {z} from "zod/v4";
 import {makePreprocessedMetricRecordSchema, type MetricRecord} from "$lib/schemas/metricRecord";
 import {bigNumberLike} from "$lib/schemas/common";
-import memoize from "lodash/memoize";
+import {memoize} from "lodash-es";
 
 // A single data point for internal charts, representing a metric at a specific time
 export const ChartDataPointSchema = z.object({

@@ -1,7 +1,7 @@
 import {error, type RequestEvent} from "@sveltejs/kit";
 import {extractAndPrepareTimeParams} from "$lib/loaders/aggregateUtils";
 import {type ChartDataPoint, ChartDataPointArraySchema} from "$lib/schemas/charts";
-import type {ZodType} from "zod/v4";
+import {type z} from "zod/v4";
 import {formatId} from "$lib/utils/format";
 
 export function createDataLoader(
@@ -26,10 +26,12 @@ export function createDataLoader(
       if (!res.ok) throw new Error(`API request failed: ${res.status}`);
       const raw = await res.json();
       const parsed = ChartDataPointArraySchema(id).safeParse(raw);
-      if (!parsed.success) throw new Error(`Invalid response format`);
+      if (!parsed.success) throw new Error(`Invalid response format: ${parsed.error.message}`);
       return {data: parsed.data as ChartDataPoint[]};
     } catch (e) {
-      console.error(`Error fetching ${id}:`, e);
+      if (import.meta.env.DEV) {
+        console.error(`Error fetching ${id}:`, e);
+      }
       error(500, `Error fetching data for "${formatId(id)}"`);
     }
   };
@@ -37,7 +39,7 @@ export function createDataLoader(
 
 export function createSingleLoader<T>(
   baseUrl: string,
-  schema: ZodType<T, any>
+  schema: z.Schema<T>
 ) {
   return async ({fetch}: RequestEvent) => {
     try {
@@ -48,7 +50,9 @@ export function createSingleLoader<T>(
       if (!parsed.success) throw new Error(`Invalid response format: ${parsed.error}`);
       return {data: parsed.data};
     } catch (e) {
-      console.error(`Error fetching data:`, e);
+      if (import.meta.env.DEV) {
+        console.error(`Error fetching data:`, e);
+      }
       error(500, `Error fetching metrics data`);
     }
   };

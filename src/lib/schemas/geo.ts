@@ -1,5 +1,18 @@
 import {z} from "zod/v4";
 
+/**
+ * Maps API country names to GeoJSON country names.
+ * GeoJSON uses full formal names while APIs often use common names.
+ */
+const COUNTRY_NAME_MAP: Record<string, string> = {
+  'United States': 'United States of America',
+};
+
+/** Normalize country name to match GeoJSON naming conventions */
+function normalizeCountryName(name: string): string {
+  return COUNTRY_NAME_MAP[name] ?? name;
+}
+
 // A record representing a geographical location as returned by the API
 const RawGeoRecordSchema = z.object({
   latitude: z.number().nullish(),
@@ -26,7 +39,11 @@ export const GeoRecordArraySchema = z
       if (!result.success) {
         console.warn("Excluding record with null field:", record);
       } else {
-        valid.push(result.data);
+        // Normalize country name to match GeoJSON naming
+        valid.push({
+          ...result.data,
+          country_name: normalizeCountryName(result.data.country_name),
+        });
       }
     }
 

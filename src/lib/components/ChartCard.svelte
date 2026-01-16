@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { ChartDataPoint } from "$lib/schemas/charts";
   import { AreaChart, LinearGradient, Area, ChartClipPath, Tooltip } from "layerchart";
-  import { formatLargeNumber } from "$lib/utils/format";
+  import { formatLargeNumber, formatChartDate } from "$lib/utils/format";
   import {cubicInOut} from "svelte/easing";
 
   const { config, data }: { config: ChartConfig; data: ChartDataPoint[] } = $props();
@@ -13,9 +13,7 @@
   );
 </script>
 
-<!-- TODO -->
-<!-- The values need to be represented as `Number` -->
-<main>
+<section>
   <div class="relative h-[300px] p-4 rounded-sm">
     <h3 class="absolute top-2 left-4 card-title">
       {title}
@@ -32,7 +30,7 @@
         },
         yAxis: {
           label: config.yAxisTitle,
-          format: (v) => config.yAxisFormatter ? config.yAxisFormatter(v) : formatLargeNumber(v, 0),
+          format: (v) => config.yAxisFormatter ? config.yAxisFormatter(String(v)) : formatLargeNumber(String(v), 0),
         },
         highlight: { points: { r: 3, class: "stroke-2 stroke-surface-100" } }
       }}
@@ -42,15 +40,7 @@
           <Tooltip.Item
             label="Date"
             value={context.tooltip.data?.date}
-            format={(v) => v ? new Date(v).toLocaleString('en-US', {
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: false,
-              timeZoneName: 'short'
-            }) : "N/A"}
+            format={formatChartDate}
           />
           <Tooltip.Item
               label={config.yAxisTitle}
@@ -78,4 +68,4 @@
       {/snippet}
     </AreaChart>
   </div>
-</main>
+</section>

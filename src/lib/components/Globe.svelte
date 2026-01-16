@@ -4,59 +4,62 @@
   import Paused from 'carbon-icons-svelte/lib/Pause.svelte';
   import Play from 'carbon-icons-svelte/lib/Play.svelte';
   import { worldGeoJson as countries } from "$lib/utils/worldTopology";
-  import type {GeoRecordArray} from "$lib/schemas/geo";
+  import type {GeoRecordArray, GeoRecord} from "$lib/schemas/geo";
   import {clusterGeoPoints} from "$lib/utils/clustering";
   import { AnimationFrames } from "runed";
 
   const {data} = $props<{ data: GeoRecordArray }>();
   let context = $state<ChartContextValue>();
 
-  let clusters = $derived.by(() => {
-    if (!context?.geo?.projection) return [];
-    return clusterGeoPoints(data, context.geo.projection, 8);
+  // Memoized values - computed once when data changes via $effect
+  let clusters = $state<ReturnType<typeof clusterGeoPoints>>([]);
+  let countriesWithData = $state<Set<string>>(new Set());
+  let cityCount = $state<Record<string, number>>({});
+
+  // Recompute memoized values only when data changes
+  $effect(() => {
+    // Compute countries set
+    countriesWithData = new Set(data.map((item: GeoRecord) => item.country_name));
+
+    // Compute city counts
+    const counts: Record<string, number> = {};
+    for (const d of data) {
+      const key = `${d.city},${d.country_name}`;
+      counts[key] = (counts[key] || 0) + 1;
+    }
+    cityCount = counts;
   });
 
-  let velocity = $state(0.5);
-  let frames = $state(0);
-	let fpsLimit = $state(60);
-	const animation = new AnimationFrames(
-		() => {
+  // Compute clusters when data changes (requires projection to be available)
+  $effect(() => {
+    if (context?.geo?.projection) {
+      clusters = clusterGeoPoints(data, context.geo.projection, 8);
+    }
+  });
+
+  const globeVelocity = 0.5;
+  const globeFpsLimit = 60;
+
+  const animation = new AnimationFrames(
+    () => {
       if (!context) return;
 
       const curr = context.transform.translate;
 
       context.transform.translate = {
-        x: (curr.x += velocity),
+        x: (curr.x += globeVelocity),
         y: curr.y,
       };
+    },
+    { fpsLimit: globeFpsLimit }
+  );
 
-      frames++;
-		},
-		{ fpsLimit: () => fpsLimit }
-	);
-
-  const countriesWithData = $derived.by(() => {
-    const s = new Set<string>();
-
-    for (const item of data) {
-      let name = item.country_name;
-      if (name === 'United States') name = 'United States of America';
-      s.add(name);
-    }
-
-    return s;
+  // Cleanup animation on component unmount
+  $effect(() => {
+    return () => {
+      animation.stop();
+    };
   });
-
-  const cityCount = $derived.by(() => {
-    const counts: Record<string, number> = {};
-
-    for (const d of data) {
-      const key = `${d.city},${d.country_name}`;
-      counts[key] = (counts[key] || 0) + 1;
-    }
-
-    return counts;
-  })
 
   const getCityCount = (city: string, country: string) => {
     const key = `${city},${country}`;

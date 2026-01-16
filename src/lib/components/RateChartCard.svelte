@@ -1,7 +1,7 @@
 <script lang="ts">
   import type {ChartDataPoint} from "$lib/schemas/charts";
   import {AreaChart, LinearGradient, Area, ChartClipPath, Tooltip} from "layerchart";
-  import {formatLargeNumber, formatBaseDenom} from "$lib/utils/format";
+  import {formatLargeNumber, formatBaseDenom, formatChartDate} from "$lib/utils/format";
   import {cubicInOut} from "svelte/easing";
   import {page} from "$app/state";
   import {goto} from "$app/navigation";
@@ -10,7 +10,7 @@
   const {config, data}: {config: RateChartConfig; data: ChartDataPoint[]} = $props();
 
   // URL parameter name based on config id (e.g., "pwr_burn_rate" -> "pwr_burn_rateUnit")
-  const urlParamName = `${config.id}Unit`;
+  const urlParamName = $derived(`${config.id}Unit`);
 
   // Get interval from URL to determine available rate units (with validation)
   const interval = $derived.by(() => {
@@ -59,7 +59,7 @@
   }
 </script>
 
-<main>
+<section>
   <div class="relative h-[300px] p-4 rounded-sm">
     <div class="absolute top-2 left-4 right-4 flex items-center justify-between z-10">
       <h3 class="card-title">
@@ -100,15 +100,7 @@
             <Tooltip.Item
               label="Date"
               value={context.tooltip.data?.date}
-              format={(v) => v ? new Date(v).toLocaleString('en-US', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false,
-                timeZoneName: 'short'
-              }) : "N/A"}
+              format={formatChartDate}
             />
             <Tooltip.Item
               label={config.yAxisTitle}
@@ -140,4 +132,4 @@
       </div>
     {/if}
   </div>
-</main>
+</section>

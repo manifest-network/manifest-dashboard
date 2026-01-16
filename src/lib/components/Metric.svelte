@@ -1,6 +1,5 @@
 <script lang="ts">
-  export let value: string | number
-  export let label = ''
+  const {value = "N/A", label = ""}: {value?: string | number; label?: string} = $props();
 </script>
 
 <div class="metric">

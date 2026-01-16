@@ -3,23 +3,25 @@
   import Card from "$lib/components/Card.svelte";
   import Metric from "$lib/components/Metric.svelte";
 
-  const {totalGpu, totalMemory, totalNvidiaGpu, totalAmdGpu, totalNvidiaMemory, totalAmdMemory} = $props<{
-    totalGpu: string
-    totalMemory: string
-    totalNvidiaGpu: string
-    totalAmdGpu: string
-    totalNvidiaMemory: string
-    totalAmdMemory: string
-  }>();
+  interface GpuData {
+    totalGpu: string;
+    totalMemory: string;
+    totalNvidiaGpu: string;
+    totalAmdGpu: string;
+    totalNvidiaMemory: string;
+    totalAmdMemory: string;
+  }
+
+  const {data}: {data: GpuData} = $props();
 </script>
 
 <Card title="AI" href="/gpu-details?interval=1 year">
   <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-    <Metric value={formatNumber(totalGpu)} label="Total GPU" />
-    <Metric value={formatBinaryUnit(totalMemory, "B")} label="Total GPU Memory" />
-    <Metric value={formatNumber(totalNvidiaGpu)} label="Total NVIDIA GPU" />
-    <Metric value={formatBinaryUnit(totalNvidiaMemory, "B")} label="Total NVIDIA Memory" />
-    <Metric value={formatNumber(totalAmdGpu)} label="Total AMD GPU" />
-    <Metric value={formatBinaryUnit(totalAmdMemory, "B")} label="Total AMD Memory" />
+    <Metric value={formatNumber(Number(data.totalGpu))} label="Total GPU" />
+    <Metric value={formatBinaryUnit(data.totalMemory, "B")} label="Total GPU Memory" />
+    <Metric value={formatNumber(Number(data.totalNvidiaGpu))} label="Total NVIDIA GPU" />
+    <Metric value={formatBinaryUnit(data.totalNvidiaMemory, "B")} label="Total NVIDIA Memory" />
+    <Metric value={formatNumber(Number(data.totalAmdGpu))} label="Total AMD GPU" />
+    <Metric value={formatBinaryUnit(data.totalAmdMemory, "B")} label="Total AMD Memory" />
   </div>
 </Card>

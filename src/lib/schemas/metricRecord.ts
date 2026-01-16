@@ -2,7 +2,7 @@ import {z} from "zod/v4";
 import {bigNumberLike} from "$lib/schemas/common";
 import {LAUNCH_DATE, NETWORK} from "$env/static/private";
 import {BigNumber} from "bignumber.js";
-import memoize from "lodash/memoize";
+import {memoize} from "lodash-es";
 import {METRIC_OFFSETS} from "$lib/config/offsets";
 import {METRIC_MODIFIERS} from "$lib/config/modifiers";
 

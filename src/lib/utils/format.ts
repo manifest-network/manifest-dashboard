@@ -1,4 +1,5 @@
 import {BigNumber} from "bignumber.js";
+import {LRUCache} from "lru-cache";
 
 export function formatNumber(num: bigint | number): string {
   if (typeof num === 'bigint') {
@@ -45,7 +46,14 @@ export function formatBaseDenom(val: string, decimalPlaces: number = 1): string 
   return formatLargeNumber(converted.toFixed(decimalPlaces), decimalPlaces);
 }
 
+// LRU cache for formatLargeNumber (limited size to prevent memory leaks)
+const formatCache = new LRUCache<string, string>({max: 1000});
+
 export function formatLargeNumber(val: string, decimalPlaces: number = 2): string {
+  const cacheKey = `${val}:${decimalPlaces}`;
+  const cached = formatCache.get(cacheKey);
+  if (cached !== undefined) return cached;
+
   const bigNum = BigNumber(val);
   if (bigNum.isNaN()) return 'NaN';
 
@@ -66,8 +74,15 @@ export function formatLargeNumber(val: string, decimalPlaces: number = 2): strin
   else if (absolute.isLessThan(1e27)) ret = `${absolute.dividedBy(1e24).toFixed(decimalPlaces)} Y`;
   else if (absolute.isLessThan(1e30)) ret = `${absolute.dividedBy(1e27).toFixed(decimalPlaces)} X`;
   else if (absolute.isLessThan(1e33)) ret = `${absolute.dividedBy(1e30).toFixed(decimalPlaces)} W`;
+  // For values >= 1e33, use exponential notation. Beyond W (1e30), there are no
+  // widely-recognized SI prefixes, and invented suffixes would be confusing.
+  // Exponential notation clearly communicates magnitude for these extreme values.
+  else ret = absolute.toExponential(decimalPlaces);
 
-  return isNegative ? `-${ret}` : ret
+  const result = isNegative ? `-${ret}` : ret;
+  formatCache.set(cacheKey, result);
+
+  return result;
 }
 
 export function formatId(id: string): string {
@@ -75,5 +90,22 @@ export function formatId(id: string): string {
     .split('_')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(' ');
+}
+
+/**
+ * Formats a date for chart tooltips in a consistent, readable format.
+ * Example output: "16 Jan 2026, 14:30 UTC"
+ */
+export function formatChartDate(value: unknown): string {
+  if (!value) return "N/A";
+  return new Date(value as string | number | Date).toLocaleString('en-US', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZoneName: 'short'
+  });
 }
 

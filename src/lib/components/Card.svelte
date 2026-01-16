@@ -1,6 +1,8 @@
 <script lang="ts">
-  export let title = ''
-  export let href: string | undefined
+  import type {Snippet} from "svelte";
+
+  const {title = "", href, children}: {title?: string; href?: string; children?: Snippet} =
+    $props();
 </script>
 
 <div class="card-preset p-4 h-full">
@@ -10,5 +12,5 @@
       <a class="cta text-xs" href={href}>View Details</a>
     {/if}
   </div>
-  <slot />
+  {@render children?.()}
 </div>
