@@ -11,9 +11,41 @@
   const {data} = $props<{ data: GeoRecordArray }>();
   let context = $state<ChartContextValue>();
 
-  let clusters = $derived.by(() => {
-    if (!context?.geo?.projection) return [];
-    return clusterGeoPoints(data, context.geo.projection, 8);
+  // Memoized values - computed once when data changes via $effect
+  let clusters = $state<ReturnType<typeof clusterGeoPoints>>([]);
+  let countriesWithData = $state<Set<string>>(new Set());
+  let cityCount = $state<Record<string, number>>({});
+
+  // Recompute memoized values only when data changes
+  $effect(() => {
+    // Compute countries set
+    countriesWithData = new Set(data.map((item: GeoRecord) => item.country_name));
+
+    // Compute city counts
+    const counts: Record<string, number> = {};
+    for (const d of data) {
+      const key = `${d.city},${d.country_name}`;
+      counts[key] = (counts[key] || 0) + 1;
+    }
+    cityCount = counts;
+  });
+
+  // Compute clusters when data or projection changes (but projection only matters for initial calc)
+  let clustersInitialized = $state(false);
+  $effect(() => {
+    if (context?.geo?.projection && !clustersInitialized) {
+      clusters = clusterGeoPoints(data, context.geo.projection, 8);
+      clustersInitialized = true;
+    }
+  });
+
+  // Re-cluster when data changes
+  $effect(() => {
+    // This effect depends on `data`, so it runs when data changes
+    const _ = data;
+    if (context?.geo?.projection) {
+      clusters = clusterGeoPoints(data, context.geo.projection, 8);
+    }
   });
 
   const GLOBE_VELOCITY = 0.5;
@@ -32,20 +64,6 @@
     },
     { fpsLimit: GLOBE_FPS_LIMIT }
   );
-
-  // Country names are normalized at data load time (see GeoRecordArraySchema)
-  const countriesWithData = $derived(new Set(data.map((item: GeoRecord) => item.country_name)));
-
-  const cityCount = $derived.by(() => {
-    const counts: Record<string, number> = {};
-
-    for (const d of data) {
-      const key = `${d.city},${d.country_name}`;
-      counts[key] = (counts[key] || 0) + 1;
-    }
-
-    return counts;
-  })
 
   const getCityCount = (city: string, country: string) => {
     const key = `${city},${country}`;
