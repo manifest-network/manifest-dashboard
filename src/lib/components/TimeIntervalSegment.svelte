@@ -23,7 +23,7 @@
     return `${page.url.pathname}?${params.toString()}`;
   };
 
-  let hoverTimer: number | null = null;
+  let hoverTimer: number | undefined;
 
   // Preload data for the given interval after a short delay
   const preloadInterval = (interval: TimeSpan) => {
@@ -31,10 +31,10 @@
     const href = urlFor(interval);
     // Skip if we're already on it
     if (href === `${page.url.pathname}?${page.url.searchParams.toString()}`) return;
-    if (hoverTimer) clearTimeout(hoverTimer);
+    clearTimeout(hoverTimer);
     hoverTimer = window.setTimeout(() => {
       preloadData(href);
-      hoverTimer = null;
+      hoverTimer = undefined;
     }, 80);
   };
 

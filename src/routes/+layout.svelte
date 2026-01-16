@@ -1,16 +1,13 @@
 <script lang="ts">
   import '../app.css';
-  import {mode} from '$lib/stores/theme';
+  import {theme} from '$lib/stores/theme.svelte';
   import {AppBar} from '@skeletonlabs/skeleton-svelte';
   import TimeIntervalSegment from "$lib/components/TimeIntervalSegment.svelte";
   import {page} from "$app/state";
 
-  let isDark = $derived($mode === 'dark');
-  let ready = $state(false);
+  // Initialize theme on client mount
   $effect(() => {
-    return mode.subscribe(() => {
-      ready = true;
-    });
+    theme.init();
   });
 
   // Only display the TimeIntervalSegment on detail pages
@@ -21,14 +18,14 @@
   let {children} = $props();
 </script>
 
-{#if ready}
+{#if theme.initialized}
   <div class="flex flex-col h-screen overflow-hidden">
     <AppBar>
       <AppBar.Toolbar class="grid-cols-[auto_auto_auto]">
        <AppBar.Lead>
           <div class="relative">
             <a href="/" class="inline-block">
-              <img src={isDark ? "/manifest_dark.svg" : "/manifest_light.svg"} alt="Logo" fetchpriority="high" />
+              <img src={theme.isDark ? "/manifest_dark.svg" : "/manifest_light.svg"} alt="Logo" fetchpriority="high" />
             </a>
           </div>
        </AppBar.Lead>
