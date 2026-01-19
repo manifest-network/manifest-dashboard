@@ -39,7 +39,7 @@ bun run gen-robots
 
 - **Framework:** SvelteKit with TypeScript
 - **Styling:** Tailwind CSS 4.1 + Skeleton UI components
-- **Charts:** Carbon Charts (via LayerChart) + D3.js for data visualization
+- **Charts:** LayerChart + D3.js for data visualization
 - **Package Manager:** Bun
 - **Server Adapter:** Node.js adapter (`@sveltejs/adapter-node`)
 
@@ -125,7 +125,7 @@ src/
 
 ### Data Visualization
 
-- **LayerChart:** Wrapper around Carbon Charts that simplifies chart configuration
+- **LayerChart:** Charting library built on top of D3.js and Svelte
 - **D3.js:** Used for low-level data transformations (especially for geospatial data)
 - **Globe Visualization:** Uses D3 geo and TopoJSON for rendering world map
 

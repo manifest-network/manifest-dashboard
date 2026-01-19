@@ -9,7 +9,39 @@ A modern dashboard featuring:
 - TypeScript
 - Skeleton UI components
 - Theming (light/dark)
-- Carbon Charts
+
+## Tech Stack
+
+- **Framework:** SvelteKit with TypeScript
+- **Styling:** Tailwind CSS + Skeleton UI
+- **Charts:** LayerChart + D3.js
+- **Package Manager:** Bun
+- **Runtime:** Node.js
+
+## Network Architecture
+
+```mermaid
+flowchart LR
+    subgraph External
+        User[User Browser]
+        API[Metrics API Server]
+    end
+
+    subgraph Dashboard
+        App[Manifest Dashboard<br/>SvelteKit / Node.js]
+    end
+
+    User -->|HTTP/HTTPS| App
+    App -->|/rpc/*| API
+```
+
+The dashboard acts as an intermediary between users and the Metrics API Server:
+
+1. **User Browser** - Accesses the dashboard UI
+2. **Manifest Dashboard** - SvelteKit application that renders the UI and fetches data server-side
+3. **Metrics API Server** - Backend service providing metrics data (configured via `VITE_RPC_PROXY_TARGET`)
+
+All `/rpc/*` requests from the dashboard are proxied to the Metrics API Server. This server-side proxy keeps the API server address internal and not exposed to clients.
 
 ## Getting Started
 
@@ -27,6 +59,13 @@ Start the development server:
 
 ```bash
 bun dev
+```
+
+Run type checking:
+
+```bash
+bun run check
+bun run check:watch  # Watch mode
 ```
 
 ## Environment Variables
@@ -98,3 +137,25 @@ ORIGIN=http://localhost:3001 node build
 ```
 
 You can find more information in the [Svelte Node servers](https://svelte.dev/docs/kit/adapter-node) documentation.
+
+## Docker
+
+A multi-stage Dockerfile is provided for containerized deployments.
+
+### Build
+
+Create a `.env` file with the required environment variables, then build the image:
+
+```bash
+docker build -t manifest-dashboard .
+```
+
+### Run
+
+```bash
+docker run -p 3000:3000 \
+  -e VITE_RPC_PROXY_TARGET=http://your-api-server:3000 \
+  manifest-dashboard
+```
+
+The container exposes port 3000 by default. Override with `-e PORT=<port>` and update the `-p` mapping accordingly.
