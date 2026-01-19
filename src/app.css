@@ -23,12 +23,6 @@ svg text { fill: var(--text-primary); stroke: var(--text-primary); stroke-width:
 
 @custom-variant dark (&:where([data-mode="dark"], [data-mode="dark"] *));
 
-.cds--chart-holder[data-carbon-theme=g90] {
-    .chart-grid-backdrop {
-        fill: transparent;
-    }
-}
-
 /* Navigation progress bar - smooth animation with gradient */
 .nav-progress-bar {
   background: linear-gradient(
