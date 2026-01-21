@@ -43,13 +43,15 @@ FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV NETWORK=mainnet
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 svelte
 
 COPY --from=builder /app/build ./build
+COPY entrypoint.sh /app/entrypoint.sh
 
-RUN chown -R svelte:nodejs /app
+RUN chown -R svelte:nodejs /app ; chmod 755 /app/entrypoint.sh
 
 USER svelte
 
@@ -59,4 +61,4 @@ ENV ORIGIN="http://localhost:3000"
 ENV PORT=3000
 
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "build"]
+CMD ["/app/entrypoint.sh"]
