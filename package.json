@@ -48,7 +48,7 @@
 		"d3-geo": "3.1.1",
 		"d3-quadtree": "3.0.1",
 		"layerchart": "2.0.0-next.44",
-		"lodash-es": "4.17.22",
+		"lodash-es": "4.17.23",
 		"lru-cache": "11.2.4",
 		"runed": "0.37.1",
 		"topojson-server": "3.0.1",
