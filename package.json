@@ -40,7 +40,7 @@
 		"@fontsource/source-sans-pro": "5.2.5",
 		"@skeletonlabs/skeleton": "4.10.0",
 		"@skeletonlabs/skeleton-svelte": "4.10.0",
-		"@sveltejs/kit": "2.49.5",
+		"@sveltejs/kit": "2.53.3",
 		"bignumber.js": "9.3.1",
 		"carbon-icons-svelte": "13.8.0",
 		"colorjs.io": "0.6.1",
