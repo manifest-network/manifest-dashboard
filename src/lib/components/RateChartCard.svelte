@@ -38,6 +38,7 @@
   const rateData = $derived.by(() => {
     switch (config.rateMode) {
       case 'all_time':
+        // launchTime is always provided for all_time charts via the loader; guard defensively.
         return launchTime === undefined ? [] : calculateAllTimeAverageRates(data, rateUnit, launchTime);
       case 'trailing':
         return calculateRates(data, rateUnit);
@@ -51,14 +52,15 @@
 
   // Headline: all-time shows the latest point (current lifetime average); trailing shows
   // the mean of the windowed series (data is DESC, so the latest point is index 0).
-  const headlineValue = $derived(
-    config.rateMode === 'all_time'
-      ? (rateData.length > 0 ? rateData[0].value : null)
-      : calculateAverage(rateData).toFixed()
-  );
+  const headlineValue = $derived.by((): string | null => {
+    if (rateData.length === 0) return null;
+    return config.rateMode === 'all_time'
+      ? rateData[0].value
+      : calculateAverage(rateData).toFixed();
+  });
 
   const title = $derived(
-    rateData.length > 0 && headlineValue !== null
+    headlineValue !== null
       ? `${config.title}: ${formatBaseDenom(headlineValue, 4)} ${config.unitSuffix}/${unitLabel}`
       : `${config.title}: N/A`
   );
@@ -67,7 +69,7 @@
   const yAxisLabel = $derived(`${config.unitSuffix} per ${unitLabel}`);
 
   // Disclosure tooltip (hover) describing the metric construction
-  const launchDateLabel = $derived(launchTime ? new Date(launchTime).toISOString().slice(0, 10) : 'launch');
+  const launchDateLabel = $derived(launchTime !== undefined ? new Date(launchTime).toISOString().slice(0, 10) : 'launch');
   const description = $derived(
     config.rateMode === 'all_time'
       ? `Total burned since mainnet launch (${launchDateLabel}) divided by elapsed time, per ${unitLabel}. Reacts slowly to recent bursts by design; a token launched after mainnet reads low until it catches up.`
@@ -131,7 +133,7 @@
               format={formatChartDate}
             />
             <Tooltip.Item
-              label={config.yAxisTitle}
+              label={yAxisLabel}
               value={context.tooltip.data?.value}
               format={config.tooltipValueFormatter ?? ((v) => v)}
             />
