@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { dropNonMonotonicSamples, calculateRates } from './rateCalculation';
-import { calculateAllTimeAverageRates, MIN_ELAPSED_MS } from './rateCalculation';
+import { dropNonMonotonicSamples, calculateRates, calculateAllTimeAverageRates, MIN_ELAPSED_MS } from './rateCalculation';
 import type { ChartDataPoint } from '$lib/schemas/charts';
 
 // Build a DESC-sorted (newest first) ChartDataPoint[] from [iso, value] rows.
@@ -112,6 +111,7 @@ describe('calculateAllTimeAverageRates', () => {
       ['2026-01-06T00:00:00Z', '500'],
     );
     const out = calculateAllTimeAverageRates(data, 'per_day', LAUNCH);
+    expect(out).toHaveLength(2);
     expect(out.every((p) => Number(p.value) > 0)).toBe(true);
   });
 

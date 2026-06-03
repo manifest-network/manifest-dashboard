@@ -158,7 +158,8 @@ export function calculateAllTimeAverageRates(
     return [];
   }
 
-  const unitMs = new RateBN(MS_PER_UNIT[rateUnit]).integerValue();
+  // per_month ms is a non-integer float; round to a whole ms to avoid propagating float noise.
+  const unitMs = new RateBN(MS_PER_UNIT[rateUnit]).integerValue(BigNumber.ROUND_HALF_UP);
   const rates: ChartDataPoint[] = [];
 
   for (const point of clean) {
