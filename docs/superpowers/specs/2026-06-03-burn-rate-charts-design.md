@@ -70,11 +70,19 @@ trailing spikiness. (Refs: Prometheus functions docs; Wikipedia "Moving average"
 ## Data invariant & bad-data handling
 
 The cumulative sources are **strictly monotonic counters anchored to 0 at launch**; genuine
-counter resets are not expected. A sample that reads `0` after launch, or that **decreases**
-relative to its neighbors, indicates **bad/missing data** (e.g. an indexer/exporter gap or
-restart), not a smaller rate and not a real reset.
+counter resets are not expected. A sample whose value **decreases relative to an earlier
+(older) sample — including a drop to `0` between non-zero values** — indicates **bad/missing
+data** (e.g. an indexer/exporter gap or restart), not a smaller rate and not a real reset.
 
-**Drop/null such samples before BOTH calculations.** Rationale:
+Implement this as a **monotonicity filter** (`dropNonMonotonicSamples`): walking oldest→newest,
+track the running maximum and drop any point that falls below it (or is non-finite).
+Crucially this preserves **legitimate leading zeros** — a token that simply has not burned yet
+(e.g. PWR before its first burn) never falls below the running max, so its early zeros are
+kept; only a dropout *between* higher values is removed. (Keying on `value == 0` instead would
+wrongly delete PWR's legitimate early history.)
+
+**Apply this filter inside BOTH calculations** (it also hardens the existing trailing chart).
+Rationale:
 - `clamp-to-0` (the current behavior, `rateCalculation.ts:104-105`) is gauge `delta()`
   semantics and protects against *neither* failure mode: in the trailing chart a `0` sample
   at the window edge yields `current − 0 = the entire cumulative total` (a huge **positive**
@@ -199,8 +207,9 @@ Unit tests for `calculateAllTimeAverageRates` (Vitest, pure function):
 - pre-launch points excluded; fixed warm-up floor applied; **first post-floor point is finite
   and not absurdly large** (BigNumber ÷ a tiny elapsed yields a huge-but-finite number a naive
   spike test would pass — assert finiteness + magnitude bound).
-- **synthetic bad-data window** (a `0` sample and a decreasing sample): no trailing false
-  spike, no all-time zero-dropout (the domain's real footgun).
+- **monotonicity filter**: a `0`-dropout/decrease *between* higher values is removed (no
+  trailing false spike, no all-time zero-dropout), while **legitimate leading zeros** (a token
+  before its first burn, e.g. PWR) are preserved.
 - all-time output is smooth/monotone-ish vs `calculateRates` on bursty input.
 - unit scaling: `per_day ≈ per_hour × 24`, `per_week ≈ per_day × 7`.
 - empty / single-point input → `[]`.
