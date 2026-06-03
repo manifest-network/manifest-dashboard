@@ -49,7 +49,7 @@ export function isValidTimeSpan(span: string | null): span is TimeSpan {
 }
 
 /**
- * Drop bad/missing samples from a strictly-monotonic cumulative counter.
+ * Drop bad/missing samples from a monotonically non-decreasing cumulative counter.
  * Input/output are sorted DESC by date (newest first). Walking oldest->newest,
  * any point that falls below the running maximum (a decrease, including a drop to 0
  * between higher values) or is non-finite is removed. Legitimate leading zeros are
@@ -103,19 +103,24 @@ export function calculateRates(
 
   const windowMs = MS_PER_UNIT[rateUnit];
   const rates: ChartDataPoint[] = [];
+  // Two-pointer: j tracks the window-start position and only advances forward
   let j = 0;
 
   for (let i = 0; i < clean.length; i++) {
     const current = clean[i];
     const windowStartTime = current.date.getTime() - windowMs;
+    // Ensure j stays ahead of i (window start must precede the current point)
     j = Math.max(j, i + 1);
+    // Advance j to the first sample at or before the window start
     while (j < clean.length && clean[j].date.getTime() > windowStartTime) {
       j++;
     }
     if (j >= clean.length) {
+      // No sample at/before the window start — skip
       continue;
     }
     const valueDiff = new BigNumber(current.value).minus(clean[j].value);
+    // Defensive clamp; negatives are unreachable after dropNonMonotonicSamples
     const rate = valueDiff.isNegative() ? new BigNumber(0) : valueDiff;
     rates.push({
       group: current.group,

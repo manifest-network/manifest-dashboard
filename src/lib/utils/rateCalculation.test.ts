@@ -29,6 +29,15 @@ describe('dropNonMonotonicSamples', () => {
     expect(out.map((p) => p.value)).toEqual(['10', '5', '0', '0']);
   });
 
+  it('removes a non-zero mid-series decrease', () => {
+    const data = pts(
+      ['2026-01-03T00:00:00Z', '300'],
+      ['2026-01-02T00:00:00Z', '250'],
+      ['2026-01-01T00:00:00Z', '280'],
+    );
+    expect(dropNonMonotonicSamples(data).map((p) => p.value)).toEqual(['300', '280']);
+  });
+
   it('returns [] for empty input', () => {
     expect(dropNonMonotonicSamples([])).toEqual([]);
   });
@@ -42,6 +51,7 @@ describe('calculateRates with bad data', () => {
       ['2026-01-01T00:00:00Z', '300'],
     );
     const out = calculateRates(data, 'per_day');
+    // After dropping the bad 0 sample, the only delta is 320-300=20; the 320-0=320 false spike must never appear.
     for (const p of out) {
       expect(Number(p.value)).toBeLessThanOrEqual(20);
     }
