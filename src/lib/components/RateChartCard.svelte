@@ -5,9 +5,13 @@
   import {cubicInOut} from "svelte/easing";
   import {page} from "$app/state";
   import {goto} from "$app/navigation";
-  import {calculateRates, calculateAverage, RATE_UNIT_LABELS, RATE_UNITS_BY_TIMESPAN, isValidRateUnit, isValidTimeSpan} from "$lib/utils/rateCalculation";
+  import {calculateRates, calculateAllTimeAverageRates, calculateAverage, RATE_UNIT_LABELS, RATE_UNITS_BY_TIMESPAN, isValidRateUnit, isValidTimeSpan} from "$lib/utils/rateCalculation";
 
-  const {config, data}: {config: RateChartConfig; data: ChartDataPoint[]} = $props();
+  const {config, data, launchTime}: {config: RateChartConfig; data: ChartDataPoint[]; launchTime?: number} = $props();
+
+  function assertNever(x: never): never {
+    throw new Error(`Unhandled rateMode: ${x}`);
+  }
 
   // URL parameter name based on config id (e.g., "pwr_burn_rate" -> "pwr_burn_rateUnit")
   const urlParamName = $derived(`${config.id}Unit`);
@@ -30,20 +34,44 @@
     return availableUnits.default;
   });
 
-  // Calculate rates based on selected unit
-  const rateData = $derived(calculateRates(data, rateUnit));
-
-  // Calculate average for title
-  const averageValue = $derived(calculateAverage(rateData));
+  // Calculate the series based on the chart mode
+  const rateData = $derived.by(() => {
+    switch (config.rateMode) {
+      case 'all_time':
+        return launchTime === undefined ? [] : calculateAllTimeAverageRates(data, rateUnit, launchTime);
+      case 'trailing':
+        return calculateRates(data, rateUnit);
+      default:
+        return assertNever(config.rateMode);
+    }
+  });
 
   // Format rate unit label for title (e.g., "Per Day" -> "day")
   const unitLabel = $derived(RATE_UNIT_LABELS[rateUnit].replace('Per ', '').toLowerCase());
 
-  // Title with average value (using config for dynamic labeling)
+  // Headline: all-time shows the latest point (current lifetime average); trailing shows
+  // the mean of the windowed series (data is DESC, so the latest point is index 0).
+  const headlineValue = $derived(
+    config.rateMode === 'all_time'
+      ? (rateData.length > 0 ? rateData[0].value : null)
+      : calculateAverage(rateData).toFixed()
+  );
+
   const title = $derived(
-    rateData.length > 0
-      ? `${config.title}: ${formatBaseDenom(averageValue.toFixed(), 4)} ${config.unitSuffix}/${unitLabel}`
+    rateData.length > 0 && headlineValue !== null
+      ? `${config.title}: ${formatBaseDenom(headlineValue, 4)} ${config.unitSuffix}/${unitLabel}`
       : `${config.title}: N/A`
+  );
+
+  // Per-unit y-axis dimension that tracks the selector (e.g. "MFX per day")
+  const yAxisLabel = $derived(`${config.unitSuffix} per ${unitLabel}`);
+
+  // Disclosure tooltip (hover) describing the metric construction
+  const launchDateLabel = $derived(launchTime ? new Date(launchTime).toISOString().slice(0, 10) : 'launch');
+  const description = $derived(
+    config.rateMode === 'all_time'
+      ? `Total burned since mainnet launch (${launchDateLabel}) divided by elapsed time, per ${unitLabel}. Reacts slowly to recent bursts by design; a token launched after mainnet reads low until it catches up.`
+      : `Amount burned in the most recent ${unitLabel} (trailing-window change).`
   );
 
   // Update URL when rate unit changes
@@ -62,7 +90,7 @@
 <section>
   <div class="relative h-[300px] p-4 rounded-sm">
     <div class="absolute top-2 left-4 right-4 flex items-center justify-between z-10">
-      <h3 class="card-title">
+      <h3 class="card-title" title={description}>
         {title}
       </h3>
 
@@ -89,7 +117,7 @@
             label: "Timestamp",
           },
           yAxis: {
-            label: config.yAxisTitle,
+            label: yAxisLabel,
             format: (v) => config.yAxisFormatter ? config.yAxisFormatter(String(v)) : formatLargeNumber(v, 0),
           },
           highlight: {points: {r: 3, class: "stroke-2 stroke-surface-100"}}

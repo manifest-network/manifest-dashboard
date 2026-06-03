@@ -29,7 +29,7 @@
       <!-- Insert rate charts configured to appear after this chart -->
       {#if rateChartsByInsertAfter[config.id]}
         {#each rateChartsByInsertAfter[config.id] as rateConfig (rateConfig.id)}
-          <ChartCardAsync config={rateConfig} promise={data.rateCharts[rateConfig.id]} />
+          <ChartCardAsync config={rateConfig} promise={data.rateCharts[rateConfig.id]} launchTime={data.launchTime} />
         {/each}
       {/if}
     {/each}
