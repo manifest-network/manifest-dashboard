@@ -21,6 +21,7 @@ interface RateChartConfig extends ChartConfig {
   sourceMetricId: string;
   unitSuffix: string;
   insertAfter: string;
+  rateMode: 'trailing' | 'all_time';
 }
 
 interface ChartResult<T = unknown> {
