@@ -49,9 +49,33 @@ export function isValidTimeSpan(span: string | null): span is TimeSpan {
 }
 
 /**
+ * Drop bad/missing samples from a strictly-monotonic cumulative counter.
+ * Input/output are sorted DESC by date (newest first). Walking oldest->newest,
+ * any point that falls below the running maximum (a decrease, including a drop to 0
+ * between higher values) or is non-finite is removed. Legitimate leading zeros are
+ * preserved because they never fall below the running max.
+ */
+export function dropNonMonotonicSamples(data: ChartDataPoint[]): ChartDataPoint[] {
+  if (!data || data.length === 0) {
+    return [];
+  }
+  const keptOldestFirst: ChartDataPoint[] = [];
+  let runningMax: BigNumber | null = null;
+  for (let i = data.length - 1; i >= 0; i--) {
+    const v = new BigNumber(data[i].value);
+    if (!v.isFinite()) continue;
+    if (runningMax !== null && v.isLessThan(runningMax)) continue;
+    runningMax = v;
+    keptOldestFirst.push(data[i]);
+  }
+  return keptOldestFirst.reverse();
+}
+
+/**
  * Calculates burn rate per time unit from cumulative data points.
  *
- * For each data point, finds the cumulative value at (current time - window size)
+ * Filters out non-monotonic samples first (e.g. exporter gaps that drop to 0),
+ * then for each data point finds the cumulative value at (current time - window size)
  * and returns the difference. This represents the amount burned in that time window,
  * i.e., the burn rate per selected time unit.
  *
@@ -72,38 +96,27 @@ export function calculateRates(
   data: ChartDataPoint[],
   rateUnit: RateUnit
 ): ChartDataPoint[] {
-  if (!data || data.length < 2) {
+  const clean = dropNonMonotonicSamples(data);
+  if (clean.length < 2) {
     return [];
   }
 
   const windowMs = MS_PER_UNIT[rateUnit];
   const rates: ChartDataPoint[] = [];
-
-  // Two-pointer: j tracks window start position and only advances forward
   let j = 0;
 
-  for (let i = 0; i < data.length; i++) {
-    const current = data[i];
+  for (let i = 0; i < clean.length; i++) {
+    const current = clean[i];
     const windowStartTime = current.date.getTime() - windowMs;
-
-    // Ensure j is always ahead of i (window start must be before current point)
     j = Math.max(j, i + 1);
-
-    // Advance j to find first point at or before windowStartTime
-    while (j < data.length && data[j].date.getTime() > windowStartTime) {
+    while (j < clean.length && clean[j].date.getTime() > windowStartTime) {
       j++;
     }
-
-    // Skip if no data point exists at or before window start
-    if (j >= data.length) {
+    if (j >= clean.length) {
       continue;
     }
-
-    const valueDiff = new BigNumber(current.value).minus(data[j].value);
-
-    // Clamp negative to zero (could indicate data correction)
+    const valueDiff = new BigNumber(current.value).minus(clean[j].value);
     const rate = valueDiff.isNegative() ? new BigNumber(0) : valueDiff;
-
     rates.push({
       group: current.group,
       key: current.key,
