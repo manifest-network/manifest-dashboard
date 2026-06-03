@@ -13,6 +13,12 @@
     throw new Error(`Unhandled rateMode: ${x}`);
   }
 
+  // Treat a non-finite launchTime (e.g. a misconfigured LAUNCH_DATE) as missing, so an
+  // invalid value can't emit NaN rates or throw in new Date(...).toISOString().
+  const validLaunchTime = $derived(
+    launchTime !== undefined && Number.isFinite(launchTime) ? launchTime : undefined
+  );
+
   // URL parameter name based on config id (e.g., "pwr_burn_rate" -> "pwr_burn_rateUnit")
   const urlParamName = $derived(`${config.id}Unit`);
 
@@ -39,7 +45,7 @@
     switch (config.rateMode) {
       case 'all_time':
         // launchTime is always provided for all_time charts via the loader; guard defensively.
-        return launchTime === undefined ? [] : calculateAllTimeAverageRates(data, rateUnit, launchTime);
+        return validLaunchTime === undefined ? [] : calculateAllTimeAverageRates(data, rateUnit, validLaunchTime);
       case 'trailing':
         return calculateRates(data, rateUnit);
       default:
@@ -69,7 +75,7 @@
   const yAxisLabel = $derived(`${config.unitSuffix} per ${unitLabel}`);
 
   // Disclosure tooltip (hover) describing the metric construction
-  const launchDateLabel = $derived(launchTime !== undefined ? new Date(launchTime).toISOString().slice(0, 10) : 'launch');
+  const launchDateLabel = $derived(validLaunchTime !== undefined ? new Date(validLaunchTime).toISOString().slice(0, 10) : 'launch');
   const description = $derived(
     config.rateMode === 'all_time'
       ? `Total burned since mainnet launch (${launchDateLabel}) divided by elapsed time, per ${unitLabel}. Reacts slowly to recent bursts by design; a token launched after mainnet reads low until it catches up.`

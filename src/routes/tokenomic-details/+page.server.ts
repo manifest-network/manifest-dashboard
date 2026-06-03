@@ -38,6 +38,9 @@ export const load: PageServerLoad = async (event) => {
   );
 
   const launchTime = new Date(LAUNCH_DATE).getTime();
+  if (Number.isNaN(launchTime)) {
+    error(500, `Invalid LAUNCH_DATE: "${LAUNCH_DATE}"`);
+  }
 
   return {charts, rateCharts, launchTime};
 };
