@@ -5,6 +5,15 @@ import type {ChartDataPoint} from "$lib/schemas/charts";
 // Kept as a literal (30.44) to preserve existing behavior.
 const AVERAGE_DAYS_PER_MONTH = 30.44;
 
+// Locally-configured BigNumber for the all-time division (explicit precision,
+// no global side-effects).
+const RateBN = BigNumber.clone({ DECIMAL_PLACES: 20, ROUNDING_MODE: BigNumber.ROUND_HALF_UP });
+
+// Fixed warm-up: skip points within this elapsed window after launch to avoid a
+// divide-by-near-zero spike. Fixed (not unit-dependent) so the all-time line's start
+// does not move when the user changes the display unit.
+export const MIN_ELAPSED_MS = 24 * 60 * 60 * 1000; // 1 day
+
 export const MS_PER_UNIT: Record<RateUnit, number> = {
   per_5min: 5 * 60 * 1000,
   per_15min: 15 * 60 * 1000,
@@ -127,6 +136,43 @@ export function calculateRates(
       key: current.key,
       value: rate.toFixed(),
       date: current.date,
+    });
+  }
+
+  return rates;
+}
+
+/**
+ * All-time average burn rate: value(t) / (t - launchTime) * MS_PER_UNIT[rateUnit].
+ * This is the exact time-average of the rate over [launch, t] (secant slope of the
+ * launch-anchored cumulative curve), valid because the source is offset-subtracted to 0
+ * at launch. Irregular sample spacing does not bias it. Data sorted DESC by date.
+ */
+export function calculateAllTimeAverageRates(
+  data: ChartDataPoint[],
+  rateUnit: RateUnit,
+  launchTime: number
+): ChartDataPoint[] {
+  const clean = dropNonMonotonicSamples(data);
+  if (clean.length === 0) {
+    return [];
+  }
+
+  const unitMs = new RateBN(MS_PER_UNIT[rateUnit]).integerValue();
+  const rates: ChartDataPoint[] = [];
+
+  for (const point of clean) {
+    const elapsedMs = point.date.getTime() - launchTime;
+    if (elapsedMs < MIN_ELAPSED_MS) {
+      continue; // pre-launch or within the warm-up window
+    }
+    const rate = new RateBN(point.value).multipliedBy(unitMs).dividedBy(elapsedMs);
+    const clamped = rate.isNegative() ? new RateBN(0) : rate; // unreachable for monotonic data
+    rates.push({
+      group: point.group,
+      key: point.key,
+      value: clamped.toFixed(),
+      date: point.date,
     });
   }
 
