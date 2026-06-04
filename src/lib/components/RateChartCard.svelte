@@ -100,6 +100,8 @@
     <div class="absolute top-2 left-4 right-4 flex items-center justify-between z-10">
       <h3 class="card-title" title={description}>
         {title}
+        <!-- Expose the disclosure text to assistive tech / touch (native `title` is not reliably announced) -->
+        <span class="sr-only"> — {description}</span>
       </h3>
 
       <select
