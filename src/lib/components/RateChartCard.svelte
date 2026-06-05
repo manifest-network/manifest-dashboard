@@ -76,10 +76,13 @@
 
   // Disclosure tooltip (hover) describing the metric construction
   const launchDateLabel = $derived(validLaunchTime !== undefined ? new Date(validLaunchTime).toISOString().slice(0, 10) : 'launch');
+  // "month" is an average month (30.44 days), not a calendar month — disclose it in the
+  // tooltip so the per-month unit isn't misread as calendar months (ENG-284 review).
+  const unitNote = $derived(rateUnit === 'per_month' ? ' (≈30.44 days)' : '');
   const description = $derived(
     config.rateMode === 'all_time'
-      ? `Total burned since mainnet launch (${launchDateLabel}) divided by elapsed time, per ${unitLabel}. Reacts slowly to recent bursts by design; a token launched after mainnet reads low until it catches up.`
-      : `Amount burned in the most recent ${unitLabel} (trailing-window change).`
+      ? `Total burned since mainnet launch (${launchDateLabel}) divided by elapsed time, per ${unitLabel}${unitNote}. Reacts slowly to recent bursts by design; a token launched after mainnet reads low until it catches up.`
+      : `Amount burned in the most recent ${unitLabel}${unitNote} (trailing-window change).`
   );
 
   // Update URL when rate unit changes
