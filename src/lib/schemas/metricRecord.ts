@@ -7,8 +7,6 @@ import {METRIC_OFFSETS} from "$lib/config/offsets";
 import {METRIC_MODIFIERS} from "$lib/config/modifiers";
 import {getLaunchTime} from "$lib/server/launchTime";
 
-const launchTime = getLaunchTime();
-
 // A metric record as returned by the API when querying all metrics
 export const AllMetricRecordSchema = z.object({
   table_name: z.string(),
@@ -52,22 +50,19 @@ function buildSchemaForMetric(metricKey: string) {
 
     let baseValueBN = new BigNumber(value)
 
-    // Set the value to 0 if the metric is
-    // - on Mainnet
-    // - before the launch time and
-    // - has an offset
-    if (isMainnet && ts < launchTime && hasOffset) {
-      baseValueBN = new BigNumber(0);
-    }
-
-    // Adjust the value by subtracting the offset if:
-    // - on Mainnet
-    // - after the launch time and
-    // - has an offset
-    if (isMainnet && ts >= launchTime && hasOffset) {
-      baseValueBN = baseValueBN.minus(offset);
-      if (baseValueBN.isNegative()) {
+    // On Mainnet, offset metrics are launch-anchored: pre-launch reads 0, post-launch
+    // has the offset subtracted (clamped >= 0). getLaunchTime() is resolved lazily here
+    // (request time) and only when it actually matters, so it never runs during the
+    // build's analyse pass (see $lib/server/launchTime).
+    if (isMainnet && hasOffset) {
+      const launchTime = getLaunchTime();
+      if (ts < launchTime) {
         baseValueBN = new BigNumber(0);
+      } else {
+        baseValueBN = baseValueBN.minus(offset);
+        if (baseValueBN.isNegative()) {
+          baseValueBN = new BigNumber(0);
+        }
       }
     }
 
