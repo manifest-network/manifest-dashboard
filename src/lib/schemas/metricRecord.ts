@@ -1,12 +1,13 @@
 import {z} from "zod/v4";
 import {bigNumberLike} from "$lib/schemas/common";
-import {LAUNCH_DATE, NETWORK} from "$env/static/private";
+import {NETWORK} from "$env/static/private";
 import {BigNumber} from "bignumber.js";
 import {memoize} from "lodash-es";
 import {METRIC_OFFSETS} from "$lib/config/offsets";
 import {METRIC_MODIFIERS} from "$lib/config/modifiers";
+import {getLaunchTime} from "$lib/server/launchTime";
 
-const launchTime = new Date(LAUNCH_DATE).getTime();
+const launchTime = getLaunchTime();
 
 // A metric record as returned by the API when querying all metrics
 export const AllMetricRecordSchema = z.object({

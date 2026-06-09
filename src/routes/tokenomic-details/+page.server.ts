@@ -6,7 +6,7 @@ import {buildStreamingTasks} from "$lib/loaders/createStreamingLoader";
 import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
 import {loadAggregateSupplyMetric} from "$lib/loaders/loadAggregateSupplyMetrics";
 import {loadStaticMetric} from "$lib/loaders/loadStaticMetric";
-import {LAUNCH_DATE} from "$env/static/private";
+import {getLaunchTime} from "$lib/server/launchTime";
 
 export const load: PageServerLoad = async (event) => {
   event.depends('data:tokenomic-details');
@@ -37,10 +37,7 @@ export const load: PageServerLoad = async (event) => {
     {} as Record<string, Promise<ChartResult<ChartDataPoint[]>>>
   );
 
-  const launchTime = new Date(LAUNCH_DATE).getTime();
-  if (Number.isNaN(launchTime)) {
-    error(500, `Invalid LAUNCH_DATE: "${LAUNCH_DATE}"`);
-  }
+  const launchTime = getLaunchTime();
 
   return {charts, rateCharts, launchTime};
 };
