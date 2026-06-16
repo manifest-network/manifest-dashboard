@@ -5,6 +5,15 @@ import type {ChartDataPoint} from "$lib/schemas/charts";
 // Kept as a literal (30.44) to preserve existing behavior.
 const AVERAGE_DAYS_PER_MONTH = 30.44;
 
+// Locally-configured BigNumber for the all-time division (explicit precision,
+// no global side-effects).
+const RateBN = BigNumber.clone({ DECIMAL_PLACES: 20, ROUNDING_MODE: BigNumber.ROUND_HALF_UP });
+
+// Fixed warm-up: skip points within this elapsed window after launch to avoid a
+// divide-by-near-zero spike. Fixed (not unit-dependent) so the all-time line's start
+// does not move when the user changes the display unit.
+export const MIN_ELAPSED_MS = 24 * 60 * 60 * 1000; // 1 day
+
 export const MS_PER_UNIT: Record<RateUnit, number> = {
   per_5min: 5 * 60 * 1000,
   per_15min: 15 * 60 * 1000,
@@ -49,9 +58,33 @@ export function isValidTimeSpan(span: string | null): span is TimeSpan {
 }
 
 /**
+ * Drop bad/missing samples from a monotonically non-decreasing cumulative counter.
+ * Input/output are sorted DESC by date (newest first). Walking oldest->newest,
+ * any point that falls below the running maximum (a decrease, including a drop to 0
+ * between higher values) or is non-finite is removed. Legitimate leading zeros are
+ * preserved because they never fall below the running max.
+ */
+export function dropNonMonotonicSamples(data: ChartDataPoint[]): ChartDataPoint[] {
+  if (!data || data.length === 0) {
+    return [];
+  }
+  const keptOldestFirst: ChartDataPoint[] = [];
+  let runningMax: BigNumber | null = null;
+  for (let i = data.length - 1; i >= 0; i--) {
+    const v = new BigNumber(data[i].value);
+    if (!v.isFinite()) continue;
+    if (runningMax !== null && v.isLessThan(runningMax)) continue;
+    runningMax = v;
+    keptOldestFirst.push(data[i]);
+  }
+  return keptOldestFirst.reverse();
+}
+
+/**
  * Calculates burn rate per time unit from cumulative data points.
  *
- * For each data point, finds the cumulative value at (current time - window size)
+ * Filters out non-monotonic samples first (e.g. exporter gaps that drop to 0),
+ * then for each data point finds the cumulative value at (current time - window size)
  * and returns the difference. This represents the amount burned in that time window,
  * i.e., the burn rate per selected time unit.
  *
@@ -72,43 +105,75 @@ export function calculateRates(
   data: ChartDataPoint[],
   rateUnit: RateUnit
 ): ChartDataPoint[] {
-  if (!data || data.length < 2) {
+  const clean = dropNonMonotonicSamples(data);
+  if (clean.length < 2) {
     return [];
   }
 
   const windowMs = MS_PER_UNIT[rateUnit];
   const rates: ChartDataPoint[] = [];
-
-  // Two-pointer: j tracks window start position and only advances forward
+  // Two-pointer: j tracks the window-start position and only advances forward
   let j = 0;
 
-  for (let i = 0; i < data.length; i++) {
-    const current = data[i];
+  for (let i = 0; i < clean.length; i++) {
+    const current = clean[i];
     const windowStartTime = current.date.getTime() - windowMs;
-
-    // Ensure j is always ahead of i (window start must be before current point)
+    // Ensure j stays ahead of i (window start must precede the current point)
     j = Math.max(j, i + 1);
-
-    // Advance j to find first point at or before windowStartTime
-    while (j < data.length && data[j].date.getTime() > windowStartTime) {
+    // Advance j to the first sample at or before the window start
+    while (j < clean.length && clean[j].date.getTime() > windowStartTime) {
       j++;
     }
-
-    // Skip if no data point exists at or before window start
-    if (j >= data.length) {
+    if (j >= clean.length) {
+      // No sample at/before the window start — skip
       continue;
     }
-
-    const valueDiff = new BigNumber(current.value).minus(data[j].value);
-
-    // Clamp negative to zero (could indicate data correction)
+    const valueDiff = new BigNumber(current.value).minus(clean[j].value);
+    // Defensive clamp; negatives are unreachable after dropNonMonotonicSamples
     const rate = valueDiff.isNegative() ? new BigNumber(0) : valueDiff;
-
     rates.push({
       group: current.group,
       key: current.key,
       value: rate.toFixed(),
       date: current.date,
+    });
+  }
+
+  return rates;
+}
+
+/**
+ * All-time average burn rate: value(t) / (t - launchTime) * MS_PER_UNIT[rateUnit].
+ * This is the exact time-average of the rate over [launch, t] (secant slope of the
+ * launch-anchored cumulative curve), valid because the source is offset-subtracted to 0
+ * at launch. Irregular sample spacing does not bias it. Data sorted DESC by date.
+ */
+export function calculateAllTimeAverageRates(
+  data: ChartDataPoint[],
+  rateUnit: RateUnit,
+  launchTime: number
+): ChartDataPoint[] {
+  const clean = dropNonMonotonicSamples(data);
+  if (clean.length === 0) {
+    return [];
+  }
+
+  // per_month ms is a non-integer float; round to a whole ms to avoid propagating float noise.
+  const unitMs = new RateBN(MS_PER_UNIT[rateUnit]).integerValue(BigNumber.ROUND_HALF_UP);
+  const rates: ChartDataPoint[] = [];
+
+  for (const point of clean) {
+    const elapsedMs = point.date.getTime() - launchTime;
+    if (elapsedMs < MIN_ELAPSED_MS) {
+      continue; // pre-launch or within the warm-up window
+    }
+    const rate = new RateBN(point.value).multipliedBy(unitMs).dividedBy(elapsedMs);
+    const clamped = rate.isNegative() ? new RateBN(0) : rate; // unreachable for monotonic data
+    rates.push({
+      group: point.group,
+      key: point.key,
+      value: clamped.toFixed(),
+      date: point.date,
     });
   }
 

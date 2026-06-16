@@ -11,6 +11,8 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"gen-sitemap": "bun generate_sitemap.js",
 		"gen-robots": "bun generate_robots.js"
 	},
@@ -33,7 +35,8 @@
 		"svelte-check": "4.4.4",
 		"tailwindcss": "4.2.1",
 		"typescript": "5.8.3",
-		"vite": "7.3.1"
+		"vite": "7.3.1",
+		"vitest": "4.1.8"
 	},
 	"dependencies": {
 		"@fontsource/poppins": "5.2.7",

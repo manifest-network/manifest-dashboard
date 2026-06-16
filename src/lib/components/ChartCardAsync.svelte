@@ -14,10 +14,12 @@
   const {
     config,
     promise,
+    launchTime,
     children,
   }: {
     config: TConfig;
     promise: Promise<ChartResult<ChartDataPoint[]>>;
+    launchTime?: number;
     children?: Snippet<[{config: TConfig; data: ChartDataPoint[]}]>;
   } = $props();
 
@@ -44,7 +46,7 @@
     {#if children}
       {@render children({config, data: state.data})}
     {:else if isRateChartConfig(config)}
-      <RateChartCard config={config} data={state.data} />
+      <RateChartCard config={config} data={state.data} {launchTime} />
     {:else}
       <ChartCard config={config} data={state.data} />
     {/if}

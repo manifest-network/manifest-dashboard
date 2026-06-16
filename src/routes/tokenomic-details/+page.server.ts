@@ -6,6 +6,7 @@ import {buildStreamingTasks} from "$lib/loaders/createStreamingLoader";
 import {loadAggregateMetric} from "$lib/loaders/loadAggregateMetric";
 import {loadAggregateSupplyMetric} from "$lib/loaders/loadAggregateSupplyMetrics";
 import {loadStaticMetric} from "$lib/loaders/loadStaticMetric";
+import {getLaunchTime} from "$lib/server/launchTime";
 
 export const load: PageServerLoad = async (event) => {
   event.depends('data:tokenomic-details');
@@ -36,5 +37,7 @@ export const load: PageServerLoad = async (event) => {
     {} as Record<string, Promise<ChartResult<ChartDataPoint[]>>>
   );
 
-  return {charts, rateCharts};
+  const launchTime = getLaunchTime();
+
+  return {charts, rateCharts, launchTime};
 };

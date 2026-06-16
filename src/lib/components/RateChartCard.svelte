@@ -5,9 +5,19 @@
   import {cubicInOut} from "svelte/easing";
   import {page} from "$app/state";
   import {goto} from "$app/navigation";
-  import {calculateRates, calculateAverage, RATE_UNIT_LABELS, RATE_UNITS_BY_TIMESPAN, isValidRateUnit, isValidTimeSpan} from "$lib/utils/rateCalculation";
+  import {calculateRates, calculateAllTimeAverageRates, calculateAverage, RATE_UNIT_LABELS, RATE_UNITS_BY_TIMESPAN, isValidRateUnit, isValidTimeSpan} from "$lib/utils/rateCalculation";
 
-  const {config, data}: {config: RateChartConfig; data: ChartDataPoint[]} = $props();
+  const {config, data, launchTime}: {config: RateChartConfig; data: ChartDataPoint[]; launchTime?: number} = $props();
+
+  function assertNever(x: never): never {
+    throw new Error(`Unhandled rateMode: ${x}`);
+  }
+
+  // Treat a non-finite launchTime (e.g. a misconfigured LAUNCH_DATE) as missing, so an
+  // invalid value can't emit NaN rates or throw in new Date(...).toISOString().
+  const validLaunchTime = $derived(
+    launchTime !== undefined && Number.isFinite(launchTime) ? launchTime : undefined
+  );
 
   // URL parameter name based on config id (e.g., "pwr_burn_rate" -> "pwr_burn_rateUnit")
   const urlParamName = $derived(`${config.id}Unit`);
@@ -30,20 +40,49 @@
     return availableUnits.default;
   });
 
-  // Calculate rates based on selected unit
-  const rateData = $derived(calculateRates(data, rateUnit));
-
-  // Calculate average for title
-  const averageValue = $derived(calculateAverage(rateData));
+  // Calculate the series based on the chart mode
+  const rateData = $derived.by(() => {
+    switch (config.rateMode) {
+      case 'all_time':
+        // launchTime is always provided for all_time charts via the loader; guard defensively.
+        return validLaunchTime === undefined ? [] : calculateAllTimeAverageRates(data, rateUnit, validLaunchTime);
+      case 'trailing':
+        return calculateRates(data, rateUnit);
+      default:
+        return assertNever(config.rateMode);
+    }
+  });
 
   // Format rate unit label for title (e.g., "Per Day" -> "day")
   const unitLabel = $derived(RATE_UNIT_LABELS[rateUnit].replace('Per ', '').toLowerCase());
 
-  // Title with average value (using config for dynamic labeling)
+  // Headline: all-time shows the latest point (current lifetime average); trailing shows
+  // the mean of the windowed series (data is DESC, so the latest point is index 0).
+  const headlineValue = $derived.by((): string | null => {
+    if (rateData.length === 0) return null;
+    return config.rateMode === 'all_time'
+      ? rateData[0].value
+      : calculateAverage(rateData).toFixed();
+  });
+
   const title = $derived(
-    rateData.length > 0
-      ? `${config.title}: ${formatBaseDenom(averageValue.toFixed(), 4)} ${config.unitSuffix}/${unitLabel}`
+    headlineValue !== null
+      ? `${config.title}: ${formatBaseDenom(headlineValue, 4)} ${config.unitSuffix}/${unitLabel}`
       : `${config.title}: N/A`
+  );
+
+  // Per-unit y-axis dimension that tracks the selector (e.g. "MFX per day")
+  const yAxisLabel = $derived(`${config.unitSuffix} per ${unitLabel}`);
+
+  // Disclosure tooltip (hover) describing the metric construction
+  const launchDateLabel = $derived(validLaunchTime !== undefined ? new Date(validLaunchTime).toISOString().slice(0, 10) : 'launch');
+  // "month" is an average month (30.44 days), not a calendar month — disclose it in the
+  // tooltip so the per-month unit isn't misread as calendar months (ENG-284 review).
+  const unitNote = $derived(rateUnit === 'per_month' ? ' (≈30.44 days)' : '');
+  const description = $derived(
+    config.rateMode === 'all_time'
+      ? `Total burned since mainnet launch (${launchDateLabel}) divided by elapsed time, per ${unitLabel}${unitNote}. Reacts slowly to recent bursts by design; a token launched after mainnet reads low until it catches up.`
+      : `Amount burned in the most recent ${unitLabel}${unitNote} (trailing-window change).`
   );
 
   // Update URL when rate unit changes
@@ -62,8 +101,10 @@
 <section>
   <div class="relative h-[300px] p-4 rounded-sm">
     <div class="absolute top-2 left-4 right-4 flex items-center justify-between z-10">
-      <h3 class="card-title">
+      <h3 class="card-title" title={description}>
         {title}
+        <!-- Expose the disclosure text to assistive tech / touch (native `title` is not reliably announced) -->
+        <span class="sr-only"> — {description}</span>
       </h3>
 
       <select
@@ -89,7 +130,7 @@
             label: "Timestamp",
           },
           yAxis: {
-            label: config.yAxisTitle,
+            label: yAxisLabel,
             format: (v) => config.yAxisFormatter ? config.yAxisFormatter(String(v)) : formatLargeNumber(v, 0),
           },
           highlight: {points: {r: 3, class: "stroke-2 stroke-surface-100"}}
@@ -103,7 +144,7 @@
               format={formatChartDate}
             />
             <Tooltip.Item
-              label={config.yAxisTitle}
+              label={yAxisLabel}
               value={context.tooltip.data?.value}
               format={config.tooltipValueFormatter ?? ((v) => v)}
             />
