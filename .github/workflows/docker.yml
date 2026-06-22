@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [dev, prod]
+        environment: [testnet, mainnet]
     environment: ${{ matrix.environment }}
     steps:
       - name: Checkout code
@@ -42,7 +42,7 @@ jobs:
         run: echo "GIT_TAG=$(echo ${GITHUB_REF#refs/tags/})" >> $GITHUB_ENV
 
       - name: Build and push with github release tag
-        if: matrix.environment == 'prod' && startsWith(github.ref, 'refs/tags/')
+        if: matrix.environment == 'mainnet' && startsWith(github.ref, 'refs/tags/')
         uses: docker/build-push-action@v6
         with:
           context: .

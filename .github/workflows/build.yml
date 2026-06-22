@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        environment: [dev, prod]
+        environment: [testnet, mainnet]
     env:
       NODE_ENV: ${{ matrix.environment }}
     steps:
