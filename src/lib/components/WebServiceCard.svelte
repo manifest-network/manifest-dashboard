@@ -10,9 +10,9 @@
   }>();
 </script>
 
-<Card title="Web Services" href="/web-services-details?interval=1 year">
+<Card title="RPC Endpoint Mesh" href="/web-services-details?interval=1 year">
   <div class="grid grid-cols-2 gap-x-4 gap-y-2">
-    <Metric value={formatNumber(totalWebServer)} label="Total Web Servers" />
+    <Metric value={formatNumber(totalWebServer)} label="Total RPC Endpoints" />
     <Metric value={formatRoundNumber(totalRequestPerSec, 2)} label="Total Requests/Sec" />
     <Metric value={formatLargeNumber(totalRequests, 2)} label="Total Requests" />
   </div>
