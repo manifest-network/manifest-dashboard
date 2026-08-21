@@ -14,7 +14,8 @@
   import DecentralizedWebHosting from "$lib/components/DecentralizedWebHosting.svelte";
   import KubeCard from "$lib/components/KubeCard.svelte";
   import ObjectStorageCard from "$lib/components/ObjectStorageCard.svelte";
-  import GpuCard from "$lib/components/GpuCard.svelte";
+  // Hidden: AI (GPU) panel — see the commented-out card block below.
+  // import GpuCard from "$lib/components/GpuCard.svelte";
   import WebServiceCard from "$lib/components/WebServiceCard.svelte";
   import NetworkCard from "$lib/components/NetworkCard.svelte";
   import ErrorCard from "$lib/components/ErrorCard.svelte";
@@ -131,7 +132,7 @@
         {/if}
       </div>
 
-      <!-- AI (GPU) -->
+      <!-- AI (GPU) - hidden
       <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
         {#if metricsState.isInitialLoad}
           <CardSkeleton />
@@ -148,13 +149,14 @@
           }} />
         {/if}
       </div>
+      -->
 
-      <!-- Web Services -->
+      <!-- RPC Endpoint Mesh -->
       <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
         {#if metricsState.isInitialLoad || cumsumMetricsState.isInitialLoad}
           <CardSkeleton />
         {:else if metricsError || cumsumMetricsError}
-          <ErrorCard title="Web Services" error={metricsError ?? cumsumMetricsError ?? ""} />
+          <ErrorCard title="RPC Endpoint Mesh" error={metricsError ?? cumsumMetricsError ?? ""} />
         {:else if metrics && cumsumMetrics}
           <WebServiceCard
             totalWebServer={metrics.web_servers ?? "N/A"}
@@ -164,12 +166,12 @@
         {/if}
       </div>
 
-      <!-- Decentralized Websites -->
+      <!-- Ghostcloud Deployments -->
       <div class="col-span-12 md:col-span-6 xl:col-span-3 h-full">
         {#if metricsState.isInitialLoad || cumsumMetricsState.isInitialLoad}
           <CardSkeleton />
         {:else if metricsError || cumsumMetricsError}
-          <ErrorCard title="Decentralized Web Hosting" error={metricsError ?? cumsumMetricsError ?? ""} />
+          <ErrorCard title="Ghostcloud Deployments" error={metricsError ?? cumsumMetricsError ?? ""} />
         {:else if metrics && cumsumMetrics}
           <DecentralizedWebHosting
             totalWebsites={metrics.web_sites ?? "N/A"}

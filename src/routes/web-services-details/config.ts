@@ -3,8 +3,8 @@ import {formatLargeNumber} from "$lib/utils/format";
 export const configs: ChartConfig[] = [
   {
     id: 'web_servers',
-    title: 'Total Web Servers',
-    yAxisTitle: '# of Web Servers',
+    title: 'Total RPC Endpoints',
+    yAxisTitle: '# of RPC Endpoints',
     category: 'web',
     type: "common"
   },
