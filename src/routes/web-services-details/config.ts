@@ -10,8 +10,8 @@ export const configs: ChartConfig[] = [
   },
   {
     id: 'web_requests_per_sec',
-    title: 'Web Requests/Sec',
-    yAxisTitle: 'Web Requests/Sec',
+    title: 'RPC Requests/Sec',
+    yAxisTitle: 'RPC Requests/Sec',
     category: 'web',
     type: "common"
   },
